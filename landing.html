@@ -3925,7 +3925,7 @@ function removeFile() {
 
 function showUploadError(msg) {
   // Go back to upload screen and show error
-  showScreen('upload');
+  goTo('upload');
   const zone = document.querySelector('.drop-zone');
   let err = document.getElementById('upload-error-msg');
   if (!err) {
