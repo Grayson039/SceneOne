@@ -2662,6 +2662,7 @@ She grabs her jacket.</textarea>
 const SUPABASE_URL      = 'https://zzsjgaijrngxkaqakplm.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_yuptAX-fJGnyTuDgReScEg_bqg7qPEx';
 const EDGE_FN_URL       = SUPABASE_URL + '/functions/v1/grade-script';
+const supabaseClient    = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // pdf.js worker setup
 if (typeof pdfjsLib !== 'undefined') {
@@ -3192,15 +3193,41 @@ const tourSteps = [
   { eye:'📋 Revision Plan', title:'Your top 3 highest-impact fixes.', body:"SceneOne ranks the fixes that will move your score the most. Not a list of everything — a prioritized action plan.", target:'.rev-card', pos:'above' }
 ];
 
-function startOnboarding() {
+async function startOnboarding() {
   const nameEl = document.getElementById('ob-name');
   const emailEl = document.getElementById('ob-email');
-  userName = nameEl?.value?.trim().split(' ')[0] || '';
-  if (!emailEl?.value?.includes('@')) {
+  const passEl = document.getElementById('ob-password');
+  const btn = document.getElementById('signup-submit');
+  const name = nameEl?.value?.trim() || '';
+  const email = emailEl?.value?.trim() || '';
+  const password = passEl?.value || '';
+
+  if (!email.includes('@')) {
     emailEl.style.borderColor = 'rgba(232,146,58,0.6)';
     emailEl.focus();
     return;
   }
+
+  btn.textContent = 'Creating account…';
+  btn.disabled = true;
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: { data: { full_name: name } }
+  });
+
+  if (error) {
+    btn.textContent = 'Create Account & Continue →';
+    btn.disabled = false;
+    emailEl.style.borderColor = 'rgba(232,146,58,0.6)';
+    emailEl.parentElement.insertAdjacentHTML('afterend',
+      `<div style="color:#E8923A;font-size:12px;margin-top:4px;">${error.message}</div>`);
+    return;
+  }
+
+  userName = name.split(' ')[0] || email.split('@')[0];
+  _currentUser = data.user;
   isFirstTime = true;
   goTo('onboard');
   updateObDots(0);
@@ -3453,12 +3480,30 @@ function switchAuthTab(tab) {
   }
 }
 
-function handleLogin() {
-  const email = document.getElementById('login-email')?.value;
-  const pass = document.getElementById('login-password')?.value;
+async function handleLogin() {
+  const emailEl = document.getElementById('login-email');
+  const passEl = document.getElementById('login-password');
+  const btn = document.getElementById('login-submit');
+  const email = emailEl?.value?.trim() || '';
+  const pass = passEl?.value || '';
   if (!email || !pass) return;
-  // Demo: any login goes to upload with returning user state
-  userName = email.split('@')[0];
+
+  btn.textContent = 'Signing in…';
+  btn.disabled = true;
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
+
+  if (error) {
+    btn.textContent = 'Sign In →';
+    btn.disabled = false;
+    passEl.style.borderColor = 'rgba(232,146,58,0.6)';
+    passEl.parentElement.insertAdjacentHTML('afterend',
+      `<div style="color:#E8923A;font-size:12px;margin-top:4px;">${error.message}</div>`);
+    return;
+  }
+
+  userName = data.user.user_metadata?.full_name?.split(' ')[0] || email.split('@')[0];
+  _currentUser = data.user;
   isFirstTime = false;
   goTo('upload');
   setTimeout(() => {
@@ -4021,6 +4066,7 @@ function useSample() {
 // ─── CLAPPER FIX — force equal random distribution ───
 let _lastLoader = -1;
 let _uploadedFile = null;
+let _currentUser = null;
 function getNextLoader() {
   let next;
   do { next = Math.floor(Math.random() * 3); } while (next === _lastLoader);
@@ -4074,24 +4120,19 @@ async function _runAnalysis() {
     }
 
     // Call Supabase Edge Function
-    const resp = await fetch(EDGE_FN_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
-      body: JSON.stringify({ script_text: scriptText, title }),
+    const { data, error: fnError } = await supabaseClient.functions.invoke('grade-script', {
+      body: { script_text: scriptText, title, user_email: _currentUser?.email || null },
     });
 
-    if (!resp.ok) throw new Error('Edge function returned ' + resp.status);
-
-    const data = await resp.json();
-    if (data.error) throw new Error(data.error);
+    if (fnError) throw new Error(fnError.message || 'Edge function error');
+    if (data?.error) throw new Error(data.error);
 
     _onApiDone(data);
 
   } catch (err) {
     console.error('SceneOne analysis error:', err);
-    // Fall back to demo report gracefully
-    _isSample = true;
-    if (_loaderDone) _finalizeReport();
+    goTo('upload');
+    showUploadError('Analysis failed: ' + (err?.message || 'Unknown error') + ' — check the browser console for details.');
   }
 }
 
