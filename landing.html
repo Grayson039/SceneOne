@@ -1005,6 +1005,10 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   .upload-wrap{max-width:100%;}
 }
 </style>
+<!-- pdf.js for client-side PDF text extraction -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<!-- Supabase JS client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
 
@@ -1247,13 +1251,13 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <div class="upload-desc">Drop your script below. We accept PDF, FDX, and Fountain files. Analysis takes 2–4 minutes — good feedback takes time. Even ours.</div>
 
     <div class="drop-zone" id="drop-zone">
-      <input type="file" id="file-input" accept=".pdf,.fdx,.fountain,.txt" onchange="handleFile(this)">
+      <input type="file" id="file-input" accept=".pdf" onchange="handleFile(this)">
       <div class="drop-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
       </div>
       <div class="drop-main">Drop your script here</div>
       <div class="drop-sub">or click to browse</div>
-      <div class="drop-formats">PDF &nbsp;·&nbsp; FDX &nbsp;·&nbsp; FOUNTAIN</div>
+      <div class="drop-formats">PDF only &nbsp;·&nbsp; Export from Word or Final Draft</div>
     </div>
 
     <div class="file-row" id="file-row">
@@ -2654,6 +2658,218 @@ She grabs her jacket.</textarea>
 </div>
 
 <script>
+// ─── SCENEONE CONFIG — fill in tonight before pushing ───
+const SUPABASE_URL      = 'https://zzsjgaijrngxkaqakplm.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_yuptAX-fJGnyTuDgReScEg_bqg7qPEx';
+const EDGE_FN_URL       = SUPABASE_URL + '/functions/v1/grade-script';
+
+// pdf.js worker setup
+if (typeof pdfjsLib !== 'undefined') {
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+// ─── PDF / FILE TEXT EXTRACTION ───
+async function extractScriptText(file) {
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  if (ext === 'pdf') {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let text = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      text += content.items.map(item => item.str).join(' ') + '\n';
+    }
+    return text;
+  }
+
+  // FDX, Fountain, TXT — all plain/XML text
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result);
+    reader.onerror = reject;
+    reader.readAsText(file);
+  });
+}
+
+// ─── API COORDINATION ───
+let _loaderDone = false;
+let _apiDone    = false;
+let _reportData = null;
+let _isSample   = false;
+
+function _onLoaderAnimDone() {
+  _loaderDone = true;
+  if (_apiDone || _isSample) {
+    _finalizeReport();
+  } else {
+    // Keep bar at 99% with a waiting message
+    const bar = document.getElementById('proc-bar');
+    const ph  = document.getElementById('proc-phrase');
+    if (bar) bar.style.width = '99%';
+    if (ph)  ph.textContent  = 'Running deep structural analysis...';
+  }
+}
+
+function _onApiDone(data) {
+  _apiDone    = true;
+  _reportData = data;
+  if (_loaderDone) _finalizeReport();
+}
+
+function _finalizeReport() {
+  if (!_isSample && _reportData) populateReport(_reportData);
+  setTimeout(() => {
+    goTo('report');
+    if (isFirstTime) {
+      isFirstTime = false;
+      setTimeout(() => {
+        const cel = document.getElementById('ob-celebrate');
+        cel.style.display = 'flex';
+        cel.classList.add('show');
+      }, 600);
+    }
+  }, 800);
+}
+
+// ─── POPULATE REPORT FROM REAL DATA ───
+function populateReport(d) {
+  if (!d) return;
+
+  // Overall score
+  document.querySelectorAll('.sidebar-score-big').forEach(el => el.textContent = d.overall_score);
+  document.querySelectorAll('.overall-score-num').forEach(el => el.textContent = d.overall_score);
+  const interp = document.querySelector('.overall-score-interp');
+  if (interp && d.score_interpretation) interp.textContent = d.score_interpretation;
+
+  // Celebration card stats
+  const celStats = document.querySelectorAll('.ob-cel-stat-val');
+  if (celStats[0]) celStats[0].textContent = d.overall_score;
+  if (d.scores && celStats[1] && celStats[2]) {
+    const entries = Object.entries(d.scores);
+    const best = entries.reduce((a, b) => b[1] > a[1] ? b : a);
+    const worst = entries.reduce((a, b) => b[1] < a[1] ? b : a);
+    celStats[1].textContent = best[1];
+    celStats[2].textContent = worst[1];
+    const bestLbl  = celStats[1].closest('.ob-cel-stat')?.querySelector('.ob-cel-stat-lbl');
+    const worstLbl = celStats[2].closest('.ob-cel-stat')?.querySelector('.ob-cel-stat-lbl');
+    if (bestLbl)  bestLbl.textContent  = 'Best: ' + best[0].charAt(0).toUpperCase() + best[0].slice(1);
+    if (worstLbl) worstLbl.textContent = 'Fix: '  + worst[0].charAt(0).toUpperCase() + worst[0].slice(1);
+  }
+
+  // Individual dimension scores
+  if (d.scores) {
+    const order = ['structure', 'conflict', 'dialogue', 'pacing', 'visual'];
+    const srNums = document.querySelectorAll('.sr-num');
+    const srFills = document.querySelectorAll('.sr-bar-fill');
+    const scatScores = document.querySelectorAll('.scat-score');
+    order.forEach((dim, i) => {
+      const score = d.scores[dim];
+      if (score === undefined) return;
+      if (srNums[i])    srNums[i].textContent    = score;
+      if (scatScores[i]) scatScores[i].textContent = score;
+      if (srFills[i])   srFills[i].style.width   = score + '%';
+    });
+  }
+
+  // Win statement
+  const winEl = document.getElementById('win-text');
+  if (winEl && d.win_statement) winEl.textContent = d.win_statement;
+
+  // Logline
+  const loglineEl = document.getElementById('logline-text');
+  if (loglineEl && d.logline) loglineEl.value = '"' + d.logline + '"';
+
+  // Story DNA
+  if (d.story_dna && d.story_dna.length) {
+    const dnaRows = document.querySelectorAll('.dna-item-row');
+    d.story_dna.slice(0, 3).forEach((item, i) => {
+      if (!dnaRows[i]) return;
+      const inp  = dnaRows[i].querySelector('input');
+      const fill = dnaRows[i].querySelector('.dna-bar-fill');
+      const pct  = dnaRows[i].querySelector('.dna-pct');
+      if (inp)  inp.value        = item.film;
+      if (fill) fill.style.width = item.pct + '%';
+      if (pct)  pct.textContent  = item.pct + '%';
+    });
+  }
+
+  // Pacing heatmap — rebuild with real scores
+  if (d.pacing_scores && d.pacing_scores.length) {
+    window.pacingScores = d.pacing_scores;
+    buildHeatmap();
+  }
+
+  // Category notes
+  if (d.categories) {
+    const catMap = {
+      structure: 'cat-structure',
+      conflict:  'cat-conflict',
+      dialogue:  'cat-dialogue',
+      pacing:    'cat-pacing',
+      visual:    'cat-visual',
+    };
+    Object.entries(catMap).forEach(([dim, catId]) => {
+      const cat = d.categories[dim];
+      if (!cat) return;
+      const card = document.getElementById(catId);
+      if (!card) return;
+
+      // Score inside the category card header
+      const burnOld = card.querySelector('.score-burn-old');
+      if (burnOld && d.scores) burnOld.textContent = d.scores[dim];
+
+      // Strength note
+      const strengthEl = card.querySelector('.note2.w p');
+      if (strengthEl && cat.strength) strengthEl.textContent = cat.strength;
+
+      // Flag note
+      const flagEl = card.querySelector('.note2.x p');
+      if (flagEl && cat.flag) flagEl.textContent = cat.flag;
+
+      // Evidence
+      const evEl = card.querySelector('.ev-text');
+      if (evEl && cat.evidence) evEl.textContent = '"' + cat.evidence + '"';
+
+      // Fix suggestion
+      const fixEl = card.querySelector('.fix2 p');
+      if (fixEl && cat.fix) fixEl.textContent = cat.fix;
+
+      // Page reference badges
+      card.querySelectorAll('.note2-page').forEach(el => {
+        if (cat.page_ref) el.textContent = cat.page_ref;
+      });
+
+      // Confidence badge
+      const confEl = card.querySelector('.conf-badge');
+      if (confEl && cat.confidence) {
+        confEl.className = 'conf-badge cb-' + cat.confidence.slice(0,3);
+        confEl.textContent = cat.confidence.charAt(0).toUpperCase() + cat.confidence.slice(1);
+      }
+    });
+  }
+
+  // Revision plan
+  if (d.revision_plan && d.revision_plan.length) {
+    const revItems = document.querySelectorAll('.rev-item');
+    d.revision_plan.slice(0, 3).forEach((item, i) => {
+      if (!revItems[i]) return;
+      const titleEl = revItems[i].querySelector('.rev-content-title');
+      const descEl  = revItems[i].querySelector('.rev-content-desc');
+      const impactEl = revItems[i].querySelector('.rev-impact');
+      if (titleEl && item.title)       titleEl.textContent = item.title;
+      if (descEl  && item.description) descEl.textContent  = item.description;
+      if (impactEl && item.impact)     impactEl.textContent = item.impact;
+    });
+  }
+
+  // Top stats row
+  const topStatVals = document.querySelectorAll('.top-stat-val');
+  if (topStatVals[0] && d.overall_score) topStatVals[0].textContent = d.overall_score;
+}
+
 // ─── NAV ───
 function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -2773,7 +2989,12 @@ function runCountdown(){
 
   // Reading phrases cycle after countdown
   let pi = 0;
-
+  function cycleReading(){
+    if (readingEl && pi < countdownPhrases.length){
+      readingEl.textContent = countdownPhrases[pi++];
+      setTimeout(cycleReading, 1700 + Math.random()*700);
+    }
+  }
   setTimeout(cycleReading, 9000);
 
   runProgressBar(countdownPhrases, 18000, '"Scene Set. Action."');
@@ -2832,8 +3053,11 @@ function buildHeatmap(){
   const grid=document.getElementById('heatmap');
   const legend=document.getElementById('hm-legend');
   const tip=document.getElementById('hm-tip');
-  // Pacing data — 94 pages, 10 per row = 10 rows
-  const scores=[
+  if (!grid) return;
+  grid.innerHTML = '';
+  if (legend) legend.innerHTML = '';
+  // Use real pacing scores from API if available, otherwise use demo data
+  const scores = window.pacingScores && window.pacingScores.length ? window.pacingScores : [
     85,88,90,86,82,80,78,84,87,89,
     85,83,79,76,72,68,65,63,60,58,
     62,64,60,58,55,52,54,56,60,63,
@@ -3105,17 +3329,8 @@ function runProgressBar(phrases, totalMs, finalPhrase, onComplete) {
     bar.style.width='100%';
     ph.textContent=finalPhrase;
     if(onComplete) onComplete();
-    setTimeout(()=>{
-      goTo('report');
-      if(isFirstTime){
-        isFirstTime=false;
-        setTimeout(()=>{
-      const cel=document.getElementById('ob-celebrate');
-      cel.style.display='flex';
-      cel.classList.add('show');
-    },600);
-      }
-    },1800);
+    // Coordinate with API instead of navigating directly
+    setTimeout(()=>{ _onLoaderAnimDone(); },1800);
   },totalMs);
 }
 
@@ -3655,8 +3870,32 @@ function requestScriptAccess(btn) {
 // ─── TITLE + CO-WRITERS ───
 let cowriterCount = 0;
 
+function showUploadError(msg) {
+  // Go back to upload screen and show error
+  showScreen('upload');
+  const zone = document.querySelector('.drop-zone');
+  let err = document.getElementById('upload-error-msg');
+  if (!err) {
+    err = document.createElement('div');
+    err.id = 'upload-error-msg';
+    err.style.cssText = 'margin-top:14px;padding:12px 16px;background:rgba(232,146,58,0.1);border:1px solid rgba(232,146,58,0.35);border-radius:10px;color:#E8923A;font-size:13px;line-height:1.5;';
+    zone.after(err);
+  }
+  err.textContent = msg;
+  err.style.display = 'block';
+}
+
 function handleFile(i) {
-  if (i.files[0]) setFile(i.files[0]);
+  const f = i.files[0];
+  if (!f) return;
+  const err = document.getElementById('upload-error-msg');
+  if (err) err.style.display = 'none';
+  if (!f.name.toLowerCase().endsWith('.pdf')) {
+    showUploadError('SceneOne only accepts PDF files. Export your script as a PDF from Word, Final Draft, or Google Docs first.');
+    i.value = '';
+    return;
+  }
+  setFile(f);
 }
 
 function setFile(f) {
@@ -3780,11 +4019,71 @@ function getNextLoader() {
 }
 
 function startProcessing() {
+  // Reset coordination flags
+  _loaderDone = false;
+  _apiDone    = false;
+  _reportData = null;
+  _isSample   = false;
+
   goTo('processing');
   const which = getNextLoader();
   if (which === 0) runStarWars();
   else if (which === 1) runCountdown();
   else runClapper();
+
+  // Kick off real API call (non-blocking — runs in parallel with loader)
+  _runAnalysis();
+}
+
+async function _runAnalysis() {
+  try {
+    // Config check
+    if (!SUPABASE_URL || SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+      console.warn('SceneOne: Supabase not configured — showing demo report');
+      _isSample = true;
+      _onLoaderAnimDone();
+      return;
+    }
+
+    const fileInput = document.getElementById('file-input');
+    const titleInput = document.getElementById('script-title-input');
+    const file = fileInput?.files?.[0];
+    const title = titleInput?.value?.trim() || 'Untitled Script';
+
+    if (!file) {
+      // No real file (e.g. sample mode) — use demo data
+      _isSample = true;
+      return;
+    }
+
+    // Extract text from the uploaded file
+    const scriptText = await extractScriptText(file);
+
+    if (!scriptText || scriptText.trim().length < 200) {
+      showUploadError('We couldn\'t read your file. Make sure it\'s a PDF — Word docs and Final Draft files need to be exported as PDF first.');
+      return;
+    }
+
+    // Call Supabase Edge Function
+    const resp = await fetch(EDGE_FN_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
+      body: JSON.stringify({ script_text: scriptText, title }),
+    });
+
+    if (!resp.ok) throw new Error('Edge function returned ' + resp.status);
+
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error);
+
+    _onApiDone(data);
+
+  } catch (err) {
+    console.error('SceneOne analysis error:', err);
+    // Fall back to demo report gracefully
+    _isSample = true;
+    if (_loaderDone) _finalizeReport();
+  }
 }
 
 // ─── UPDATE TOS for co-writers ───
