@@ -3870,6 +3870,14 @@ function requestScriptAccess(btn) {
 // ─── TITLE + CO-WRITERS ───
 let cowriterCount = 0;
 
+function removeFile() {
+  _uploadedFile = null;
+  document.getElementById('file-row').classList.remove('show');
+  const err = document.getElementById('upload-error-msg');
+  if (err) err.style.display = 'none';
+  document.getElementById('file-input').value = '';
+}
+
 function showUploadError(msg) {
   // Go back to upload screen and show error
   showScreen('upload');
@@ -3895,6 +3903,7 @@ function handleFile(i) {
     i.value = '';
     return;
   }
+  _uploadedFile = f;
   setFile(f);
 }
 
@@ -4011,6 +4020,7 @@ function useSample() {
 
 // ─── CLAPPER FIX — force equal random distribution ───
 let _lastLoader = -1;
+let _uploadedFile = null;
 function getNextLoader() {
   let next;
   do { next = Math.floor(Math.random() * 3); } while (next === _lastLoader);
@@ -4045,9 +4055,8 @@ async function _runAnalysis() {
       return;
     }
 
-    const fileInput = document.getElementById('file-input');
     const titleInput = document.getElementById('script-title-input');
-    const file = fileInput?.files?.[0];
+    const file = _uploadedFile;
     const title = titleInput?.value?.trim() || 'Untitled Script';
 
     if (!file) {
