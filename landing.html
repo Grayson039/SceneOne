@@ -2664,6 +2664,26 @@ const SUPABASE_ANON_KEY = 'sb_publishable_yuptAX-fJGnyTuDgReScEg_bqg7qPEx';
 const EDGE_FN_URL       = SUPABASE_URL + '/functions/v1/grade-script';
 const supabaseClient    = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// ─── SESSION PERSISTENCE — restore auth on every page load ───
+(async () => {
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session?.user) {
+      _currentUser = session.user;
+      userName = session.user.user_metadata?.full_name?.split(' ')[0]
+                 || session.user.email.split('@')[0];
+      // Already authenticated — skip auth screens
+      goTo('upload');
+    }
+  } catch (e) {
+    console.warn('SceneOne: session restore failed', e);
+  }
+})();
+
+supabaseClient.auth.onAuthStateChange((_event, session) => {
+  _currentUser = session?.user || null;
+});
+
 // pdf.js worker setup
 if (typeof pdfjsLib !== 'undefined') {
   pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -4043,11 +4063,194 @@ function removeCowriter(id) {
   if (addBtn && cowriterCount < 3) addBtn.style.display = 'flex';
 }
 
+// ─── SAMPLE SCREENPLAY TEXT — fed to real API so demo mode runs live analysis ───
+const SAMPLE_SCRIPT_TEXT = `THE LAST HOUR
+Written by Mara Voss
+
+FADE IN:
+
+EXT. DOWNTOWN PARKING STRUCTURE - NIGHT
+
+Rain hammers concrete. A white sedan idles on the fourth floor, engine running, lights off.
+
+INT. WHITE SEDAN - CONTINUOUS
+
+DETECTIVE CLAIRE NOVAK (38, sharp eyes, three days of bad sleep) stares at her phone. A text: "You have 60 minutes. Tick tock."
+
+She grips the steering wheel. Breathes. Then pulls her badge, checks the clip in her Glock, and gets out.
+
+EXT. PARKING STRUCTURE - CONTINUOUS
+
+Claire moves fast — heels clicking, each step deliberate. She knows this building. She arrested someone here seven years ago. She got it wrong.
+
+INT. STAIRWELL - CONTINUOUS
+
+She takes the stairs two at a time, hand on the rail, scanning. Halfway up, she stops.
+
+A BURNER PHONE sits on the third step. Taped to it: a photograph.
+
+Claire picks up the photo. Her daughter. Maya, 9, in her school uniform, outside Jefferson Elementary — taken TODAY.
+
+CLAIRE
+(barely a whisper)
+Oh God.
+
+The burner phone BUZZES. She answers.
+
+VOICE (V.O.)
+(distorted)
+Fifty-eight minutes, Detective. My client wants the file on the Delgado case. The one you buried.
+
+CLAIRE
+I don't know what you're talking about.
+
+VOICE (V.O.)
+Then Maya's going to have a very bad night.
+
+The line goes dead. Claire stands frozen for exactly one second — then she's moving again, faster now, taking the stairs three at a time.
+
+EXT. PARKING STRUCTURE - ROOFTOP - NIGHT
+
+She bursts onto the roof. Wind. Rain. And a clear view of the city — the courthouse, the precinct, and three blocks north, Jefferson Elementary.
+
+Claire dials. Ringing. Ringing.
+
+SCHOOL ADMINISTRATOR (V.O.)
+Jefferson after-hours, this is—
+
+CLAIRE
+This is Detective Novak. My daughter Maya is in after-school care. I need you to lock down the building. Right now. Do not let anyone in or out.
+
+SCHOOL ADMINISTRATOR (V.O.)
+I'm sorry, what? Is this—
+
+CLAIRE
+Do it. I'll explain in twenty minutes.
+
+She hangs up. Stares at the city. Somewhere out there, someone has eyes on her daughter. Someone who knows about Delgado.
+
+Someone who knows what she did.
+
+CLAIRE (CONT'D)
+(to herself)
+Fifty-seven minutes.
+
+She turns and walks back toward the stairwell — jaw set, something decided behind her eyes. She's not running anymore. She's hunting.
+
+SMASH CUT TO:
+
+INT. POLICE PRECINCT - EVIDENCE ROOM - NIGHT
+
+A FILE FOLDER sits in a metal cage, labeled: DELGADO, R. — CASE #7741 — CLOSED.
+
+Claire's hand reaches through the bars. Takes it.
+
+INT. PRECINCT - HALLWAY - CONTINUOUS
+
+She walks past her CAPTAIN'S office, head down. The Captain is on the phone, back turned. She doesn't stop.
+
+EXT. PRECINCT - PARKING LOT - NIGHT
+
+Claire gets in her car. Opens the folder. Photographs. Reports. And one thing that was never supposed to be in there: a handwritten note in her own writing.
+
+She reads it. Her expression doesn't change.
+
+She starts the car.
+
+CLAIRE
+(quiet, to no one)
+Fifty-three minutes.
+
+SMASH CUT TO TITLES: THE LAST HOUR
+
+FADE OUT.
+
+ACT TWO
+
+INT. CITY HALL - RECORDS OFFICE - NIGHT
+
+Claire moves through empty corridors with the borrowed keycard of a clerk she owes a favor. The offices are dark. She finds the terminal she needs.
+
+Types. Waits. The screen fills with property records — shell companies, a warehouse on the east side, a name that keeps appearing: MERIDIAN HOLDINGS.
+
+Behind that name: COUNCILMAN VICTOR RESH (55, photographs show a man who smiles for cameras and means none of it).
+
+CLAIRE (V.O.)
+Delgado wasn't a drug dealer. He was a witness. And I was told to close the case before he could testify.
+
+She copies the files to a drive. The burner phone buzzes again.
+
+VOICE (V.O.)
+Wrong direction, Detective. My client doesn't want Meridian. He wants what Delgado gave you. The original recording.
+
+CLAIRE
+There is no recording.
+
+VOICE (V.O.)
+Forty-one minutes.
+
+Claire closes her eyes. Opens them.
+
+CLAIRE
+(measured)
+If anything happens to my daughter, I will burn everything. Every file. Every name. I'll go public with all of it.
+
+VOICE (V.O.)
+(a beat, then)
+You wouldn't. You'd go to prison.
+
+CLAIRE
+I'm already in prison.
+
+She disconnects. Sits in the dark office. Then, slowly, she opens her own phone and scrolls to a contact: DELGADO, R. — PERSONAL.
+
+She dials.
+
+It rings.
+
+And rings.
+
+And then — impossibly — someone picks up.
+
+DELGADO (V.O.)
+(quiet, wary)
+I wondered when you'd call.
+
+CLAIRE
+(stunned)
+You're alive.
+
+DELGADO (V.O.)
+Barely. And not for long, if the wrong people find out I called you back.
+
+CLAIRE
+I need the recording.
+
+DELGADO (V.O.)
+The recording doesn't exist anymore. But I do. And I remember everything.
+
+CLAIRE
+Then I need you. Right now.
+
+A long silence on the line.
+
+DELGADO (V.O.)
+There's a warehouse. East side, Meridian Holdings. Dock 7. Come alone.
+
+CLAIRE
+I have thirty-nine minutes.
+
+DELGADO (V.O.)
+That's enough time. If you drive fast.
+
+The line goes dead. Claire looks at the property records on the screen — the warehouse address is already highlighted.
+
+She drives fast.`;
+
 function useSample() {
   const title = 'THE LAST HOUR';
   document.getElementById('crawl-title').textContent = title;
-  document.getElementById('rep-title').textContent = title + ' — Demo Draft';
-  document.getElementById('win-text').textContent = "Your protagonist's external motivation is established with remarkable precision — by page 4, we know exactly what she wants and why the cost of failure is personal. That's faster than most produced thrillers.";
+  document.getElementById('rep-title').textContent = title + ' — Sample Draft';
   document.getElementById('file-row').classList.add('show');
   document.getElementById('file-nm').textContent = 'the-last-hour-draft1.pdf';
   document.getElementById('file-sz').textContent = 'Sample script · 94 pages';
@@ -4058,6 +4261,9 @@ function useSample() {
     const titleInput = document.getElementById('script-title-input');
     if (titleInput) titleInput.value = title;
   }
+
+  // Create a real File blob so _runAnalysis() calls the live API
+  _uploadedFile = new File([SAMPLE_SCRIPT_TEXT], 'the-last-hour-draft1.txt', { type: 'text/plain' });
 
   document.getElementById('analyze-btn').classList.add('ready');
   setTimeout(() => checkTosBeforeAnalysis(), 600);
@@ -4131,8 +4337,15 @@ async function _runAnalysis() {
 
   } catch (err) {
     console.error('SceneOne analysis error:', err);
-    goTo('upload');
-    showUploadError('Analysis failed: ' + (err?.message || 'Unknown error') + ' — check the browser console for details.');
+    // Show error in the processing screen so user understands what happened
+    const ph = document.getElementById('proc-phrase');
+    const bar = document.getElementById('proc-bar');
+    if (ph) ph.textContent = 'Analysis failed: ' + (err?.message || 'Unknown error');
+    if (bar) bar.style.background = 'var(--amber, #f59e0b)';
+    setTimeout(() => {
+      goTo('upload');
+      showUploadError('Analysis failed: ' + (err?.message || 'Unknown error') + ' — check the browser console for details.');
+    }, 2500);
   }
 }
 
