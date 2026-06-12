@@ -2121,7 +2121,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
           </div>
           <div class="exec-stat">
             <div class="exec-stat-label">Format</div>
-            <div class="exec-stat-val">Feature · 94 pages</div>
+            <div class="exec-stat-val" id="exec-page-count">Feature · 94 pages</div>
           </div>
           <div class="exec-stat">
             <div class="exec-stat-label">Craft Score</div>
@@ -2191,8 +2191,8 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
         </div>
         <div class="top-stat">
           <div class="top-stat-label">Script Stats</div>
-          <div class="top-stat-val" style="color:var(--text);font-size:24px;margin-top:4px;">94 pgs</div>
-          <div class="top-stat-sub">5 characters · 3 acts</div>
+          <div class="top-stat-val" id="stat-page-count" style="color:var(--text);font-size:24px;margin-top:4px;">94 pgs</div>
+          <div class="top-stat-sub" id="stat-page-sub">5 characters · 3 acts</div>
           <div class="top-stat-badge badge-info">Standard length</div>
         </div>
       </div>
@@ -2252,7 +2252,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
         <div class="heatmap-card" style="position:relative;">
           <div class="card-header">
             <div class="card-title">Pacing Heatmap</div>
-            <div class="card-meta">Page by page · 94 pages</div>
+            <div class="card-meta" id="heatmap-page-meta">Page by page · 94 pages</div>
           </div>
           <div class="heatmap-grid" id="heatmap"></div>
           <div style="margin-top:10px;">
@@ -2758,6 +2758,17 @@ function _finalizeReport() {
 // ─── POPULATE REPORT FROM REAL DATA ───
 function populateReport(d) {
   if (!d) return;
+
+  // Page count (calculated from script text length before API call)
+  const pg = window._scriptPageCount || '—';
+  const pgEl = document.getElementById('stat-page-count');
+  const pgSub = document.getElementById('stat-page-sub');
+  const pgExec = document.getElementById('exec-page-count');
+  const pgHeat = document.getElementById('heatmap-page-meta');
+  if (pgEl) pgEl.textContent = pg + ' pgs';
+  if (pgSub) pgSub.textContent = pg + ' pages · ' + (d.character_count ? d.character_count + ' characters' : 'Feature');
+  if (pgExec) pgExec.textContent = 'Feature · ' + pg + ' pages';
+  if (pgHeat) pgHeat.textContent = 'Page by page · ' + pg + ' pages';
 
   // Overall score
   document.querySelectorAll('.sidebar-score-big').forEach(el => el.textContent = d.overall_score);
@@ -4324,6 +4335,9 @@ async function _runAnalysis() {
       showUploadError('We couldn\'t read your file. Make sure it\'s a PDF — Word docs and Final Draft files need to be exported as PDF first.');
       return;
     }
+
+    // Estimate page count (~1500 chars per formatted screenplay page)
+    window._scriptPageCount = Math.max(1, Math.round(scriptText.trim().length / 1500));
 
     // Call Supabase Edge Function
     const { data, error: fnError } = await supabaseClient.functions.invoke('grade-script', {
