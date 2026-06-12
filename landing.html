@@ -2186,8 +2186,8 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
         <div class="top-stat">
           <div class="top-stat-label">Biggest Flag</div>
           <div class="top-stat-val" style="color:var(--amber);font-size:24px;margin-top:4px;">Pacing</div>
-          <div class="top-stat-sub">Score 68 · pp.34–51</div>
-          <div class="top-stat-badge badge-flag">⚠ 3 redundant scenes</div>
+          <div class="top-stat-sub" id="pacing-flag-sub">Score 68 · pp.34–51</div>
+          <div class="top-stat-badge badge-flag" id="pacing-flag-badge">⚠ 3 redundant scenes</div>
         </div>
         <div class="top-stat">
           <div class="top-stat-label">Script Stats</div>
@@ -2261,7 +2261,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
               <span style="color:var(--amber)">⚠ Slow</span><span>Moderate</span><span style="color:var(--cyan)">Strong ✓</span>
             </div>
           </div>
-          <div style="display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;color:var(--amber);background:rgba(232,146,58,0.1);border:1px solid rgba(232,146,58,0.2);border-radius:4px;padding:3px 8px;margin-top:8px;">⚠ Flagged: pp.34–51 — momentum stalls here</div>
+          <div id="heatmap-flag" style="display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;color:var(--amber);background:rgba(232,146,58,0.1);border:1px solid rgba(232,146,58,0.2);border-radius:4px;padding:3px 8px;margin-top:8px;">⚠ Flagged: pp.34–51 — momentum stalls here</div>
           <div class="hm-tooltip" id="hm-tip"></div>
         </div>
       </div>
@@ -2768,6 +2768,17 @@ function populateReport(d) {
   if (pgSub) pgSub.textContent = pg + ' pages · ' + (d.character_count ? d.character_count + ' characters' : 'Feature');
   if (pgExec) pgExec.textContent = 'Feature · ' + pg + ' pages';
   if (pgHeat) pgHeat.textContent = 'Page by page · ' + pg + ' pages';
+
+  // Pacing flag — update from real category data
+  const pacingCat = d.categories?.pacing;
+  if (pacingCat) {
+    const flagSub  = document.getElementById('pacing-flag-sub');
+    const flagBadge = document.getElementById('pacing-flag-badge');
+    const hmFlag   = document.getElementById('heatmap-flag');
+    if (flagSub  && pacingCat.page_ref) flagSub.textContent  = 'Score ' + (d.scores?.pacing ?? '—') + ' · ' + pacingCat.page_ref;
+    if (flagBadge && pacingCat.flag)    flagBadge.textContent = '⚠ ' + pacingCat.flag.slice(0, 40);
+    if (hmFlag   && pacingCat.page_ref) hmFlag.textContent   = '⚠ Flagged: ' + pacingCat.page_ref + ' — momentum stalls here';
+  }
 
   // Overall score
   document.querySelectorAll('.sidebar-score-big').forEach(el => el.textContent = d.overall_score);
