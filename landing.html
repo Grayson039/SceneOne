@@ -2719,11 +2719,10 @@ async function extractScriptText(file) {
 let _loaderDone = false;
 let _apiDone    = false;
 let _reportData = null;
-let _isSample   = false;
 
 function _onLoaderAnimDone() {
   _loaderDone = true;
-  if (_apiDone || _isSample) {
+  if (_apiDone) {
     _finalizeReport();
   } else {
     // Keep bar at 99% with a waiting message
@@ -2741,7 +2740,7 @@ function _onApiDone(data) {
 }
 
 function _finalizeReport() {
-  if (!_isSample && _reportData) populateReport(_reportData);
+  if (_reportData) populateReport(_reportData);
   setTimeout(() => {
     goTo('report');
     if (isFirstTime) {
@@ -3949,6 +3948,7 @@ let cowriterCount = 0;
 function removeFile() {
   _uploadedFile = null;
   document.getElementById('file-row').classList.remove('show');
+  document.getElementById('analyze-btn').classList.remove('ready');
   const err = document.getElementById('upload-error-msg');
   if (err) err.style.display = 'none';
   document.getElementById('file-input').value = '';
@@ -4292,11 +4292,15 @@ function getNextLoader() {
 }
 
 function startProcessing() {
+  if (!_uploadedFile) {
+    showUploadError('Please select a script file before analyzing.');
+    return;
+  }
+
   // Reset coordination flags
   _loaderDone = false;
   _apiDone    = false;
   _reportData = null;
-  _isSample   = false;
 
   goTo('processing');
   const which = getNextLoader();
@@ -4310,11 +4314,9 @@ function startProcessing() {
 
 async function _runAnalysis() {
   try {
-    // Config check
     if (!SUPABASE_URL || SUPABASE_URL === 'YOUR_SUPABASE_URL') {
-      console.warn('SceneOne: Supabase not configured — showing demo report');
-      _isSample = true;
-      _onLoaderAnimDone();
+      goTo('upload');
+      showUploadError('SceneOne is not configured yet. Contact support.');
       return;
     }
 
@@ -4323,8 +4325,8 @@ async function _runAnalysis() {
     const title = titleInput?.value?.trim() || 'Untitled Script';
 
     if (!file) {
-      // No real file (e.g. sample mode) — use demo data
-      _isSample = true;
+      goTo('upload');
+      showUploadError('Please select a script file before analyzing.');
       return;
     }
 
