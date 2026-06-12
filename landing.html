@@ -3984,6 +3984,7 @@ function handleFile(i) {
 }
 
 function setFile(f) {
+  _uploadedFile = f;
   document.getElementById('file-row').classList.add('show');
   document.getElementById('file-nm').textContent = f.name;
   const kb = f.size / 1024;
