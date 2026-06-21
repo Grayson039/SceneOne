@@ -184,7 +184,72 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .l-pill{font-size:11px;font-weight:600;color:var(--sub);background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:100px;padding:5px 13px;}
 .l-pill.c{color:var(--cyan);border-color:rgba(62,237,231,0.2);background:rgba(62,237,231,0.04);}
 
-.l-mantra{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.14);white-space:nowrap;}
+.l-mantra{position:absolute;bottom:52px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.14);white-space:nowrap;}
+.l-pricing-link{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);background:none;border:none;font-size:12px;font-weight:600;color:var(--sub);cursor:pointer;letter-spacing:0.02em;white-space:nowrap;transition:color .15s;}
+.l-pricing-link:hover{color:var(--cyan);}
+
+/* ── DUAL PATH SPLIT ── */
+.l-path-split{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap;justify-content:center;}
+.l-path-btn{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:18px 22px;border-radius:16px;border:1px solid var(--border2);background:var(--card);cursor:pointer;transition:all .2s;text-align:left;min-width:200px;max-width:240px;}
+.l-path-btn:hover{border-color:rgba(62,237,231,0.35);background:rgba(62,237,231,0.04);transform:translateY(-2px);}
+.l-path-btn.gold:hover{border-color:rgba(201,168,76,0.35);background:rgba(201,168,76,0.04);}
+.l-path-eyebrow{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sub);}
+.l-path-label{font-size:15px;font-weight:800;color:#fff;}
+.l-path-desc{font-size:11px;color:var(--sub);line-height:1.5;}
+
+/* ── EXEC SIGNUP SCREEN ── */
+#screen-exec-signup{justify-content:center;align-items:center;padding:60px 40px;
+  background:radial-gradient(ellipse 65% 50% at 50% 35%,rgba(201,168,76,0.10) 0%,transparent 65%),var(--bg);}
+.exec-signup-wrap{width:100%;max-width:480px;}
+.exec-back{display:inline-flex;align-items:center;gap:6px;color:var(--sub);font-size:12px;font-weight:600;background:none;border:none;cursor:pointer;padding:0;margin-bottom:28px;transition:color .2s;}
+.exec-back:hover{color:var(--text);}
+.exec-eyebrow{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.exec-signup-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:900;color:#fff;margin-bottom:6px;line-height:1.1;}
+.exec-signup-sub{font-size:13px;color:var(--sub);margin-bottom:28px;line-height:1.7;}
+.exec-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;box-shadow:var(--shadow);}
+.exec-submit{width:100%;padding:13px;border-radius:10px;border:none;background:var(--gold);color:#0F0F0F;font-weight:800;font-size:14px;cursor:pointer;transition:all .2s;margin-top:4px;}
+.exec-submit:hover{background:var(--gold-l);}
+.exec-role-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.exec-role-btn{padding:10px 12px;border-radius:10px;border:1px solid var(--border2);background:transparent;color:var(--sub);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;}
+.exec-role-btn.active{border-color:rgba(201,168,76,0.5);background:rgba(201,168,76,0.08);color:var(--gold);}
+.exec-tagline{font-family:'Playfair Display',serif;font-size:13px;font-style:italic;color:rgba(255,255,255,0.35);text-align:center;margin-top:20px;}
+@media(max-width:600px){
+  #screen-exec-signup{padding:48px 20px;}
+  .l-path-split{flex-direction:column;align-items:stretch;}
+  .l-path-btn{max-width:100%;}
+  .exec-role-grid{grid-template-columns:1fr;}
+}
+
+/* ── PRICING SCREEN ── */
+#screen-pricing{align-items:flex-start;justify-content:flex-start;padding:48px 40px 80px;overflow-y:auto;}
+.pricing-wrap{width:100%;max-width:960px;margin:0 auto;}
+.pricing-eyebrow{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:12px;}
+.pricing-title{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,42px);font-weight:900;color:#fff;line-height:1.15;margin-bottom:14px;}
+.pricing-sub{font-size:14px;color:var(--sub);line-height:1.7;max-width:520px;margin-bottom:48px;}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px;}
+.pricing-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px 24px;position:relative;display:flex;flex-direction:column;}
+.pricing-card-featured{border-color:rgba(62,237,231,0.3);background:linear-gradient(160deg,rgba(62,237,231,0.05) 0%,var(--card) 60%);}
+.pricing-badge{display:inline-block;font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--cyan);background:rgba(62,237,231,0.12);border:1px solid rgba(62,237,231,0.2);border-radius:100px;padding:3px 10px;margin-bottom:16px;width:fit-content;}
+.pricing-tier{font-size:13px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:var(--sub);margin-bottom:8px;}
+.pricing-price{font-family:'Playfair Display',serif;font-size:48px;font-weight:900;color:#fff;line-height:1;margin-bottom:6px;}
+.pricing-period{font-family:'Inter',sans-serif;font-size:14px;font-weight:500;color:var(--sub);}
+.pricing-tagline{font-size:12px;color:var(--sub);margin-bottom:24px;line-height:1.5;}
+.pricing-features{list-style:none;padding:0;margin:0 0 28px;display:flex;flex-direction:column;gap:10px;flex:1;}
+.pricing-features li{display:flex;align-items:baseline;gap:9px;font-size:13px;color:var(--text);line-height:1.4;}
+.pf-check{font-size:11px;color:var(--cyan);flex-shrink:0;width:14px;}
+.pf-soon{color:var(--sub) !important;}
+.pf-soon-tag{font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:1px 6px;margin-left:4px;}
+.pricing-cta{width:100%;padding:13px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;border:none;}
+.pricing-cta-primary{background:var(--cyan);color:#0A0A0C;}
+.pricing-cta-primary:hover{background:#6bf5f0;}
+.pricing-cta-ghost{background:transparent;color:var(--text);border:1px solid var(--border2);}
+.pricing-cta-ghost:hover{border-color:rgba(255,255,255,0.25);color:#fff;}
+.pricing-footer{text-align:center;font-size:11px;color:var(--sub);line-height:1.8;}
+@media(max-width:768px){
+  #screen-pricing{padding:40px 20px 80px;}
+  .pricing-grid{grid-template-columns:1fr;}
+  .pricing-card-featured{order:-1;}
+}
 
 /* ─── SCREEN 2: UPLOAD ─── */
 #screen-upload{justify-content:center;align-items:center;
@@ -198,7 +263,11 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 
 .upload-eyebrow{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:8px;}
 .upload-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:900;color:#fff;margin-bottom:6px;line-height:1.1;}
-.upload-desc{font-size:13px;color:var(--sub);margin-bottom:28px;line-height:1.7;}
+.upload-desc{font-size:13px;color:var(--sub);margin-bottom:20px;line-height:1.7;}
+.script-type-toggle{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:3px;gap:3px;margin-bottom:8px;}
+.stt-btn{flex:1;padding:8px 12px;border-radius:8px;border:none;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;color:var(--sub);background:transparent;letter-spacing:0.02em;}
+.stt-btn.active{background:var(--card2);color:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.4);}
+.stt-hint{font-size:11px;color:var(--sub);margin-bottom:20px;}
 
 .drop-zone{background:var(--card);border:2px dashed rgba(62,237,231,0.22);border-radius:18px;padding:48px 28px;text-align:center;cursor:pointer;transition:all .2s;position:relative;margin-bottom:14px;}
 .drop-zone:hover,.drop-zone.over{border-color:var(--cyan-glow);background:rgba(62,237,231,0.04);box-shadow:0 0 36px rgba(62,237,231,0.07);}
@@ -646,6 +715,201 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .exec-timestamp{font-size:9px;color:var(--sub);text-align:center;margin-top:8px;}
 
 @media(max-width:600px){.tos-footer{padding:6px 16px;}.exec-grid{grid-template-columns:repeat(2,1fr);}}
+
+@media print {
+  /* Hide everything except the report */
+  body > *:not(#screen-report) { display: none !important; }
+  #screen-report { display: block !important; }
+  .rep-bar, .rep-sidebar, .tos-footer, .ob-tooltip-overlay,
+  .ob-celebrate, .resub-card, .bar-btn, .fixit-btn,
+  .inline-ed, .re-flash, .contact-pref, .exec-panel { display: none !important; }
+
+  /* Full width — no sidebar */
+  .rep-body { display: block !important; }
+  .rep-main { padding: 0 !important; }
+
+  /* Print colors — light background */
+  body { background: #fff !important; color: #111 !important; }
+  .rep-main, .scores-card, .heatmap-card, .win-card,
+  .dna-card, .cat-card, .rev-card, .feed-card,
+  .top-stat, .stat-card { background: #fff !important; border-color: #ddd !important; box-shadow: none !important; }
+
+  /* Text colors */
+  .card-title, .top-stat-label, .section-title,
+  .stat-card-label, .win-eye, .dna-eye { color: #555 !important; }
+  .top-stat-val, .overall-score-num, .cat-score-val,
+  .win-text, .rev-card h3, .feed-card h3 { color: #111 !important; }
+  .top-stat-sub, .overall-score-interp, .note2 p,
+  .fix2 p, .ev-text, .rev-content-desc, .feed-item-desc { color: #444 !important; }
+
+  /* Keep accent colors readable */
+  .sr-bar-fill, .dna-bar-fill, .mini-bar-fill { opacity: 0.7; }
+
+  /* Page breaks */
+  .cat-grid { page-break-before: always; }
+  .cat-card, .rev-item { page-break-inside: avoid; }
+
+  /* Print header */
+  .rep-main::before {
+    content: 'SceneOne Coverage Report';
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+  }
+}
+
+/* ─── REQUESTS SCREEN ─── */
+.top-nav{position:sticky;top:0;z-index:100;background:rgba(20,20,22,0.98);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.nav-brand{font-family:'Playfair Display',serif;font-size:17px;font-weight:900;color:#fff;}
+.nav-brand span{color:var(--cyan);}
+.nav-actions{display:flex;gap:8px;align-items:center;}
+.nav-btn{padding:6px 13px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--sub);font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;}
+.nav-btn:hover{color:var(--text);border-color:rgba(255,255,255,0.2);}
+.nav-btn.accent{color:var(--cyan);background:rgba(62,237,231,0.07);border-color:rgba(62,237,231,0.22);}
+
+.req-wrap{max-width:680px;margin:0 auto;padding:32px 20px 64px;}
+.req-eyebrow{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:8px;}
+.req-heading{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:#fff;margin-bottom:6px;}
+.req-sub{font-size:13px;color:var(--sub);line-height:1.65;margin-bottom:28px;}
+
+.req-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:14px;transition:border-color .3s,opacity .3s;}
+.req-card.approved{border-color:rgba(76,175,125,0.35);}
+.req-card.declined{opacity:0.45;}
+
+.req-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px;}
+.req-reader{display:flex;align-items:center;gap:11px;margin-bottom:10px;}
+.req-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;}
+.req-name{font-size:14px;font-weight:800;color:#fff;margin-bottom:2px;}
+.req-role{font-size:11px;color:var(--sub);}
+.req-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.req-badge{font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:4px;}
+.rb-green{background:rgba(76,175,125,0.1);color:var(--green);border:1px solid rgba(76,175,125,0.2);}
+.rb-amber{background:rgba(255,200,50,0.1);color:#F4C430;border:1px solid rgba(255,200,50,0.2);}
+.req-note{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 13px;font-size:12px;color:rgba(255,255,255,0.5);font-style:italic;line-height:1.65;}
+.req-meta{text-align:right;flex-shrink:0;}
+.req-meta-label{font-size:9px;color:var(--sub);margin-bottom:3px;}
+.req-meta-date{font-size:11px;font-weight:700;color:#fff;margin-bottom:6px;}
+.req-timer{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;}
+.rt-urgent{color:var(--amber);background:rgba(232,146,58,0.1);}
+.rt-ok{color:var(--green);background:rgba(76,175,125,0.1);}
+
+.req-actions{display:flex;gap:10px;}
+.req-approve{flex:1;padding:11px;border-radius:9px;border:none;background:var(--cyan);color:#0F0F0F;font-size:12px;font-weight:800;cursor:pointer;transition:all .15s;}
+.req-approve:hover{background:#5ff5ef;transform:translateY(-1px);}
+.req-decline{padding:11px 20px;border-radius:9px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--sub);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;}
+.req-decline:hover{color:#fff;border-color:rgba(255,255,255,0.25);}
+
+.req-approved-state{display:flex;align-items:flex-start;gap:12px;background:rgba(76,175,125,0.06);border:1px solid rgba(76,175,125,0.2);border-radius:10px;padding:14px;}
+.req-approved-icon{width:32px;height:32px;border-radius:8px;background:rgba(76,175,125,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;}
+.req-approved-title{font-size:12px;font-weight:800;color:var(--green);margin-bottom:4px;}
+.req-approved-detail{font-size:11px;color:var(--sub);line-height:1.6;}
+.req-approved-contact{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:11px;font-weight:700;color:var(--cyan);background:rgba(62,237,231,0.07);border:1px solid rgba(62,237,231,0.2);border-radius:6px;padding:4px 10px;}
+
+.req-declined-state{display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--sub);}
+
+.req-policy{background:rgba(62,237,231,0.04);border:1px solid rgba(62,237,231,0.12);border-radius:10px;padding:14px 16px;font-size:11px;color:rgba(255,255,255,0.38);line-height:1.7;margin-top:8px;}
+.req-policy strong{color:rgba(62,237,231,0.65);}
+
+.req-empty{text-align:center;padding:60px 20px;display:none;}
+.req-empty.show{display:block;}
+.req-empty-icon{font-size:40px;margin-bottom:16px;}
+.req-empty-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:8px;}
+.req-empty-sub{font-size:13px;color:var(--sub);margin-bottom:24px;line-height:1.65;}
+
+/* ─── SCRIPT HISTORY ─── */
+.history-section{margin-top:28px;border-top:1px solid var(--border);padding-top:22px;}
+.history-eyebrow{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--sub);margin-bottom:14px;}
+.history-card{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:all .2s;}
+.history-card:hover{border-color:rgba(62,237,231,0.25);background:rgba(62,237,231,0.03);transform:translateY(-1px);}
+.history-icon{width:36px;height:36px;border-radius:9px;background:rgba(62,237,231,0.07);border:1px solid rgba(62,237,231,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.history-icon svg{width:15px;height:15px;stroke:var(--cyan);}
+.history-info{flex:1;min-width:0;}
+.history-title{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+.history-meta{font-size:10px;color:var(--sub);}
+.history-scores{display:flex;gap:8px;flex-shrink:0;align-items:center;}
+.history-score{text-align:center;}
+.history-score-val{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;line-height:1;}
+.history-score-lbl{font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--sub);margin-top:1px;}
+.history-arrow{color:var(--sub);font-size:16px;flex-shrink:0;transition:color .2s;}
+.history-card:hover .history-arrow{color:var(--cyan);}
+.history-loading{font-size:11px;color:var(--sub);text-align:center;padding:16px 0;font-style:italic;}
+
+/* ─── VISUAL POLISH ─── */
+
+/* Focus states — keyboard nav + accessibility */
+.cta-primary:focus-visible,.ob-next:focus-visible,.form-submit:focus-visible,.analyze-btn.ready:focus-visible,.sample-btn:focus-visible,.resub-btn:focus-visible,.ob-celebrate-cta:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;}
+.score-row2:focus-visible,.scat:focus-visible,.hm-cell:focus-visible,.bar-btn:focus-visible,.fixit-btn:focus-visible,.cat-head:focus-visible{outline:2px solid rgba(62,237,231,0.5);outline-offset:2px;border-radius:9px;}
+.form-input:focus-visible,.ed-ta:focus-visible{outline:none;}
+
+/* Active/pressed states */
+.cta-primary:active{transform:translateY(0) scale(0.98);}
+.analyze-btn.ready:active{transform:translateY(0) scale(0.98);}
+.ob-next:active,.form-submit:active,.ob-celebrate-cta:active{transform:scale(0.98);}
+.bar-btn:active{transform:scale(0.97);}
+
+/* Border-radius consistency */
+.top-stat{border-radius:16px;}
+
+/* Normalize transitions — .15s micro, .2s standard */
+.cta-primary,.ob-next,.form-submit,.analyze-btn,.sample-btn,.resub-btn,.bar-btn,.fixit-btn{transition:all .15s ease;}
+.cat-card,.score-row2,.scat,.hm-cell{transition:all .2s ease;}
+
+/* Upload zone — success state */
+.drop-zone.success{border-color:var(--cyan);background:rgba(62,237,231,0.05);box-shadow:0 0 28px rgba(62,237,231,0.1);}
+.drop-zone.success .drop-icon{background:rgba(62,237,231,0.12);border-color:rgba(62,237,231,0.3);}
+
+/* File row — staggered entrance */
+.file-row.show{animation:file-in .2s ease both;}
+@keyframes file-in{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+
+/* Analyze button — loading shimmer when processing */
+.analyze-btn.loading{opacity:0.6;pointer-events:none;background:var(--card2);color:var(--sub);position:relative;overflow:hidden;}
+.analyze-btn.loading::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(62,237,231,0.15) 50%,transparent 100%);animation:btn-shimmer 1.4s ease-in-out infinite;}
+@keyframes btn-shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+
+/* Processing bar — smoother easing */
+.proc-bar-fill{transition:width .4s cubic-bezier(0.25,0.46,0.45,0.94);}
+
+/* Report reveal — staggered fade-in */
+.rep-main > *{animation:section-in .4s ease both;}
+.stat-row{animation-delay:.05s;}
+.mid-grid{animation-delay:.1s;}
+.win-dna-row{animation-delay:.15s;}
+.cat-grid{animation-delay:.2s;}
+.bottom-grid{animation-delay:.25s;}
+@keyframes section-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* Score bar entrance animation */
+.sr-bar-fill{transition:width .7s cubic-bezier(0.25,0.46,0.45,0.94);}
+
+/* Error state — upload */
+#upload-error-msg{font-size:12px;color:var(--amber);margin-top:8px;text-align:center;min-height:18px;}
+
+/* Heatmap cells — cleaner hover */
+.hm-cell:hover{transform:scale(1.18);box-shadow:0 0 6px rgba(62,237,231,0.3);z-index:2;position:relative;}
+
+/* Score rows — active state ring */
+.score-row2.active{background:rgba(62,237,231,0.07);box-shadow:inset 0 0 0 1px rgba(62,237,231,0.12);}
+
+/* Sidebar category items — cleaner active */
+.scat.active{background:rgba(62,237,231,0.08);box-shadow:inset 0 0 0 1px rgba(62,237,231,0.15);}
+
+/* Cat card hover — lift */
+.cat-card:hover{border-color:rgba(255,255,255,0.14);transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,0.4);}
+
+/* Processing phrase — fade between messages */
+.proc-phrase{transition:opacity .3s ease;}
+
+/* Upload error pulse */
+@keyframes err-pulse{0%,100%{opacity:1;}50%{opacity:0.6;}}
+.drop-zone.error{border-color:rgba(232,146,58,0.5);animation:err-pulse .8s ease 2;}
 
 
 /* ─── FILM BURN SCORE ANIMATION ─── */
@@ -1216,15 +1480,17 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   <div class="l-tagline">Democratizing Hollywood, one script at a time.</div>
   <div class="l-sub">The $100 script feedback fee (what Hollywood charges to read and grade your script) has kept talented writers out of Hollywood for decades. SceneOne ends that. Free, evidence-based feedback for every writer — graded against the same framework Hollywood uses.</div>
 
-  <div>
-    <button class="cta-primary" onclick="goTo('upload')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      Upload Your Script
+  <div class="l-path-split">
+    <button class="l-path-btn" id="path-writer-btn">
+      <div class="l-path-eyebrow">For Writers</div>
+      <div class="l-path-label">Grade My Script →</div>
+      <div class="l-path-desc">Free structural feedback. No gatekeeping.</div>
     </button>
-    <a href="index.html" onerror="this.href='#'" class="cta-ghost">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="15 18 9 12 15 6"/></svg>
-      Case Study
-    </a>
+    <button class="l-path-btn gold" id="path-exec-btn">
+      <div class="l-path-eyebrow">For Industry</div>
+      <div class="l-path-label">Read Scripts →</div>
+      <div class="l-path-desc">Pre-graded scripts. Filter by score and genre.</div>
+    </button>
   </div>
 
   <div class="l-pills">
@@ -1237,6 +1503,144 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   </div>
 
   <div class="l-mantra">We grade craft. Not taste.</div>
+  <button class="l-pricing-link" onclick="goTo('pricing')">See pricing →</button>
+</div>
+
+<!-- ══════════════════════ SCREEN 1b: PRICING ══════════════════════ -->
+<div class="screen" id="screen-pricing">
+  <div class="pricing-wrap">
+    <button class="upload-back" onclick="goTo('landing')" style="margin-bottom:32px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+
+    <div class="pricing-eyebrow">Pricing</div>
+    <div class="pricing-title">Honest pricing.<br>No subscriptions until you need them.</div>
+    <div class="pricing-sub">Every writer gets one free analysis per month. Upgrade when you're writing more — downgrade whenever you want.</div>
+
+    <div class="pricing-grid">
+
+      <!-- FREE -->
+      <div class="pricing-card">
+        <div class="pricing-tier">Free</div>
+        <div class="pricing-price">$0<span class="pricing-period">/month</span></div>
+        <div class="pricing-tagline">Everything you need to start.</div>
+        <ul class="pricing-features">
+          <li><span class="pf-check">✓</span>1 script analysis per month</li>
+          <li><span class="pf-check">✓</span>All 5 craft dimensions scored</li>
+          <li><span class="pf-check">✓</span>Page-specific notes + Fix It</li>
+          <li><span class="pf-check">✓</span>Pacing heatmap</li>
+          <li><span class="pf-check">✓</span>Story DNA comps</li>
+          <li><span class="pf-check">✓</span>Discovery Dashboard listing</li>
+        </ul>
+        <button class="pricing-cta pricing-cta-ghost" onclick="goTo('upload')">Start for Free →</button>
+      </div>
+
+      <!-- WRITER -->
+      <div class="pricing-card pricing-card-featured">
+        <div class="pricing-badge">Most Popular</div>
+        <div class="pricing-tier" style="color:var(--cyan)">Writer</div>
+        <div class="pricing-price">$12<span class="pricing-period">/month</span></div>
+        <div class="pricing-tagline">For writers actively in revision.</div>
+        <ul class="pricing-features">
+          <li><span class="pf-check">✓</span>5 script analyses per month</li>
+          <li><span class="pf-check">✓</span>Everything in Free</li>
+          <li><span class="pf-check">✓</span>Priority grading queue</li>
+          <li><span class="pf-check">✓</span>Revision history tracking</li>
+          <li><span class="pf-check">✓</span>Score delta between drafts</li>
+          <li><span class="pf-check" style="color:var(--sub)">–</span><span style="color:var(--sub)">Storyboard Breakdown</span></li>
+        </ul>
+        <button class="pricing-cta pricing-cta-primary" onclick="window.open('https://buy.stripe.com/14AfZh5vW4mKh1ueqm00000','_blank')">Get Writer →</button>
+      </div>
+
+      <!-- PRO -->
+      <div class="pricing-card">
+        <div class="pricing-tier" style="color:var(--gold)">Pro</div>
+        <div class="pricing-price">$29<span class="pricing-period">/month</span></div>
+        <div class="pricing-tagline">For serious writers and small teams.</div>
+        <ul class="pricing-features">
+          <li><span class="pf-check">✓</span>Unlimited analyses</li>
+          <li><span class="pf-check">✓</span>Everything in Writer</li>
+          <li><span class="pf-check">✓</span>Co-writer collaboration</li>
+          <li><span class="pf-check">✓</span>Reader request management</li>
+          <li><span class="pf-check pf-soon">◎</span>Storyboard Breakdown <span class="pf-soon-tag">Soon</span></li>
+          <li><span class="pf-check pf-soon">◎</span>AI scene reconstruction <span class="pf-soon-tag">Soon</span></li>
+        </ul>
+        <button class="pricing-cta pricing-cta-ghost" onclick="window.open('https://buy.stripe.com/3cIeVd5vW6uS4eIfuq00001','_blank')">Get Pro →</button>
+      </div>
+
+    </div>
+
+    <div class="pricing-footer">
+      Discovery Dashboard is free on all plans — always. &nbsp;·&nbsp; Cancel anytime. &nbsp;·&nbsp; No credit card to start.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ SCREEN 1c: EXEC SIGNUP ══════════════════════ -->
+<div class="screen" id="screen-exec-signup">
+  <div class="exec-signup-wrap">
+    <button class="exec-back" onclick="goTo('landing')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+
+    <div class="exec-eyebrow">Industry Access</div>
+    <div class="exec-signup-title">Your next project<br>is already written.</div>
+    <div class="exec-signup-sub">Pre-graded scripts, filtered by score and genre. No agents. No gatekeeping. Access the Discovery Dashboard and request reads directly from writers.</div>
+
+    <div class="exec-card">
+      <div class="auth-title">Create your industry account</div>
+      <div class="auth-sub" style="margin-bottom:20px;">We verify credentials before granting access to scripts.</div>
+
+      <div class="form-field">
+        <label class="form-label">Full Name</label>
+        <input class="form-input" id="exec-name" type="text" placeholder="Jordan Meyers" autocomplete="name">
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Company</label>
+        <input class="form-input" id="exec-company" type="text" placeholder="A24, Blumhouse, Netflix…">
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Your Role</label>
+        <div class="exec-role-grid" id="exec-role-grid">
+          <button class="exec-role-btn" onclick="selectExecRole(this,'Director')">Director</button>
+          <button class="exec-role-btn" onclick="selectExecRole(this,'Producer')">Producer</button>
+          <button class="exec-role-btn" onclick="selectExecRole(this,'Development Executive')">Dev Executive</button>
+          <button class="exec-role-btn" onclick="selectExecRole(this,'Casting Director')">Casting Director</button>
+          <button class="exec-role-btn" onclick="selectExecRole(this,'Manager/Agent')">Manager / Agent</button>
+          <button class="exec-role-btn" onclick="selectExecRole(this,'Other')">Other</button>
+        </div>
+        <input class="form-input" id="exec-role-input" type="hidden" value="">
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">IMDb or LinkedIn URL <span style="color:var(--sub);font-weight:400;text-transform:none;letter-spacing:0">(optional but speeds up verification)</span></label>
+        <input class="form-input" id="exec-imdb" type="url" placeholder="https://imdb.com/name/…">
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="exec-email" type="email" placeholder="you@studio.com" autocomplete="email">
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="exec-password" type="password" placeholder="8+ characters" autocomplete="new-password">
+      </div>
+
+      <button class="exec-submit" id="exec-submit-btn" onclick="handleExecSignup()">Request Industry Access →</button>
+      <div style="font-size:10px;color:var(--sub);text-align:center;margin-top:12px;line-height:1.55;">We review credentials within 24 hours. You'll receive an email when approved.</div>
+    </div>
+
+    <div class="exec-tagline">"Your next project is already written."</div>
+
+    <div style="text-align:center;margin-top:16px;">
+      <button onclick="goTo('welcome')" style="background:none;border:none;color:var(--sub);font-size:12px;cursor:pointer;">I'm a writer — take me to the upload →</button>
+    </div>
+  </div>
 </div>
 
 <!-- ══════════════════════ SCREEN 2: UPLOAD ══════════════════════ -->
@@ -1249,6 +1653,12 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <div class="upload-eyebrow">Upload Your Script</div>
     <div class="upload-title">Ready when you are.</div>
     <div class="upload-desc">Drop your script below. We accept PDF, FDX, and Fountain files. Analysis takes 2–4 minutes — good feedback takes time. Even ours.</div>
+
+    <div class="script-type-toggle" id="script-type-toggle">
+      <button class="stt-btn active" id="stt-feature" onclick="setScriptType('feature')">Feature</button>
+      <button class="stt-btn" id="stt-short" onclick="setScriptType('short')">Short Film</button>
+    </div>
+    <div class="stt-hint" id="stt-hint">Feature length (~80–120 pages)</div>
 
     <div class="drop-zone" id="drop-zone">
       <input type="file" id="file-input" accept=".pdf" onchange="handleFile(this)">
@@ -1306,6 +1716,13 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Page-specific notes</div>
       <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Free to start</div>
     </div>
+
+    <!-- Script History — shown when logged in and history exists -->
+    <div class="history-section" id="history-section" style="display:none;">
+      <div class="history-eyebrow">Past Scripts</div>
+      <div id="history-list"><div class="history-loading">Loading your scripts…</div></div>
+    </div>
+
   </div>
 </div>
 
@@ -1682,6 +2099,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <button class="pnav-btn active" onclick="goTo('writer-profile')">My Profile</button>
       <button class="pnav-btn" onclick="goTo('report')">My Reports</button>
       <button class="pnav-btn" onclick="goTo('upload')">New Script</button>
+      <button class="pnav-btn" onclick="handleSignOut()" style="color:var(--sub);margin-left:8px;">Sign Out</button>
     </div>
   </nav>
 
@@ -2059,9 +2477,9 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           New
         </button>
-        <button class="bar-btn accent" style="padding:5px 10px;font-size:10px;">
+        <button class="bar-btn accent" onclick="exportReport()" style="padding:5px 10px;font-size:10px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Export
+          Export PDF
         </button>
       </div>
     </div>
@@ -2580,81 +2998,86 @@ She grabs her jacket.</textarea>
       <button class="nav-btn" onclick="goTo('report')">&#8592; Back to Report</button>
     </div>
   </nav>
-  <div class="screen-inner" style="max-width:680px;margin:0 auto;padding:32px 20px;">
 
-    <div style="margin-bottom:28px;">
-      <div style="font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:8px;">My Listing &mdash; Pending Requests</div>
-      <h2 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:#fff;margin-bottom:6px;">2 Pending Requests</h2>
-      <p style="font-size:13px;color:var(--sub);line-height:1.65;">You have 72 hours to respond to each request. No response = auto-decline. Approving gives read-only access for 14 days &mdash; no rights transfer.</p>
-    </div>
+  <div class="req-wrap">
 
-    <!-- Request 1 -->
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:16px;">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px;">
-        <div>
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#053154,#0a4a7a);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--cyan);flex-shrink:0;">JM</div>
+    <div class="req-eyebrow">Discovery Dashboard &mdash; My Listing</div>
+    <h2 class="req-heading" id="req-heading">2 Pending Requests</h2>
+    <p class="req-sub">You have 72 hours to respond to each request. No response = auto-decline. Approving gives read-only access for 14 days — no rights transfer.</p>
+
+    <!-- Request 1: Jordan Meyers / A24 -->
+    <div class="req-card" id="req-card-1">
+      <div class="req-card-top">
+        <div style="flex:1;min-width:0;">
+          <div class="req-reader">
+            <div class="req-avatar" style="background:linear-gradient(135deg,#053154,#0a4a7a);color:var(--cyan);">JM</div>
             <div>
-              <div style="font-size:14px;font-weight:800;color:#fff;">Jordan Meyers</div>
-              <div style="font-size:10px;color:var(--sub);">Development Executive &mdash; A24</div>
+              <div class="req-name">Jordan Meyers</div>
+              <div class="req-role">Development Executive &mdash; A24</div>
             </div>
           </div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
-            <span style="font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:rgba(76,175,125,0.1);color:#4CAF7D;border:1px solid rgba(76,175,125,0.2);">&#10003; IMDbPro Verified</span>
-            <span style="font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:rgba(76,175,125,0.1);color:#4CAF7D;border:1px solid rgba(76,175,125,0.2);">&#10003; Company Email</span>
-            <span style="font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:rgba(76,175,125,0.1);color:#4CAF7D;border:1px solid rgba(76,175,125,0.2);">&#10003; LinkedIn</span>
+          <div class="req-badges">
+            <span class="req-badge rb-green">&#10003; IMDbPro Verified</span>
+            <span class="req-badge rb-green">&#10003; Company Email</span>
+            <span class="req-badge rb-green">&#10003; LinkedIn</span>
           </div>
-          <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,0.55);font-style:italic;line-height:1.6;">"The logline caught my eye &mdash; we're actively developing projects in this space. Would love to read the full draft."</div>
+          <div class="req-note">"The logline caught my eye &mdash; we're actively developing projects in this space. Would love to read the full draft."</div>
         </div>
-        <div style="text-align:right;flex-shrink:0;">
-          <div style="font-size:9px;color:var(--sub);margin-bottom:4px;">Requested</div>
-          <div style="font-size:11px;font-weight:700;color:#fff;">June 7, 2026</div>
-          <div style="font-size:9px;color:var(--amber);margin-top:6px;font-weight:700;">51 hrs left</div>
+        <div class="req-meta">
+          <div class="req-meta-label">Requested</div>
+          <div class="req-meta-date">June 7, 2026</div>
+          <div class="req-timer rt-urgent">51 hrs left</div>
         </div>
       </div>
-      <div style="display:flex;gap:10px;">
-        <button onclick="approveRequest(this,'req1')" style="flex:1;padding:10px;border-radius:9px;border:none;background:var(--cyan);color:#0F0F0F;font-size:12px;font-weight:800;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='#5ff5ef'" onmouseout="this.style.background='var(--cyan)'">Approve &mdash; 14-Day Access</button>
-        <button onclick="declineRequest(this,'req1')" style="padding:10px 20px;border-radius:9px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--sub);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--sub)'">Decline</button>
+      <div class="req-actions" id="req-actions-1">
+        <button class="req-approve" onclick="approveRequest(1,'Jordan Meyers','A24','jmeyers@a24films.com')">Approve &mdash; 14-Day Access</button>
+        <button class="req-decline" onclick="declineRequest(1)">Decline</button>
       </div>
     </div>
 
-    <!-- Request 2 -->
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:28px;">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px;">
-        <div>
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2a1a05,#5a3a10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--amber);flex-shrink:0;">SR</div>
+    <!-- Request 2: Sofia Reyes / Blumhouse -->
+    <div class="req-card" id="req-card-2">
+      <div class="req-card-top">
+        <div style="flex:1;min-width:0;">
+          <div class="req-reader">
+            <div class="req-avatar" style="background:linear-gradient(135deg,#2a1a05,#5a3a10);color:var(--amber);">SR</div>
             <div>
-              <div style="font-size:14px;font-weight:800;color:#fff;">Sofia Reyes</div>
-              <div style="font-size:10px;color:var(--sub);">Creative Executive &mdash; Blumhouse Productions</div>
+              <div class="req-name">Sofia Reyes</div>
+              <div class="req-role">Creative Executive &mdash; Blumhouse Productions</div>
             </div>
           </div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
-            <span style="font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:rgba(76,175,125,0.1);color:#4CAF7D;border:1px solid rgba(76,175,125,0.2);">&#10003; IMDbPro Verified</span>
-            <span style="font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:rgba(76,175,125,0.1);color:#4CAF7D;border:1px solid rgba(76,175,125,0.2);">&#10003; Company Email</span>
-            <span style="font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:rgba(255,200,50,0.1);color:#F4C430;border:1px solid rgba(255,200,50,0.2);">&#9679; LinkedIn Pending</span>
+          <div class="req-badges">
+            <span class="req-badge rb-green">&#10003; IMDbPro Verified</span>
+            <span class="req-badge rb-green">&#10003; Company Email</span>
+            <span class="req-badge rb-amber">&#9679; LinkedIn Pending</span>
           </div>
-          <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,0.55);font-style:italic;line-height:1.6;">"Strong concept and DNA comps. Blumhouse is always looking for contained, high-tension features. Happy to give feedback either way."</div>
+          <div class="req-note">"Strong concept and DNA comps. Blumhouse is always looking for contained, high-tension features. Happy to give feedback either way."</div>
         </div>
-        <div style="text-align:right;flex-shrink:0;">
-          <div style="font-size:9px;color:var(--sub);margin-bottom:4px;">Requested</div>
-          <div style="font-size:11px;font-weight:700;color:#fff;">June 8, 2026</div>
-          <div style="font-size:9px;color:var(--green);margin-top:6px;font-weight:700;">68 hrs left</div>
+        <div class="req-meta">
+          <div class="req-meta-label">Requested</div>
+          <div class="req-meta-date">June 8, 2026</div>
+          <div class="req-timer rt-ok">68 hrs left</div>
         </div>
       </div>
-      <div style="display:flex;gap:10px;">
-        <button onclick="approveRequest(this,'req2')" style="flex:1;padding:10px;border-radius:9px;border:none;background:var(--cyan);color:#0F0F0F;font-size:12px;font-weight:800;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='#5ff5ef'" onmouseout="this.style.background='var(--cyan)'">Approve &mdash; 14-Day Access</button>
-        <button onclick="declineRequest(this,'req2')" style="padding:10px 20px;border-radius:9px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--sub);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--sub)'">Decline</button>
+      <div class="req-actions" id="req-actions-2">
+        <button class="req-approve" onclick="approveRequest(2,'Sofia Reyes','Blumhouse Productions','sreyes@blumhouse.com')">Approve &mdash; 14-Day Access</button>
+        <button class="req-decline" onclick="declineRequest(2)">Decline</button>
       </div>
     </div>
 
-    <!-- Policy reminder -->
-    <div style="background:rgba(62,237,231,0.04);border:1px solid rgba(62,237,231,0.12);border-radius:10px;padding:14px 16px;font-size:11px;color:rgba(255,255,255,0.4);line-height:1.7;">
-      <strong style="color:rgba(62,237,231,0.7);">Approval grants read-only access for 14 days.</strong> The reader receives your full script file. No rights transfer. Access expires automatically. You can revoke early from your Writer Profile. Contact preference: <strong style="color:rgba(255,255,255,0.5);">SceneOne Messaging</strong>.
+    <!-- Empty state -->
+    <div class="req-empty" id="req-empty">
+      <div class="req-empty-icon">&#10003;</div>
+      <div class="req-empty-title">You're all caught up.</div>
+      <div class="req-empty-sub">No pending requests. When industry readers find your listing and request access, they'll appear here.</div>
+      <button class="resub-btn" onclick="goTo('report')">Back to Report</button>
+    </div>
+
+    <div class="req-policy" id="req-policy">
+      <strong>Approval grants read-only access for 14 days.</strong> The reader receives your full script. No rights transfer. Access expires automatically. You can revoke early from your Writer Profile.
     </div>
 
   </div>
-</div>
 </div>
 
 <script>
@@ -2663,6 +3086,13 @@ const SUPABASE_URL      = 'https://zzsjgaijrngxkaqakplm.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_yuptAX-fJGnyTuDgReScEg_bqg7qPEx';
 const EDGE_FN_URL       = SUPABASE_URL + '/functions/v1/grade-script';
 const supabaseClient    = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ─── KEEP-WARM PING — prevent edge function cold starts ───
+(function keepWarm() {
+  const ping = () => fetch(EDGE_FN_URL, { method: 'GET' }).catch(() => {});
+  ping();
+  setInterval(ping, 4 * 60 * 1000);
+})();
 
 // ─── SESSION PERSISTENCE — restore auth on every page load ───
 (async () => {
@@ -2674,6 +3104,7 @@ const supabaseClient    = window.supabase.createClient(SUPABASE_URL, SUPABASE_AN
                  || session.user.email.split('@')[0];
       // Already authenticated — skip auth screens
       goTo('upload');
+      loadScriptHistory();
     }
   } catch (e) {
     console.warn('SceneOne: session restore failed', e);
@@ -2757,6 +3188,9 @@ function _finalizeReport() {
 // ─── POPULATE REPORT FROM REAL DATA ───
 function populateReport(d) {
   if (!d) return;
+
+  // Store real scores for burn animations
+  if (d.scores) window._lastScores = d.scores;
 
   // Page count (calculated from script text length before API call)
   const pg = window._scriptPageCount || '—';
@@ -2917,6 +3351,16 @@ function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-'+id).classList.add('active');
   window.scrollTo(0,0);
+  // Reset analyze button + load history when returning to upload
+  if (id === 'upload') {
+    const btn = document.getElementById('analyze-btn');
+    if (btn) {
+      btn.classList.remove('loading');
+      btn.textContent = 'Analyze Script';
+      if (_uploadedFile) btn.classList.add('ready');
+    }
+    loadScriptHistory();
+  }
 }
 
 // ─── UPLOAD ───
@@ -3267,8 +3711,25 @@ async function startOnboarding() {
     return;
   }
 
+  // If email confirmation is enabled, session is null until confirmed.
+  // Force a sign-in immediately so the session persists across reloads.
+  if (!data.session) {
+    const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (!signInError && signInData.session) {
+      _currentUser = signInData.user;
+    } else {
+      // Confirmation email required — tell the user
+      btn.textContent = 'Create Account & Continue →';
+      btn.disabled = false;
+      emailEl.parentElement.insertAdjacentHTML('afterend',
+        `<div style="color:var(--cyan);font-size:12px;margin-top:4px;">Check your email to confirm your account, then sign in.</div>`);
+      return;
+    }
+  } else {
+    _currentUser = data.user;
+  }
+
   userName = name.split(' ')[0] || email.split('@')[0];
-  _currentUser = data.user;
   isFirstTime = true;
   goTo('onboard');
   updateObDots(0);
@@ -3313,6 +3774,10 @@ function dismissCelebrate() {
   const cel = document.getElementById('ob-celebrate');
   cel.classList.remove('show');
   cel.style.display = 'none';
+}
+
+function dismissCelebrateAndTour() {
+  dismissCelebrate();
   setTimeout(()=>launchTour(), 400);
 }
 
@@ -3366,16 +3831,115 @@ function skipTour() {
   if(ring) ring.style.cssText='width:0;height:0;';
 }
 
-// Wire landing CTA to welcome screen — safe version
+// Wire landing path buttons and cleanup overlays on load
 window.addEventListener('load',()=>{
-  const cta=document.querySelector('#screen-landing .cta-primary');
-  if(cta) cta.setAttribute('onclick','goTo(\'welcome\')');
-  // Make absolutely sure tooltip overlay never shows on load
+  const writerBtn = document.getElementById('path-writer-btn');
+  const execBtn   = document.getElementById('path-exec-btn');
+  if(writerBtn) writerBtn.addEventListener('click', () => goTo('welcome'));
+  if(execBtn)   execBtn.addEventListener('click',   () => goTo('exec-signup'));
+
   const overlay=document.getElementById('ob-tooltip-overlay');
   if(overlay){ overlay.style.display='none'; overlay.classList.remove('active'); }
   const celebrate=document.getElementById('ob-celebrate');
   if(celebrate){ celebrate.style.display='none'; celebrate.classList.remove('show'); }
 });
+
+// ─── SIGN OUT ───
+async function handleSignOut() {
+  await supabaseClient.auth.signOut();
+  _currentUser = null;
+  goTo('landing');
+}
+
+// ─── EXEC SIGNUP ───
+let _selectedExecRole = '';
+
+function selectExecRole(btn, role) {
+  document.querySelectorAll('.exec-role-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  _selectedExecRole = role;
+  document.getElementById('exec-role-input').value = role;
+}
+
+async function handleExecSignup() {
+  const name     = document.getElementById('exec-name')?.value.trim();
+  const company  = document.getElementById('exec-company')?.value.trim();
+  const imdb     = document.getElementById('exec-imdb')?.value.trim();
+  const email    = document.getElementById('exec-email')?.value.trim();
+  const password = document.getElementById('exec-password')?.value;
+  const btn      = document.getElementById('exec-submit-btn');
+
+  if (!name || !company || !email || !password || !_selectedExecRole) {
+    btn.textContent = 'Please fill in all required fields';
+    btn.style.background = 'rgba(232,146,58,0.8)';
+    setTimeout(() => {
+      btn.textContent = 'Request Industry Access →';
+      btn.style.background = '';
+    }, 2500);
+    return;
+  }
+
+  btn.textContent = 'Creating account…';
+  btn.disabled = true;
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: name,
+        role: 'exec',
+        company,
+        exec_title: _selectedExecRole,
+        imdb_url: imdb || null,
+      }
+    }
+  });
+
+  if (error) {
+    btn.textContent = error.message;
+    btn.style.background = 'rgba(232,146,58,0.8)';
+    btn.disabled = false;
+    setTimeout(() => {
+      btn.textContent = 'Request Industry Access →';
+      btn.style.background = '';
+    }, 3000);
+    return;
+  }
+
+  // If no session (email confirm enabled), try sign-in
+  if (!data.session) {
+    const { data: loginData } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (loginData?.session) {
+      _currentUser = loginData.user;
+      await _createExecProfile({ id: loginData.user.id, name, company, title: _selectedExecRole, imdb });
+    }
+  } else {
+    _currentUser = data.user;
+    await _createExecProfile({ id: data.user.id, name, company, title: _selectedExecRole, imdb });
+  }
+
+  // Show confirmation state
+  btn.textContent = '✓ Request received — we'll email you within 24 hours';
+  btn.style.background = 'rgba(76,175,125,0.85)';
+  btn.disabled = true;
+}
+
+async function _createExecProfile({ id, name, company, title, imdb }) {
+  try {
+    await supabaseClient.from('profiles').upsert({
+      id,
+      role: 'exec',
+      display_name: name,
+      company,
+      title,
+      imdb_url: imdb || null,
+      verified: false,
+    }, { onConflict: 'id' });
+  } catch (e) {
+    console.warn('SceneOne: exec profile create failed', e);
+  }
+}
 
 // Show celebration after first real report
 const _origRunProgressBar = runProgressBar;
@@ -3440,7 +4004,21 @@ function switchTosTab(tab, el) {
 }
 
 // ─── EXEC MODE UPDATED ───
-function setMode(mode, btn) {
+async function setMode(mode, btn) {
+  if (mode === 'exec') {
+    // Check if current user has a verified exec profile
+    if (!_currentUser) { goTo('exec-signup'); return; }
+    const { data: profile } = await supabaseClient
+      .from('profiles')
+      .select('role, verified')
+      .eq('id', _currentUser.id)
+      .single();
+    if (!profile || profile.role !== 'exec' || !profile.verified) {
+      // Not a verified exec — send to exec signup
+      goTo('exec-signup');
+      return;
+    }
+  }
   document.querySelectorAll('.pill-nav button').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   const panel = document.getElementById('exec-banner');
@@ -3462,6 +4040,121 @@ function setContactPref(type, btn) {
   } else {
     input.classList.remove('show');
   }
+}
+
+// ─── EXPORT PDF ───
+function exportReport() {
+  // Expand all collapsed category bodies so they print
+  document.querySelectorAll('.cat-body2').forEach(el => el.classList.add('open'));
+  document.querySelectorAll('.cat-head').forEach(el => el.classList.add('open'));
+
+  // Set document title to script name for the PDF filename
+  const scriptTitle = document.getElementById('rep-title')?.textContent || 'SceneOne Coverage Report';
+  const prevTitle = document.title;
+  document.title = scriptTitle;
+
+  window.print();
+
+  // Restore title after print dialog closes
+  setTimeout(() => { document.title = prevTitle; }, 1000);
+}
+
+// ─── SCRIPT HISTORY ───
+async function _saveSubmission(title, data) {
+  try {
+    await supabaseClient.from('submissions').insert({
+      title: title || 'Untitled Script',
+      user_email: _currentUser?.email || null,
+      result: data,
+      status: 'complete',
+    });
+  } catch (e) {
+    console.warn('SceneOne: submission save failed', e);
+  }
+}
+
+async function loadScriptHistory() {
+  if (!_currentUser?.email) return;
+  const section = document.getElementById('history-section');
+  const list = document.getElementById('history-list');
+  if (!section || !list) return;
+
+  try {
+    const { data, error } = await supabaseClient
+      .from('submissions')
+      .select('id, created_at, title, result')
+      .eq('user_email', _currentUser.email)
+      .eq('status', 'complete')
+      .order('created_at', { ascending: false })
+      .limit(8);
+
+    if (error || !data?.length) return;
+
+    section.style.display = 'block';
+    list.innerHTML = data.map(row => {
+      const r = row.result || {};
+      const overall = r.overall_score ?? '—';
+      const scores = r.scores || {};
+      const best = scores ? Object.entries(scores).sort((a,b) => b[1]-a[1])[0] : null;
+      const date = new Date(row.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+      const scoreColor = overall >= 75 ? 'var(--green)' : overall >= 60 ? 'var(--cyan)' : 'var(--amber)';
+      const bestLabel = best ? best[0].charAt(0).toUpperCase() + best[0].slice(1) : '';
+      const bestVal = best ? best[1] : '—';
+
+      return `<div class="history-card" onclick="loadHistoryReport('${row.id}')">
+        <div class="history-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+          </svg>
+        </div>
+        <div class="history-info">
+          <div class="history-title">${row.title}</div>
+          <div class="history-meta">${date}${bestLabel ? ' &middot; Best: ' + bestLabel : ''}</div>
+        </div>
+        <div class="history-scores">
+          <div class="history-score">
+            <div class="history-score-val" style="color:${scoreColor}">${overall}</div>
+            <div class="history-score-lbl">Overall</div>
+          </div>
+          ${bestVal !== '—' ? `<div class="history-score">
+            <div class="history-score-val" style="color:var(--cyan)">${bestVal}</div>
+            <div class="history-score-lbl">${bestLabel}</div>
+          </div>` : ''}
+        </div>
+        <div class="history-arrow">›</div>
+      </div>`;
+    }).join('');
+
+  } catch (e) {
+    console.warn('SceneOne: history load failed', e);
+  }
+}
+
+// Cache of loaded history rows keyed by id
+const _historyCache = {};
+
+async function loadHistoryReport(id) {
+  // Check cache first, otherwise refetch
+  let result = _historyCache[id];
+  if (!result) {
+    const { data } = await supabaseClient
+      .from('submissions')
+      .select('title, result')
+      .eq('id', id)
+      .single();
+    if (!data?.result) return;
+    result = data.result;
+    _historyCache[id] = result;
+    // Update report title
+    const titleEl = document.getElementById('rep-title');
+    if (titleEl && data.title) titleEl.textContent = data.title.toUpperCase() + ' — Draft 1';
+    document.getElementById('crawl-title') && (document.getElementById('crawl-title').textContent = data.title.toUpperCase());
+  }
+  _reportData = result;
+  window._lastScores = result.scores || {};
+  window._scriptPageCount = null; // will show '—' since we don't have text
+  populateReport(result);
+  goTo('report');
 }
 
 // ─── READER REQUEST ───
@@ -3600,19 +4293,25 @@ function acceptTos() {
 }
 
 // ─── FILM BURN SCORE ANIMATION ───
-const scoreDeltas = {
-  'ed-structure': { cat: 'cat-structure', old: 82, bump: 5 },
-  'ed-conflict':  { cat: 'cat-conflict',  old: 71, bump: 8 },
-  'ed-pacing':    { cat: 'cat-pacing',    old: 68, bump: 7 },
-};
-
-// Map CC button IDs to score data
-const ccScoreMap = {
-  'cc-structure': { catId: 'cat-structure', oldScore: 82, newScore: 87 },
-  'cc-conflict':  { catId: 'cat-conflict',  oldScore: 71, newScore: 79 },
-  'cc-pacing':    { catId: 'cat-pacing',    oldScore: 68, newScore: 75 },
-  'cc-visual':    { catId: 'cat-visual',    oldScore: 80, newScore: 84 },
-};
+function _getScoreDeltas() {
+  const s = window._lastScores || {};
+  return {
+    'ed-structure': { cat: 'cat-structure', old: s.structure || 75, bump: 5 },
+    'ed-conflict':  { cat: 'cat-conflict',  old: s.conflict  || 70, bump: 8 },
+    'ed-pacing':    { cat: 'cat-pacing',    old: s.pacing    || 65, bump: 7 },
+  };
+}
+function _getCcScoreMap() {
+  const s = window._lastScores || {};
+  return {
+    'cc-structure': { catId: 'cat-structure', oldScore: s.structure || 75, newScore: (s.structure || 75) + 5 },
+    'cc-conflict':  { catId: 'cat-conflict',  oldScore: s.conflict  || 70, newScore: (s.conflict  || 70) + 8 },
+    'cc-pacing':    { catId: 'cat-pacing',    oldScore: s.pacing    || 65, newScore: (s.pacing    || 65) + 7 },
+    'cc-visual':    { catId: 'cat-visual',    oldScore: s.visual    || 78, newScore: (s.visual    || 78) + 4 },
+  };
+}
+const scoreDeltas = new Proxy({}, { get: (_, k) => _getScoreDeltas()[k] });
+const ccScoreMap   = new Proxy({}, { get: (_, k) => _getCcScoreMap()[k]  });
 
 function markCreativeChoice(ccId) {
   const btn = document.getElementById(ccId);
@@ -3912,6 +4611,67 @@ function showGoodLuck() {
   }, 3200);
 }
 
+// ─── REQUEST REVIEW ───
+let _pendingCount = 2;
+
+function approveRequest(id, name, company, email) {
+  const card = document.getElementById('req-card-' + id);
+  const actions = document.getElementById('req-actions-' + id);
+  if (!card || !actions) return;
+
+  card.classList.add('approved');
+
+  const expiry = new Date();
+  expiry.setDate(expiry.getDate() + 14);
+  const expiryStr = expiry.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  actions.innerHTML = `
+    <div class="req-approved-state">
+      <div class="req-approved-icon">&#10003;</div>
+      <div>
+        <div class="req-approved-title">Approved &mdash; 14-Day Access Granted</div>
+        <div class="req-approved-detail">${name} at ${company} can now read your script. Access expires ${expiryStr}.</div>
+        <div class="req-approved-contact">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          ${email}
+        </div>
+      </div>
+    </div>`;
+
+  _pendingCount--;
+  _updateRequestsHeader();
+}
+
+function declineRequest(id) {
+  const card = document.getElementById('req-card-' + id);
+  const actions = document.getElementById('req-actions-' + id);
+  if (!card || !actions) return;
+
+  card.classList.add('declined');
+  actions.innerHTML = `
+    <div class="req-declined-state">
+      <span style="font-size:16px;">&#8722;</span>
+      <span>Request declined. The reader has been notified. No further action needed.</span>
+    </div>`;
+
+  _pendingCount--;
+  _updateRequestsHeader();
+}
+
+function _updateRequestsHeader() {
+  const heading = document.getElementById('req-heading');
+  const empty = document.getElementById('req-empty');
+  const policy = document.getElementById('req-policy');
+
+  if (_pendingCount <= 0) {
+    if (heading) heading.textContent = 'All Requests Handled';
+    if (empty) empty.classList.add('show');
+    if (policy) policy.style.display = 'none';
+  } else {
+    if (heading) heading.textContent = _pendingCount + ' Pending Request' + (_pendingCount === 1 ? '' : 's');
+  }
+}
+
 // ─── READER MARKETPLACE ───
 function openReaderMarketplace() {
   document.getElementById('mkt-tos-reader').classList.add('show');
@@ -3963,6 +4723,10 @@ function removeFile() {
   const err = document.getElementById('upload-error-msg');
   if (err) err.style.display = 'none';
   document.getElementById('file-input').value = '';
+  const meta = document.getElementById('script-meta-section');
+  if (meta) meta.style.display = 'none';
+  const dz = document.querySelector('.drop-zone');
+  if (dz) dz.classList.remove('success', 'error');
 }
 
 function showUploadError(msg) {
@@ -3996,6 +4760,13 @@ function handleFile(i) {
 
 function setFile(f) {
   _uploadedFile = f;
+  // Drop-zone success flash
+  const dz = document.querySelector('.drop-zone');
+  if (dz) {
+    dz.classList.remove('error');
+    dz.classList.add('success');
+    setTimeout(() => dz.classList.remove('success'), 1200);
+  }
   document.getElementById('file-row').classList.add('show');
   document.getElementById('file-nm').textContent = f.name;
   const kb = f.size / 1024;
@@ -4051,13 +4822,6 @@ function checkAnalyzeReady() {
   if (btn) btn.classList.toggle('ready', !!(title && fileReady));
 }
 
-function removeFile() {
-  document.getElementById('file-row').classList.remove('show');
-  document.getElementById('analyze-btn').classList.remove('ready');
-  document.getElementById('file-input').value = '';
-  const meta = document.getElementById('script-meta-section');
-  if (meta) meta.style.display = 'none';
-}
 
 function addCowriter() {
   const list = document.getElementById('cowriter-list');
@@ -4295,6 +5059,16 @@ function useSample() {
 // ─── CLAPPER FIX — force equal random distribution ───
 let _lastLoader = -1;
 let _uploadedFile = null;
+let _scriptType = 'feature';
+
+function setScriptType(type) {
+  _scriptType = type;
+  document.getElementById('stt-feature').classList.toggle('active', type === 'feature');
+  document.getElementById('stt-short').classList.toggle('active', type === 'short');
+  document.getElementById('stt-hint').textContent = type === 'short'
+    ? 'Short film (~5–40 pages) — graded on compressed structure'
+    : 'Feature length (~80–120 pages)';
+}
 let _currentUser = null;
 function getNextLoader() {
   let next;
@@ -4313,6 +5087,10 @@ function startProcessing() {
   _loaderDone = false;
   _apiDone    = false;
   _reportData = null;
+
+  // Button loading state
+  const btn = document.getElementById('analyze-btn');
+  if (btn) { btn.classList.remove('ready'); btn.classList.add('loading'); btn.textContent = 'Reading script…'; }
 
   goTo('processing');
   const which = getNextLoader();
@@ -4355,13 +5133,14 @@ async function _runAnalysis() {
 
     // Call Supabase Edge Function
     const { data, error: fnError } = await supabaseClient.functions.invoke('grade-script', {
-      body: { script_text: scriptText, title, user_email: _currentUser?.email || null },
+      body: { script_text: scriptText, title, user_email: _currentUser?.email || null, script_type: _scriptType },
     });
 
     if (fnError) throw new Error(fnError.message || 'Edge function error');
     if (data?.error) throw new Error(data.error);
 
     _onApiDone(data);
+    _saveSubmission(title, data);
 
   } catch (err) {
     console.error('SceneOne analysis error:', err);
@@ -4403,7 +5182,7 @@ async function _runAnalysis() {
       </div>
     </div>
     <button class="ob-celebrate-cta" onclick="dismissCelebrate()">Read my script feedback report →</button>
-    <button class="ob-celebrate-secondary" onclick="dismissCelebrate()">Show me everything</button>
+    <button class="ob-celebrate-secondary" onclick="dismissCelebrateAndTour()" style="font-size:12px;color:var(--sub);border:1px solid var(--border);border-radius:8px;padding:8px 16px;margin-top:4px;">Take the tour first →</button>
   </div>
 </div>
 
