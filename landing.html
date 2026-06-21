@@ -1590,55 +1590,75 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <div class="exec-signup-sub">Pre-graded scripts, filtered by score and genre. No agents. No gatekeeping. Access the Discovery Dashboard and request reads directly from writers.</div>
 
     <div class="exec-card">
-      <div class="auth-title">Create your industry account</div>
-      <div class="auth-sub" style="margin-bottom:20px;">We verify credentials before granting access to scripts.</div>
-
-      <div class="form-field">
-        <label class="form-label">Full Name</label>
-        <input class="form-input" id="exec-name" type="text" placeholder="Jordan Meyers" autocomplete="name">
+      <!-- Tab toggle: Sign Up / Sign In -->
+      <div style="display:flex;gap:0;margin-bottom:20px;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+        <button id="exec-tab-signup" onclick="switchExecTab('signup')" style="flex:1;padding:10px;font-size:12px;font-weight:700;background:var(--gold);color:#0F0F0F;border:none;cursor:pointer;transition:all .15s;">Create Account</button>
+        <button id="exec-tab-signin" onclick="switchExecTab('signin')" style="flex:1;padding:10px;font-size:12px;font-weight:700;background:transparent;color:var(--sub);border:none;cursor:pointer;transition:all .15s;">Sign In</button>
       </div>
 
-      <div class="form-field">
-        <label class="form-label">Company</label>
-        <input class="form-input" id="exec-company" type="text" placeholder="A24, Blumhouse, Netflix…">
-      </div>
+      <!-- SIGNUP PANEL -->
+      <div id="exec-panel-signup">
+        <div class="auth-title">Create your industry account</div>
+        <div class="auth-sub" style="margin-bottom:20px;">We verify credentials before granting access to scripts.</div>
 
-      <div class="form-field">
-        <label class="form-label">Your Role</label>
-        <div class="exec-role-grid" id="exec-role-grid">
-          <button class="exec-role-btn" onclick="selectExecRole(this,'Director')">Director</button>
-          <button class="exec-role-btn" onclick="selectExecRole(this,'Producer')">Producer</button>
-          <button class="exec-role-btn" onclick="selectExecRole(this,'Development Executive')">Dev Executive</button>
-          <button class="exec-role-btn" onclick="selectExecRole(this,'Casting Director')">Casting Director</button>
-          <button class="exec-role-btn" onclick="selectExecRole(this,'Manager/Agent')">Manager / Agent</button>
-          <button class="exec-role-btn" onclick="selectExecRole(this,'Other')">Other</button>
+        <div class="form-field">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" id="exec-name" type="text" placeholder="Jordan Meyers" autocomplete="name">
         </div>
-        <input class="form-input" id="exec-role-input" type="hidden" value="">
+        <div class="form-field">
+          <label class="form-label">Company</label>
+          <input class="form-input" id="exec-company" type="text" placeholder="A24, Blumhouse, Netflix…">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Your Role</label>
+          <div class="exec-role-grid" id="exec-role-grid">
+            <button class="exec-role-btn" onclick="selectExecRole(this,'Director')">Director</button>
+            <button class="exec-role-btn" onclick="selectExecRole(this,'Producer')">Producer</button>
+            <button class="exec-role-btn" onclick="selectExecRole(this,'Development Executive')">Dev Executive</button>
+            <button class="exec-role-btn" onclick="selectExecRole(this,'Casting Director')">Casting Director</button>
+            <button class="exec-role-btn" onclick="selectExecRole(this,'Manager/Agent')">Manager / Agent</button>
+            <button class="exec-role-btn" onclick="selectExecRole(this,'Other')">Other</button>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">IMDb or LinkedIn URL <span style="color:var(--sub);font-weight:400;text-transform:none;letter-spacing:0">(optional but speeds up verification)</span></label>
+          <input class="form-input" id="exec-imdb" type="url" placeholder="https://imdb.com/name/…">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Email</label>
+          <input class="form-input" id="exec-email" type="email" placeholder="you@studio.com" autocomplete="email">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Password</label>
+          <input class="form-input" id="exec-password" type="password" placeholder="8+ characters" autocomplete="new-password">
+        </div>
+        <button class="exec-submit" id="exec-submit-btn" onclick="handleExecSignup()">Request Industry Access →</button>
+        <div style="font-size:10px;color:var(--sub);text-align:center;margin-top:12px;line-height:1.55;">We review credentials within 24 hours. You\'ll receive an email when approved.</div>
       </div>
 
-      <div class="form-field">
-        <label class="form-label">IMDb or LinkedIn URL <span style="color:var(--sub);font-weight:400;text-transform:none;letter-spacing:0">(optional but speeds up verification)</span></label>
-        <input class="form-input" id="exec-imdb" type="url" placeholder="https://imdb.com/name/…">
+      <!-- SIGNIN PANEL -->
+      <div id="exec-panel-signin" style="display:none;">
+        <div class="auth-title">Welcome back.</div>
+        <div class="auth-sub" style="margin-bottom:20px;">Sign in to access your industry dashboard.</div>
+        <div class="form-field">
+          <label class="form-label">Email</label>
+          <input class="form-input" id="exec-signin-email" type="email" placeholder="you@studio.com" autocomplete="email">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Password</label>
+          <input class="form-input" id="exec-signin-password" type="password" placeholder="Password" autocomplete="current-password">
+        </div>
+        <div id="exec-signin-error" style="font-size:11px;color:#e06c6c;margin-bottom:12px;display:none;"></div>
+        <button class="exec-submit" id="exec-signin-btn" onclick="handleExecSignIn()">Sign In →</button>
       </div>
-
-      <div class="form-field">
-        <label class="form-label">Email</label>
-        <input class="form-input" id="exec-email" type="email" placeholder="you@studio.com" autocomplete="email">
-      </div>
-
-      <div class="form-field">
-        <label class="form-label">Password</label>
-        <input class="form-input" id="exec-password" type="password" placeholder="8+ characters" autocomplete="new-password">
-      </div>
-
-      <button class="exec-submit" id="exec-submit-btn" onclick="handleExecSignup()">Request Industry Access →</button>
-      <div style="font-size:10px;color:var(--sub);text-align:center;margin-top:12px;line-height:1.55;">We review credentials within 24 hours. You'll receive an email when approved.</div>
     </div>
 
     <div class="exec-tagline">"Your next project is already written."</div>
 
-    <div style="text-align:center;margin-top:16px;">
-      <button onclick="goTo('welcome')" style="background:none;border:none;color:var(--sub);font-size:12px;cursor:pointer;">I'm a writer — take me to the upload →</button>
+    <div style="text-align:center;margin-top:20px;">
+      <button onclick="goTo('welcome')" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid var(--border2);border-radius:100px;color:var(--text);font-size:13px;font-weight:600;padding:11px 22px;cursor:pointer;transition:all .2s;">
+        I'm a writer — take me to upload →
+      </button>
     </div>
   </div>
 </div>
@@ -3859,6 +3879,52 @@ function selectExecRole(btn, role) {
   btn.classList.add('active');
   _selectedExecRole = role;
   document.getElementById('exec-role-input').value = role;
+}
+
+function switchExecTab(tab) {
+  const isSignup = tab === 'signup';
+  document.getElementById('exec-panel-signup').style.display = isSignup ? '' : 'none';
+  document.getElementById('exec-panel-signin').style.display = isSignup ? 'none' : '';
+  document.getElementById('exec-tab-signup').style.cssText = isSignup
+    ? 'flex:1;padding:10px;font-size:12px;font-weight:700;background:var(--gold);color:#0F0F0F;border:none;cursor:pointer;transition:all .15s;'
+    : 'flex:1;padding:10px;font-size:12px;font-weight:700;background:transparent;color:var(--sub);border:none;cursor:pointer;transition:all .15s;';
+  document.getElementById('exec-tab-signin').style.cssText = isSignup
+    ? 'flex:1;padding:10px;font-size:12px;font-weight:700;background:transparent;color:var(--sub);border:none;cursor:pointer;transition:all .15s;'
+    : 'flex:1;padding:10px;font-size:12px;font-weight:700;background:var(--gold);color:#0F0F0F;border:none;cursor:pointer;transition:all .15s;';
+}
+
+async function handleExecSignIn() {
+  const email = document.getElementById('exec-signin-email').value.trim();
+  const password = document.getElementById('exec-signin-password').value;
+  const errEl = document.getElementById('exec-signin-error');
+  const btn = document.getElementById('exec-signin-btn');
+  errEl.style.display = 'none';
+  if (!email || !password) { errEl.textContent = 'Enter your email and password.'; errEl.style.display = ''; return; }
+  btn.textContent = 'Signing in…'; btn.disabled = true;
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  if (error || !data.user) {
+    errEl.textContent = error?.message || 'Sign in failed.';
+    errEl.style.display = '';
+    btn.textContent = 'Sign In →'; btn.disabled = false;
+    return;
+  }
+  _currentUser = data.user;
+  // Check profile role + verified
+  const { data: profile } = await supabaseClient.from('profiles').select('role,verified').eq('id', data.user.id).single();
+  if (!profile || profile.role !== 'exec') {
+    errEl.textContent = 'No industry account found for this email.';
+    errEl.style.display = '';
+    btn.textContent = 'Sign In →'; btn.disabled = false;
+    await supabaseClient.auth.signOut(); _currentUser = null;
+    return;
+  }
+  if (!profile.verified) {
+    btn.textContent = '✓ Account found — pending verification';
+    btn.style.background = 'rgba(201,168,76,0.85)';
+    return;
+  }
+  goTo('upload');
+  loadScriptHistory();
 }
 
 async function handleExecSignup() {
