@@ -150,6 +150,18 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
   .tech-grid{grid-template-columns:repeat(2,1fr);}
   .nav-links{display:none;}
 }
+/* ── Scroll-triggered reveals ─────────────────────────────────── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-d1{transition-delay:.07s;}
+.reveal-d2{transition-delay:.14s;}
+.reveal-d3{transition-delay:.21s;}
+.reveal-d4{transition-delay:.28s;}
+.reveal-d5{transition-delay:.35s;}
+.reveal-d6{transition-delay:.42s;}
+.reveal-d7{transition-delay:.49s;}
+.reveal-d8{transition-delay:.56s;}
+.reveal-d9{transition-delay:.63s;}
 </style>
 </head>
 <body>
@@ -179,11 +191,11 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
     <a class="btn-secondary" href="#problem">Read the Case Study &darr;</a>
   </div>
   <div class="hero-stats">
-    <div class="hero-stat"><div class="hero-stat-val">7</div><div class="hero-stat-lbl">Screens Built</div></div>
-    <div class="hero-stat"><div class="hero-stat-val">3</div><div class="hero-stat-lbl">Cinematic Loaders</div></div>
-    <div class="hero-stat"><div class="hero-stat-val">5</div><div class="hero-stat-lbl">Craft Dimensions</div></div>
-    <div class="hero-stat"><div class="hero-stat-val">2</div><div class="hero-stat-lbl">Sided Marketplace</div></div>
-    <div class="hero-stat"><div class="hero-stat-val">$0</div><div class="hero-stat-lbl">To Start</div></div>
+    <div class="hero-stat"><div class="hero-stat-val" data-val="7">7</div><div class="hero-stat-lbl">Screens Built</div></div>
+    <div class="hero-stat"><div class="hero-stat-val" data-val="3">3</div><div class="hero-stat-lbl">Cinematic Loaders</div></div>
+    <div class="hero-stat"><div class="hero-stat-val" data-val="5">5</div><div class="hero-stat-lbl">Craft Dimensions</div></div>
+    <div class="hero-stat"><div class="hero-stat-val" data-val="2">2</div><div class="hero-stat-lbl">Sided Marketplace</div></div>
+    <div class="hero-stat"><div class="hero-stat-val" data-val="0" data-prefix="$">$0</div><div class="hero-stat-lbl">To Start</div></div>
   </div>
 </div>
 
@@ -535,5 +547,72 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
   <div style="margin-top:16px;font-size:10px;color:rgba(255,255,255,0.15);">AI craft analysis only &middot; Not a guarantee of industry acceptance &middot; &copy; 2026 Will Grayson / SceneOne</div>
 </div>
 
+<script>
+(function(){
+  // ── Auto-apply reveal classes to targeted elements ──────────────
+  const STAGGER_SELECTORS = [
+    '.ps-card','.feature-card','.screen-card','.legal-card',
+    '.tech-card','.funding-card','.loader-card','.cinematic-card','.mkt-side'
+  ];
+  const SEQUENTIAL_SELECTORS = ['.decision-card','.phase-item'];
+  const BLOCK_SELECTORS = [
+    '.section-eyebrow','.section-title','.section-sub',
+    '.mission-block','.mission-quote','.legal-disclaimer'
+  ];
+
+  BLOCK_SELECTORS.forEach(sel=>{
+    document.querySelectorAll(sel).forEach(el=>el.classList.add('reveal'));
+  });
+  STAGGER_SELECTORS.forEach(sel=>{
+    document.querySelectorAll(sel).forEach((el,i)=>{
+      el.classList.add('reveal','reveal-d'+(Math.min(i%3+1,9)));
+    });
+  });
+  SEQUENTIAL_SELECTORS.forEach(sel=>{
+    document.querySelectorAll(sel).forEach((el,i)=>{
+      el.classList.add('reveal','reveal-d'+(Math.min(i+1,9)));
+    });
+  });
+
+  // ── IntersectionObserver ────────────────────────────────────────
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+  // ── Stat count-up ───────────────────────────────────────────────
+  function countUp(el,target,duration,prefix){
+    if(target===0){el.textContent=prefix+'0';return;}
+    const start=performance.now();
+    (function tick(now){
+      const p=Math.min((now-start)/duration,1);
+      const eased=1-Math.pow(1-p,3);
+      el.textContent=prefix+Math.round(eased*target);
+      if(p<1)requestAnimationFrame(tick);
+    })(start);
+  }
+
+  const statObs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const el=e.target;
+        countUp(el,parseInt(el.dataset.val),1100,el.dataset.prefix||'');
+        statObs.unobserve(el);
+      }
+    });
+  },{threshold:0.5});
+
+  document.querySelectorAll('.hero-stat-val[data-val]').forEach(el=>{
+    el.textContent=(el.dataset.prefix||'')+'0';
+    statObs.observe(el);
+  });
+})();
+</script>
 </body>
 </html>
