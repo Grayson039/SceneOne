@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SceneOne Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0F0F0F;--card:#1A1A1A;--card2:#222;
+  --cyan:#3EEDE7;--gold:#C9A84C;--green:#4CAF7D;--amber:#E8923A;--red:#e06c6c;
+  --text:#E5E5E5;--sub:#888;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;min-height:100vh;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:14px 32px;border-bottom:1px solid var(--border);background:rgba(15,15,15,0.97);}
+.brand{font-size:16px;font-weight:900;color:#fff;letter-spacing:-0.5px;}
+.brand span{color:var(--cyan);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.badge{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:3px 8px;}
+#signout-btn{font-size:11px;color:var(--sub);background:none;border:none;cursor:pointer;}
+#signout-btn:hover{color:var(--text);}
+.wrap{max-width:900px;margin:0 auto;padding:40px 24px;}
+/* Auth gate */
+#auth-gate{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;gap:24px;}
+.auth-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;width:100%;max-width:380px;}
+.auth-card h2{font-size:20px;font-weight:800;margin-bottom:4px;}
+.auth-card p{font-size:12px;color:var(--sub);margin-bottom:24px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:6px;}
+.field input{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text);outline:none;transition:border-color .15s;}
+.field input:focus{border-color:rgba(201,168,76,0.4);}
+.auth-error{font-size:11px;color:var(--red);margin-bottom:12px;display:none;}
+.btn-primary{width:100%;padding:12px;border-radius:10px;border:none;background:var(--gold);color:#0F0F0F;font-size:13px;font-weight:800;cursor:pointer;transition:opacity .15s;}
+.btn-primary:hover{opacity:0.88;}
+.btn-primary:disabled{opacity:0.5;cursor:default;}
+/* Main */
+#main{display:none;}
+.page-header{margin-bottom:28px;}
+.page-title{font-size:24px;font-weight:900;color:#fff;margin-bottom:4px;}
+.page-sub{font-size:13px;color:var(--sub);}
+.tabs{display:flex;gap:4px;margin-bottom:24px;border-bottom:1px solid var(--border);padding-bottom:0;}
+.tab{padding:10px 16px;font-size:12px;font-weight:700;color:var(--sub);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.section-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sub);margin-bottom:12px;}
+/* Exec cards */
+.exec-list{display:flex;flex-direction:column;gap:12px;}
+.exec-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 24px;display:flex;align-items:flex-start;gap:20px;}
+.exec-card.verified{border-color:rgba(76,175,125,0.2);background:rgba(76,175,125,0.03);}
+.exec-avatar{width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:var(--gold);flex-shrink:0;}
+.exec-info{flex:1;min-width:0;}
+.exec-name{font-size:14px;font-weight:800;color:#fff;margin-bottom:2px;}
+.exec-meta{font-size:11px;color:var(--sub);margin-bottom:8px;}
+.exec-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.exec-tag{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--sub);}
+.exec-tag.role{color:var(--gold);background:rgba(201,168,76,0.07);border-color:rgba(201,168,76,0.15);}
+.exec-imdb{font-size:11px;color:var(--cyan);text-decoration:none;display:inline-flex;align-items:center;gap:4px;}
+.exec-imdb:hover{text-decoration:underline;}
+.exec-actions{display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0;}
+.btn-approve{padding:9px 18px;border-radius:8px;border:none;background:var(--green);color:#0F0F0F;font-size:11px;font-weight:800;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
+.btn-approve:hover{opacity:0.85;}
+.btn-approve:disabled{opacity:0.5;cursor:default;}
+.btn-revoke{padding:9px 18px;border-radius:8px;border:1px solid rgba(224,108,108,0.3);background:rgba(224,108,108,0.08);color:var(--red);font-size:11px;font-weight:800;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-revoke:hover{background:rgba(224,108,108,0.15);}
+.verified-badge{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);background:rgba(76,175,125,0.1);border:1px solid rgba(76,175,125,0.2);border-radius:4px;padding:3px 8px;}
+.pending-badge{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--amber);background:rgba(232,146,58,0.1);border:1px solid rgba(232,146,58,0.2);border-radius:4px;padding:3px 8px;}
+.empty-state{padding:48px;text-align:center;color:var(--sub);font-size:13px;}
+.stats-row{display:flex;gap:12px;margin-bottom:28px;}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;flex:1;}
+.stat-val{font-size:28px;font-weight:900;color:#fff;line-height:1;}
+.stat-lbl{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--sub);margin-top:4px;}
+.stat-box.gold .stat-val{color:var(--gold);}
+.stat-box.green .stat-val{color:var(--green);}
+.stat-box.cyan .stat-val{color:var(--cyan);}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:spin .6s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-wrap{padding:48px;text-align:center;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">Scene<span>One</span> <span style="font-size:10px;font-weight:400;color:var(--sub);margin-left:4px;">Admin</span></div>
+  <div class="nav-right">
+    <div class="badge">Internal Only</div>
+    <button id="signout-btn" style="display:none" onclick="adminSignOut()">Sign Out</button>
+  </div>
+</nav>
+
+<!-- AUTH GATE -->
+<div id="auth-gate">
+  <div class="auth-card">
+    <h2>Admin Access</h2>
+    <p>Sign in with your SceneOne admin account.</p>
+    <div class="field"><label>Email</label><input type="email" id="admin-email" placeholder="w1lldebeest3@gmail.com"></div>
+    <div class="field"><label>Password</label><input type="password" id="admin-password" placeholder="Password"></div>
+    <div class="auth-error" id="admin-error"></div>
+    <button class="btn-primary" id="admin-signin-btn" onclick="adminSignIn()">Sign In →</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main" class="wrap">
+  <div class="page-header">
+    <div class="page-title">SceneOne Admin</div>
+    <div class="page-sub" id="admin-greeting">Exec verification &amp; platform overview</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box gold"><div class="stat-val" id="stat-pending">—</div><div class="stat-lbl">Pending Verification</div></div>
+    <div class="stat-box green"><div class="stat-val" id="stat-verified">—</div><div class="stat-lbl">Verified Execs</div></div>
+    <div class="stat-box cyan"><div class="stat-val" id="stat-listed">—</div><div class="stat-lbl">Scripts Listed</div></div>
+    <div class="stat-box"><div class="stat-val" id="stat-writers">—</div><div class="stat-lbl">Total Writers</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('pending')">Pending (<span id="tab-pending-count">…</span>)</button>
+    <button class="tab" onclick="switchTab('verified')">Verified Execs</button>
+  </div>
+
+  <div id="tab-pending">
+    <div class="section-label">Awaiting Verification</div>
+    <div class="exec-list" id="pending-list"><div class="loading-wrap"><div class="spinner"></div></div></div>
+  </div>
+
+  <div id="tab-verified" style="display:none">
+    <div class="section-label">Approved Industry Readers</div>
+    <div class="exec-list" id="verified-list"><div class="loading-wrap"><div class="spinner"></div></div></div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://zzsjgaijrngxkaqakplm.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_yuptAX-fJGnyTuDgReScEg_bqg7qPEx';
+const ADMIN_EMAIL = 'w1lldebeest3@gmail.com';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let _adminUser = null;
+
+// ── Auth ──────────────────────────────────────────────────────────
+async function adminSignIn() {
+  const email = document.getElementById('admin-email').value.trim();
+  const password = document.getElementById('admin-password').value;
+  const btn = document.getElementById('admin-signin-btn');
+  const err = document.getElementById('admin-error');
+  err.style.display = 'none';
+  if (!email || !password) { showErr('Enter email and password.'); return; }
+  btn.textContent = 'Signing in…'; btn.disabled = true;
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error || !data.user) { showErr(error?.message || 'Sign in failed.'); btn.textContent = 'Sign In →'; btn.disabled = false; return; }
+  if (data.user.email !== ADMIN_EMAIL) {
+    await sb.auth.signOut();
+    showErr('This account does not have admin access.');
+    btn.textContent = 'Sign In →'; btn.disabled = false;
+    return;
+  }
+  enterAdmin(data.user);
+}
+
+function showErr(msg) {
+  const e = document.getElementById('admin-error');
+  e.textContent = msg; e.style.display = 'block';
+}
+
+function enterAdmin(user) {
+  _adminUser = user;
+  document.getElementById('auth-gate').style.display = 'none';
+  document.getElementById('main').style.display = 'block';
+  document.getElementById('signout-btn').style.display = 'inline';
+  document.getElementById('admin-greeting').textContent = `Signed in as ${user.email}`;
+  loadAll();
+}
+
+async function adminSignOut() {
+  await sb.auth.signOut();
+  location.reload();
+}
+
+// ── Check existing session on load ─────────────────────────────────
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user?.email === ADMIN_EMAIL) {
+    enterAdmin(session.user);
+  }
+})();
+
+// ── Data ──────────────────────────────────────────────────────────
+async function loadAll() {
+  const [profilesRes, submissionsRes] = await Promise.all([
+    sb.from('profiles').select('id, role, display_name, company, title, imdb_url, verified, created_at').order('created_at', { ascending: false }),
+    sb.from('submissions').select('id, public_listing, user_email', { count: 'exact', head: false }).eq('status','complete')
+  ]);
+
+  const profiles = profilesRes.data || [];
+  const submissions = submissionsRes.data || [];
+
+  const execs = profiles.filter(p => p.role === 'exec');
+  const pending = execs.filter(p => !p.verified);
+  const verified = execs.filter(p => p.verified);
+  const writers = profiles.filter(p => p.role === 'writer');
+  const listed = submissions.filter(s => s.public_listing).length;
+
+  document.getElementById('stat-pending').textContent = pending.length;
+  document.getElementById('stat-verified').textContent = verified.length;
+  document.getElementById('stat-listed').textContent = listed;
+  document.getElementById('stat-writers').textContent = writers.length;
+  document.getElementById('tab-pending-count').textContent = pending.length;
+
+  renderExecList('pending-list', pending, false);
+  renderExecList('verified-list', verified, true);
+}
+
+function renderExecList(containerId, execs, isVerified) {
+  const el = document.getElementById(containerId);
+  if (!execs.length) {
+    el.innerHTML = `<div class="empty-state">${isVerified ? 'No verified execs yet.' : 'No pending applications.'}</div>`;
+    return;
+  }
+  el.innerHTML = execs.map(e => {
+    const initials = (e.display_name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const joined = new Date(e.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    const imdbLink = e.imdb_url ? `<a class="exec-imdb" href="${e.imdb_url}" target="_blank">↗ View IMDb / LinkedIn</a>` : '<span style="font-size:11px;color:var(--sub)">No IMDb provided</span>';
+    const actionBtn = isVerified
+      ? `<button class="btn-revoke" onclick="setVerified('${e.id}', false, this)">Revoke Access</button>`
+      : `<button class="btn-approve" onclick="setVerified('${e.id}', true, this)">✓ Approve</button>`;
+    return `<div class="exec-card${isVerified?' verified':''}" id="exec-card-${e.id}">
+      <div class="exec-avatar">${initials}</div>
+      <div class="exec-info">
+        <div class="exec-name">${e.display_name || 'Unknown'}</div>
+        <div class="exec-meta">${e.company || 'No company'} · Joined ${joined}</div>
+        <div class="exec-tags">
+          <div class="exec-tag role">${e.title || 'No role'}</div>
+          <div class="exec-tag">${e.id.slice(0,8)}…</div>
+        </div>
+        ${imdbLink}
+      </div>
+      <div class="exec-actions">
+        <div class="${isVerified?'verified-badge':'pending-badge'}">${isVerified?'Verified':'Pending'}</div>
+        ${actionBtn}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function setVerified(id, value, btn) {
+  btn.disabled = true;
+  btn.textContent = value ? 'Approving…' : 'Revoking…';
+  const { error } = await sb.from('profiles').update({ verified: value }).eq('id', id);
+  if (error) {
+    btn.textContent = 'Error — try again';
+    btn.disabled = false;
+    console.error(error);
+    return;
+  }
+  // Reload to reflect new state
+  await loadAll();
+  // Switch to correct tab to show result
+  switchTab(value ? 'verified' : 'pending');
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab')[tab==='pending'?0:1].classList.add('active');
+  document.getElementById('tab-pending').style.display = tab==='pending' ? '' : 'none';
+  document.getElementById('tab-verified').style.display = tab==='verified' ? '' : 'none';
+}
+
+// Enter key on password field
+document.getElementById('admin-password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') adminSignIn();
+});
+</script>
+</body>
+</html>

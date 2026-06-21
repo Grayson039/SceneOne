@@ -2006,6 +2006,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <div class="dash-nav-right">
       <button class="dash-nav-btn" onclick="goTo('exec-profile')">My Dashboard</button>
       <button class="dash-nav-btn" onclick="goTo('report')">← Back to Report</button>
+      <button class="dash-nav-btn" onclick="handleSignOut()" style="color:var(--sub);">Sign Out</button>
     </div>
   </nav>
 
@@ -2050,135 +2051,16 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <div class="feed-header">
         <div>
           <div class="feed-title">Discovery Dashboard</div>
-          <div class="feed-meta">24 scripts available · Sorted by score</div>
+          <div class="feed-meta" id="feed-meta">Loading scripts…</div>
         </div>
         <div class="feed-sort">
-          <button class="active">Score</button>
-          <button onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Recent</button>
-          <button onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Requested</button>
+          <button class="active" id="sort-score" onclick="setDashSort('score')">Score</button>
+          <button id="sort-recent" onclick="setDashSort('recent')">Recent</button>
         </div>
       </div>
-
-      <!-- Script Card 1 -->
-      <div class="script-card">
-        <div class="script-card-top">
-          <div>
-            <div class="script-card-title">THE LAST HOUR</div>
-            <div class="script-card-genre">Psychological Thriller · Feature · 94 pages</div>
-          </div>
-          <div class="script-card-score">91</div>
-        </div>
-        <div class="script-card-logline">"A burned-out investigator on one last case discovers the only person who can clear her name is the one person who wants her to fail."</div>
-        <div class="script-card-dna">
-          <div class="dna-tag">Whiplash 40%</div>
-          <div class="dna-tag">Black Swan 35%</div>
-          <div class="dna-tag">Nightcrawler 25%</div>
-        </div>
-        <div class="script-card-score-bars">
-          <div class="mini-score">Structure</div><div class="mini-bar-strip"><div class="mini-bar-strip-fill fill-c" style="width:82%"></div></div>
-          <div class="mini-score" style="margin-left:6px;">Dialogue</div><div class="mini-bar-strip"><div class="mini-bar-strip-fill fill-g" style="width:91%"></div></div>
-          <div class="mini-score" style="margin-left:6px;">Pacing</div><div class="mini-bar-strip"><div class="mini-bar-strip-fill fill-a" style="width:68%"></div></div>
-        </div>
-        <div class="script-card-footer">
-          <div class="script-card-stats">
-            <div class="script-stat">Listed <strong>3 days ago</strong></div>
-            <div class="script-stat"><strong>7</strong> reader views</div>
-            <div class="script-stat">SceneOne verified ✓</div>
-          </div>
-          <button class="request-access-btn" onclick="requestScriptAccess(this)">Request Access →</button>
-        </div>
-      </div>
-
-      <!-- Script Card 2 -->
-      <div class="script-card">
-        <div class="script-card-top">
-          <div>
-            <div class="script-card-title">DRIFT</div>
-            <div class="script-card-genre">Drama · Feature · 108 pages</div>
-          </div>
-          <div class="script-card-score">88</div>
-        </div>
-        <div class="script-card-logline">"A former Olympic swimmer coaches a troubled teenager and realizes the system that failed the kid is the same one that made him."</div>
-        <div class="script-card-dna">
-          <div class="dna-tag">Whiplash 50%</div>
-          <div class="dna-tag">Moneyball 30%</div>
-          <div class="dna-tag">Good Will Hunting 20%</div>
-        </div>
-        <div class="script-card-score-bars">
-          <div class="mini-score">Structure</div><div class="mini-bar-strip"><div class="mini-bar-strip-fill fill-c" style="width:88%"></div></div>
-          <div class="mini-score" style="margin-left:6px;">Dialogue</div><div class="mini-bar-strip"><div class="mini-bar-strip-fill fill-g" style="width:85%"></div></div>
-          <div class="mini-score" style="margin-left:6px;">Pacing</div><div class="mini-bar-strip"><div class="mini-bar-strip-fill fill-c" style="width:82%"></div></div>
-        </div>
-        <div class="script-card-footer">
-          <div class="script-card-stats">
-            <div class="script-stat">Listed <strong>1 week ago</strong></div>
-            <div class="script-stat"><strong>12</strong> reader views</div>
-            <div class="script-stat">SceneOne verified ✓</div>
-          </div>
-          <button class="request-access-btn" onclick="requestScriptAccess(this)">Request Access →</button>
-        </div>
-      </div>
-
-      <!-- Script Card 3 -->
-      <div class="script-card">
-        <div class="script-card-top">
-          <div>
-            <div class="script-card-title">SIGNAL LOST</div>
-            <div class="script-card-genre">Sci-Fi Thriller · Feature · 112 pages</div>
-          </div>
-          <div class="script-card-score">85</div>
-        </div>
-        <div class="script-card-logline">"When a deep-space communications officer intercepts a message that couldn't exist, she has 72 hours to decide whether to report it — or protect it."</div>
-        <div class="script-card-dna">
-          <div class="dna-tag">Arrival 45%</div>
-          <div class="dna-tag">Contact 35%</div>
-          <div class="dna-tag">Annihilation 20%</div>
-        </div>
-        <div class="script-card-score-bars">
-          <div class="mini-score">Structure</div><div class="mini-bar-strip"><div class="mini-bar-strip-fill fill-c" style="width:85%"></div></div>
-          <div class="mini-score" style="margin-left:6px;">Dialogue</div><div class="mini-bar-strip"><div class="mini-bar-strip-fill fill-c" style="width:80%"></div></div>
-          <div class="mini-score" style="margin-left:6px;">Pacing</div><div class="mini-bar-strip"><div class="mini-bar-strip-fill fill-g" style="width:88%"></div></div>
-        </div>
-        <div class="script-card-footer">
-          <div class="script-card-stats">
-            <div class="script-stat">Listed <strong>2 days ago</strong></div>
-            <div class="script-stat"><strong>4</strong> reader views</div>
-            <div class="script-stat">SceneOne verified ✓</div>
-          </div>
-          <button class="request-access-btn" onclick="requestScriptAccess(this)">Request Access →</button>
-        </div>
-      </div>
-
-      <!-- Script Card 4 -->
-      <div class="script-card">
-        <div class="script-card-top">
-          <div>
-            <div class="script-card-title">THE LONG GAME</div>
-            <div class="script-card-genre">Crime Drama · Feature · 99 pages</div>
-          </div>
-          <div class="script-card-score">82</div>
-        </div>
-        <div class="script-card-logline">"A public defender realizes her newest client is innocent — and that the detective who arrested him is her father."</div>
-        <div class="script-card-dna">
-          <div class="dna-tag">Primal Fear 40%</div>
-          <div class="dna-tag">Prisoners 35%</div>
-          <div class="dna-tag">Doubt 25%</div>
-        </div>
-        <div class="script-card-score-bars">
-          <div class="mini-score">Structure</div><div class="mini-bar-strip"><div class="mini-bar-strip-fill fill-c" style="width:82%"></div></div>
-          <div class="mini-score" style="margin-left:6px;">Dialogue</div><div class="mini-bar-strip"><div class="mini-bar-strip-fill fill-a" style="width:74%"></div></div>
-          <div class="mini-score" style="margin-left:6px;">Pacing</div><div class="mini-bar-strip"><div class="mini-bar-strip-fill fill-c" style="width:79%"></div></div>
-        </div>
-        <div class="script-card-footer">
-          <div class="script-card-stats">
-            <div class="script-stat">Listed <strong>5 days ago</strong></div>
-            <div class="script-stat"><strong>9</strong> reader views</div>
-            <div class="script-stat">SceneOne verified ✓</div>
-          </div>
-          <button class="request-access-btn" onclick="requestScriptAccess(this)">Request Access →</button>
-        </div>
-      </div>
-
+      <div id="dash-feed-list"></div>
+      <!-- placeholder cards removed — loadDashboard() renders real data -->
+      <div style="display:none" id="dash-placeholder-start">
     </main>
   </div>
 </div>
@@ -3445,7 +3327,6 @@ function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-'+id).classList.add('active');
   window.scrollTo(0,0);
-  // Reset analyze button + load history when returning to upload
   if (id === 'upload') {
     const btn = document.getElementById('analyze-btn');
     if (btn) {
@@ -3455,6 +3336,7 @@ function goTo(id){
     }
     loadScriptHistory();
   }
+  if (id === 'dashboard') loadDashboard();
 }
 
 // ─── UPLOAD ───
@@ -3954,6 +3836,84 @@ function selectExecRole(btn, role) {
   _selectedExecRole = role;
 }
 
+// ─── DISCOVERY DASHBOARD ───
+function setDashSort(s) {
+  _dashSort = s;
+  document.getElementById('sort-score')?.classList.toggle('active', s === 'score');
+  document.getElementById('sort-recent')?.classList.toggle('active', s === 'recent');
+  loadDashboard();
+}
+
+async function loadDashboard() {
+  const feed = document.getElementById('dash-feed-list');
+  const meta = document.getElementById('feed-meta');
+  if (!feed) return;
+  feed.innerHTML = '<div style="padding:48px;text-align:center;color:var(--sub);font-size:13px;">Loading scripts…</div>';
+  try {
+    let q = supabaseClient
+      .from('submissions')
+      .select('id, title, created_at, result')
+      .eq('status', 'complete')
+      .eq('public_listing', true)
+      .limit(30);
+    if (_dashSort === 'recent') q = q.order('created_at', { ascending: false });
+    const { data, error } = await q;
+    if (error) throw error;
+    if (!data?.length) {
+      if (meta) meta.textContent = '0 scripts available';
+      feed.innerHTML = `<div style="padding:60px 40px;text-align:center;">
+        <div style="font-size:32px;margin-bottom:16px;">🎬</div>
+        <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;">No scripts listed yet.</div>
+        <div style="font-size:12px;color:var(--sub);line-height:1.7;">Writers opt in from their coverage report.<br>Check back soon — scripts are being graded every day.</div>
+      </div>`;
+      return;
+    }
+    let rows = data.filter(r => r.result?.overall_score);
+    if (_dashSort === 'score') rows.sort((a,b) => (b.result.overall_score||0) - (a.result.overall_score||0));
+    if (meta) meta.textContent = `${rows.length} script${rows.length!==1?'s':''} available · Sorted by ${_dashSort}`;
+    feed.innerHTML = rows.map(row => {
+      const r = row.result || {};
+      const score = r.overall_score || '—';
+      const logline = r.logline ? `<div class="script-card-logline">${r.logline}</div>` : '';
+      const dna = (r.story_dna||[]).slice(0,3).map(d=>`<div class="dna-tag">${d.film} ${d.pct}%</div>`).join('');
+      const scores = r.scores || {};
+      const bars = Object.entries(scores).slice(0,3).map(([k,v])=>
+        `<div class="mini-score">${k.charAt(0).toUpperCase()+k.slice(1)}</div><div class="mini-bar-strip"><div class="mini-bar-strip-fill fill-c" style="width:${v}%"></div></div>`
+      ).join('');
+      const scoreColor = score>=75?'var(--green)':score>=60?'var(--cyan)':'var(--amber)';
+      const listed = new Date(row.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      const safeTitle = (row.title||'').replace(/'/g,"\\'");
+      return `<div class="script-card">
+        <div class="script-card-top">
+          <div><div class="script-card-title">${(row.title||'UNTITLED').toUpperCase()}</div>
+          <div class="script-card-genre">SceneOne Verified · Listed ${listed}</div></div>
+          <div class="script-card-score" style="color:${scoreColor}">${score}</div>
+        </div>
+        ${logline}
+        <div class="script-card-dna">${dna}</div>
+        <div class="script-card-score-bars">${bars}</div>
+        <div class="script-card-footer">
+          <div class="script-card-stats"><div class="script-stat">SceneOne verified ✓</div></div>
+          <button class="request-access-btn" onclick="requestScriptAccess('${row.id}','${safeTitle}')">Request Access →</button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    console.warn('SceneOne: dashboard load failed', e);
+    if (meta) meta.textContent = 'Could not load scripts';
+    feed.innerHTML = '<div style="padding:40px;text-align:center;color:var(--sub);font-size:13px;">Failed to load scripts. Try refreshing.</div>';
+  }
+}
+
+async function requestScriptAccess(id, title) {
+  if (!_currentUser) { goTo('exec-signup'); return; }
+  const { data: profile } = await supabaseClient.from('profiles').select('role,verified').eq('id',_currentUser.id).single();
+  if (!profile || profile.role !== 'exec' || !profile.verified) { goTo('exec-signup'); return; }
+  // Log the request (Phase 3: notify writer via Resend)
+  const btn = event?.target;
+  if (btn) { btn.textContent = '✓ Requested'; btn.disabled = true; btn.style.background='rgba(76,175,125,0.2)'; btn.style.color='var(--green)'; btn.style.borderColor='rgba(76,175,125,0.3)'; }
+}
+
 // ─── EXEC ONBOARDING ───
 let _exobStep = 0;
 function nextExobStep(n) {
@@ -3970,10 +3930,8 @@ function skipExecOnboard() {
 }
 function finishExecOnboard() {
   localStorage.setItem('sceneone_exec_onboard_done', '1');
-  // Fire the "Happy Hunting" cinematic moment then go to dashboard
-  const banner = document.getElementById('exec-banner');
-  if (banner) banner.classList.add('show');
   goTo('dashboard');
+  setTimeout(() => showHappyHunting(), 300);
 }
 
 function switchExecTab(tab) {
@@ -4228,12 +4186,14 @@ function exportReport() {
 // ─── SCRIPT HISTORY ───
 async function _saveSubmission(title, data) {
   try {
-    await supabaseClient.from('submissions').insert({
+    const { data: rows } = await supabaseClient.from('submissions').insert({
       title: title || 'Untitled Script',
       user_email: _currentUser?.email || null,
       result: data,
       status: 'complete',
-    });
+      public_listing: false,
+    }).select('id');
+    if (rows?.[0]?.id) _currentSubId = rows[0].id;
   } catch (e) {
     console.warn('SceneOne: submission save failed', e);
   }
@@ -4728,13 +4688,15 @@ function toggleListing(checkbox) {
   const liveSection = document.getElementById('listing-live');
 
   if (checkbox.checked) {
-    // Show marketplace TOS first
-    checkbox.checked = false; // reset until they agree
+    checkbox.checked = false;
     document.getElementById('mkt-tos-writer').classList.add('show');
   } else {
     label.textContent = 'Private';
     privateNotice.style.display = 'block';
     liveSection.style.display = 'none';
+    if (_currentSubId) {
+      supabaseClient.from('submissions').update({ public_listing: false }).eq('id', _currentSubId).then(() => {});
+    }
   }
 }
 
@@ -4749,7 +4711,6 @@ function confirmWriterListing() {
   if (!checked) return;
   document.getElementById('mkt-tos-writer').classList.remove('show');
 
-  // Enable the toggle
   const toggle = document.getElementById('listing-toggle-input');
   if (toggle) toggle.checked = true;
   const label = document.getElementById('listing-status-label');
@@ -4759,7 +4720,11 @@ function confirmWriterListing() {
   const liveSection = document.getElementById('listing-live');
   if (liveSection) liveSection.style.display = 'block';
 
-  // Good Luck cinematic
+  // Write to Supabase
+  if (_currentSubId) {
+    supabaseClient.from('submissions').update({ public_listing: true }).eq('id', _currentSubId).then(() => {});
+  }
+
   showGoodLuck();
 }
 
@@ -5236,6 +5201,8 @@ function setScriptType(type) {
     : 'Feature length (~80–120 pages)';
 }
 let _currentUser = null;
+let _currentSubId = null;
+let _dashSort = 'score';
 function getNextLoader() {
   let next;
   do { next = Math.floor(Math.random() * 3); } while (next === _lastLoader);
