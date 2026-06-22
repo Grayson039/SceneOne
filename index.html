@@ -59,10 +59,11 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
 .feature-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;transition:border-color .2s;}
 .feature-card:hover{border-color:rgba(62,237,231,0.2);}
 .feature-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:18px;}
-.fi-cyan{background:rgba(62,237,231,0.08);border:1px solid rgba(62,237,231,0.15);}
-.fi-gold{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.15);}
-.fi-green{background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.15);}
-.fi-amber{background:rgba(232,146,58,0.08);border:1px solid rgba(232,146,58,0.15);}
+.fi-cyan{background:rgba(62,237,231,0.08);border:1px solid rgba(62,237,231,0.15);color:var(--cyan);}
+.fi-gold{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.15);color:var(--gold);}
+.fi-green{background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.15);color:var(--green);}
+.fi-amber{background:rgba(232,146,58,0.08);border:1px solid rgba(232,146,58,0.15);color:var(--amber);}
+.feature-icon svg{width:21px;height:21px;display:block;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
 .feature-card h3{font-size:13px;font-weight:800;color:#fff;margin-bottom:6px;}
 .feature-card p{font-size:12px;color:var(--sub);line-height:1.65;}
 .decision-list{display:flex;flex-direction:column;gap:16px;}
@@ -289,52 +290,52 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offse
   <p class="section-sub">SceneOne is built around the emotional reality of being a writer &mdash; vulnerable, invested, and deserving of feedback that respects both their craft and their creative authority.</p>
   <div class="feature-grid">
     <div class="feature-card">
-      <div class="feature-icon fi-cyan">&#128203;</div>
+      <div class="feature-icon fi-cyan"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/><circle cx="7.5" cy="14.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="14.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="16.5" cy="14.5" r="1.1" fill="currentColor" stroke="none"/></svg></div>
       <h3>Save the Cat Framework</h3>
       <p>Every script graded against Blake Snyder&rsquo;s methodology &mdash; the blueprint that Whiplash, Get Out, and The Dark Knight all follow. Not making up rules. Checking yours against the industry&rsquo;s.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon fi-green">&#10022;</div>
+      <div class="feature-icon fi-green"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="5"/><path d="M8.5 13l-2 8 5.5-3 5.5 3-2-8"/></svg></div>
       <h3>Win Statement First</h3>
       <p>Before a single score appears, SceneOne finds one specific thing your script does well &mdash; with a page reference. Not &ldquo;your writing is beautiful.&rdquo; Evidence. Always evidence.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon fi-gold">&#128657;</div>
+      <div class="feature-icon fi-gold"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 8.5-4-1-7-4-7-8.5V6l7-3z"/><path d="M9 11.5l2 2 4-4"/></svg></div>
       <h3>Creative Choice &mdash; No Penalty</h3>
       <p>Every note has a Creative Choice button. Tap it and SceneOne logs the decision, respects it permanently, and your score goes UP &mdash; not down. Breaking a rule on purpose is craft. SceneOne works for you.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon fi-cyan">&#128295;</div>
+      <div class="feature-icon fi-cyan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L18.5 9.5a2.12 2.12 0 0 0-3-3L5 17v3z"/><path d="M13.5 6.5l4 4"/></svg></div>
       <h3>Fix It Inline</h3>
       <p>Every flagged note has a Fix It button. Opens a small editor for just that scene. Revise it, hit Re-Analyze, and your score updates in seconds. No re-uploading the whole script. The fix loop closes inside the app.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon fi-amber">&#128506;</div>
+      <div class="feature-icon fi-amber"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18"/><rect x="5.5" y="12" width="3" height="6" rx="0.5"/><rect x="10.5" y="6.5" width="3" height="11.5" rx="0.5"/><rect x="15.5" y="14" width="3" height="4" rx="0.5"/></svg></div>
       <h3>Pacing Heatmap</h3>
       <p>Every page of your script scored and color-coded. Deep orange = slow, momentum stalling. Bright cyan = strong, keep going. Hover any cell for what&rsquo;s happening on that page. Dead zones are impossible to ignore.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon fi-gold">&#127916;</div>
+      <div class="feature-icon fi-gold"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3c0 4.5 8 4.5 8 9s-8 4.5-8 9"/><path d="M16 3c0 4.5-8 4.5-8 9s8 4.5 8 9"/><path d="M9 7h6"/><path d="M9 17h6"/></svg></div>
       <h3>Sample Logline + Story DNA</h3>
       <p>SceneOne generates a pitch-ready logline and Story DNA comps (e.g. &ldquo;40% Whiplash &middot; 35% Black Swan&rdquo;) from your script. Both are editable &mdash; suggestions only, not verdicts. When someone asks what your movie is like, now you have an answer.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon fi-cyan">&#128221;</div>
+      <div class="feature-icon fi-cyan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-4 3.5V16H4z"/><path d="M8 9.5h8"/><path d="M8 12.5h5"/></svg></div>
       <h3>Plain English Notes</h3>
       <p>No film school required. Every note is written the way a good mentor explains things &mdash; using lines from your script as examples, with page numbers, and a clear reason why it matters. Zero jargon by design.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon fi-green">&#128100;</div>
+      <div class="feature-icon fi-green"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3 3 0 0 1 0 5.6"/><path d="M17 13.4a5.5 5.5 0 0 1 3.5 5.1"/></svg></div>
       <h3>Co-Writer Credits</h3>
       <p>Add up to 3 co-writers on upload with their emails. All collaborators are notified on upload, marketplace listing, and reader requests. Co-writers can create accounts to claim credit and access the full report.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon fi-amber">&#9201;</div>
+      <div class="feature-icon fi-amber"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12h6"/><path d="M9 15.5h4"/></svg></div>
       <h3>Script Title Parsing</h3>
       <p>SceneOne detects your script title from the first page on upload and confirms it with you before analysis starts. Always editable &mdash; your title, your control. No assumptions.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon fi-cyan">&#9889;</div>
+      <div class="feature-icon fi-cyan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 13.5h6l-1 7.5L19 10.5h-6L13 3z"/></svg></div>
       <h3>Instant Re-Uploads</h3>
       <p>Every draft is fingerprinted on upload. Re-submit the same script and the report loads instantly from cache &mdash; no re-analysis, no second wait, no wasted compute. The expensive work happens once.</p>
     </div>
