@@ -100,11 +100,21 @@ serve(async (req) => {
       }
 
       const limit = PLAN_LIMITS[plan] ?? null;
-      if (limit !== null) {
+      if (limit !== null && user.email) {
         let used = 0;
         try {
-          const { data: count } = await admin.rpc('analyses_this_month', { uid: user.id });
-          used = typeof count === 'number' ? count : 0;
+          // Count this user's saved analyses since the 1st of this month.
+          // We count by user_email because that's the field the frontend
+          // saves on each submission (see landing.html submissions insert).
+          const monthStart = new Date();
+          monthStart.setUTCDate(1);
+          monthStart.setUTCHours(0, 0, 0, 0);
+          const { count } = await admin
+            .from('submissions')
+            .select('id', { count: 'exact', head: true })
+            .eq('user_email', user.email)
+            .gte('created_at', monthStart.toISOString());
+          used = count ?? 0;
         } catch (_e) {
           console.warn('grade-script: usage count failed, allowing this one', user.id);
           used = 0; // fail open on counting errors

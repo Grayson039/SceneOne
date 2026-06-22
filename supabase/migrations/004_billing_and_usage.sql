@@ -42,6 +42,7 @@ create or replace function public.analyses_this_month(uid uuid)
 returns integer
 language sql
 stable
+set search_path = ''   -- pin search_path (Supabase security advisor best practice)
 as $$
   select count(*)::int
   from public.submissions
