@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>SceneOne — AI Screenplay Coverage</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700;800;900&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
@@ -642,7 +642,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 }
 
 /* ─── TOS FOOTER + MODALS ─── */
-.tos-footer{position:fixed;bottom:0;left:0;right:0;z-index:150;background:rgba(15,15,18,0.96);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:8px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.tos-footer{position:fixed;bottom:0;left:0;right:0;z-index:150;background:rgba(15,15,18,0.96);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:8px 24px calc(8px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
 .tos-footer-links{display:flex;gap:16px;align-items:center;}
 .tos-footer-link{font-size:10px;font-weight:600;color:var(--sub);text-decoration:none;cursor:pointer;transition:color .15s;letter-spacing:.5px;}
 .tos-footer-link:hover{color:var(--cyan);}
@@ -714,7 +714,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .exec-request-btn:hover{background:rgba(62,237,231,0.15);}
 .exec-timestamp{font-size:9px;color:var(--sub);text-align:center;margin-top:8px;}
 
-@media(max-width:600px){.tos-footer{padding:6px 16px;}.exec-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.tos-footer{padding:6px 16px calc(6px + env(safe-area-inset-bottom,0px));}.exec-grid{grid-template-columns:repeat(2,1fr);}}
 
 @media print {
   /* Hide everything except the report */
@@ -2060,7 +2060,6 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       </div>
       <div id="dash-feed-list"></div>
       <!-- placeholder cards removed — loadDashboard() renders real data -->
-      <div style="display:none" id="dash-placeholder-start">
     </main>
   </div>
 </div>
@@ -3061,7 +3060,15 @@ She grabs her jacket.</textarea>
 const SUPABASE_URL      = 'https://zzsjgaijrngxkaqakplm.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_yuptAX-fJGnyTuDgReScEg_bqg7qPEx';
 const EDGE_FN_URL       = SUPABASE_URL + '/functions/v1/grade-script';
-const supabaseClient    = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = (() => {
+  try {
+    if (!window.supabase) throw new Error('supabase-js did not load');
+    return window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  } catch(e) {
+    console.error('SceneOne: Supabase client init failed —', e.message);
+    return null;
+  }
+})();
 
 // ─── KEEP-WARM PING — prevent edge function cold starts ───
 (function keepWarm() {
@@ -3087,9 +3094,11 @@ const supabaseClient    = window.supabase.createClient(SUPABASE_URL, SUPABASE_AN
   }
 })();
 
-supabaseClient.auth.onAuthStateChange((_event, session) => {
-  _currentUser = session?.user || null;
-});
+if (supabaseClient) {
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    _currentUser = session?.user || null;
+  });
+}
 
 // pdf.js worker setup
 if (typeof pdfjsLib !== 'undefined') {
@@ -4314,7 +4323,7 @@ const _origGoToRef = goTo;
 window._patchedGoTo = function(id) {
   _origGoToRef(id);
   // TOS handled by checkTosBeforeAnalysis — not here
-  document.body.style.paddingBottom = '44px';
+  document.body.style.setProperty('padding-bottom', 'calc(44px + env(safe-area-inset-bottom,0px))');
 };
 // ─── AUTH TAB SWITCHING ───
 function switchAuthTab(tab) {
