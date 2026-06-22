@@ -5645,11 +5645,14 @@ function _showLimitReached(msg) {
       if(!v) return;
       var map = { exec:'exec-profile', 'exec-profile':'exec-profile', dashboard:'dashboard', discovery:'dashboard', writer:'writer-profile', 'writer-profile':'writer-profile', upload:'upload' };
       var screen = map[v];
-      if(screen && typeof goTo==='function' && document.getElementById('screen-'+screen)) goTo(screen);
+      if(!screen || typeof goTo!=='function' || !document.getElementById('screen-'+screen)) return;
+      var cur = document.querySelector('.screen.active');
+      if(!cur || cur.id !== 'screen-'+screen) goTo(screen);
     }catch(e){}
   }
-  routeView();
-  setTimeout(routeView, 400);
+  // Re-assert a few times to beat the app's async auth-init, then stop so
+  // normal in-app navigation still works.
+  [0,300,700,1300,2200].forEach(function(t){ setTimeout(routeView, t); });
 })();
 </script>
 
