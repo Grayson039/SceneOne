@@ -75,7 +75,10 @@ serve(async (req) => {
     // ----- CACHE: identical draft → instant return (no model call, no credit) ----
     // Fingerprint the exact draft. If this text was graded before, return the
     // stored report immediately — no re-analysis, no wasted compute, no second wait.
-    const scriptHash = await sha256Hex(script_text.trim());
+    // The version prefix invalidates the cache whenever the output schema/prompt
+    // changes (bump it on any prompt change), so cached reports never go stale.
+    const CACHE_VERSION = 'v2';
+    const scriptHash = await sha256Hex(CACHE_VERSION + '\n' + script_text.trim());
     try {
       const { data: cachedRow } = await admin
         .from('analysis_cache')
@@ -183,6 +186,8 @@ Evaluate five dimensions:
 
 For each dimension, score 0–100. Be honest — 60s are common for drafts. Reserve 85+ for exceptional work.
 
+Also provide a brief development-executive assessment, grounded in the actual script: its genre/subgenre, a rough production budget tier, the number of distinct named speaking characters, and a Recommend / Consider / Pass verdict with a one-line rationale an industry reader could act on.
+
 Return this exact JSON structure:
 {
   "overall_score": <integer 0-100>,
@@ -198,6 +203,13 @@ Return this exact JSON structure:
     "summary": "<one line: how completely the script hits the 15-beat Save the Cat structure>",
     "strongest_beat": "<beat name — why it lands, with a page ref>",
     "weakest_beat": "<beat name — what's missing or soft, with a page ref>"
+  },
+  "exec": {
+    "genre": "<primary genre / subgenre, e.g. 'Psychological Thriller / Drama'>",
+    "budget_tier": "<rough production tier + range, e.g. 'Mid-range · $5M–$15M'>",
+    "named_characters": <integer count of distinct named speaking characters>,
+    "recommendation": "<exactly one of: Recommend, Consider, Pass>",
+    "recommendation_note": "<1-2 sentences for an industry reader — what to do and why>"
   },
   "win_statement": "<2-3 sentences on the script's single biggest strength — cite a specific moment or technique>",
   "logline": "<2-3 sentence structural logline — what the protagonist wants, what stands in the way, what's at stake>",

@@ -2514,11 +2514,11 @@ a:focus-visible,button:focus-visible,[role="button"]:focus-visible,input:focus-v
         <div class="exec-grid">
           <div class="exec-stat">
             <div class="exec-stat-label">Genre</div>
-            <div class="exec-stat-val">Psychological Thriller / Drama</div>
+            <div class="exec-stat-val" id="exec-genre">Psychological Thriller / Drama</div>
           </div>
           <div class="exec-stat">
             <div class="exec-stat-label">Budget Tier (est.)</div>
-            <div class="exec-stat-val">Mid-range · $5M–$15M</div>
+            <div class="exec-stat-val" id="exec-budget">Mid-range · $5M–$15M</div>
           </div>
           <div class="exec-stat">
             <div class="exec-stat-label">Format</div>
@@ -2526,23 +2526,23 @@ a:focus-visible,button:focus-visible,[role="button"]:focus-visible,input:focus-v
           </div>
           <div class="exec-stat">
             <div class="exec-stat-label">Craft Score</div>
-            <div class="exec-stat-val" style="color:var(--cyan)">79 / 100</div>
+            <div class="exec-stat-val" id="exec-craft" style="color:var(--cyan)">79 / 100</div>
           </div>
           <div class="exec-stat">
             <div class="exec-stat-label">Primary Strength</div>
-            <div class="exec-stat-val" style="color:var(--green)">Dialogue · 91</div>
+            <div class="exec-stat-val" id="exec-strength" style="color:var(--green)">Dialogue · 91</div>
           </div>
           <div class="exec-stat">
             <div class="exec-stat-label">Primary Flag</div>
-            <div class="exec-stat-val" style="color:var(--amber)">Pacing · pp.34–51</div>
+            <div class="exec-stat-val" id="exec-flag" style="color:var(--amber)">Pacing · pp.34–51</div>
           </div>
           <div class="exec-stat">
             <div class="exec-stat-label">Named Characters</div>
-            <div class="exec-stat-val">5 · 2 female leads</div>
+            <div class="exec-stat-val" id="exec-named">5 · 2 female leads</div>
           </div>
           <div class="exec-stat">
             <div class="exec-stat-label">Comp Titles</div>
-            <div class="exec-stat-val">Whiplash · Black Swan · Nightcrawler</div>
+            <div class="exec-stat-val" id="exec-comp">Whiplash · Black Swan · Nightcrawler</div>
           </div>
           <div class="exec-stat">
             <div class="exec-stat-label">Save the Cat Beat</div>
@@ -2551,11 +2551,11 @@ a:focus-visible,button:focus-visible,[role="button"]:focus-visible,input:focus-v
         </div>
 
         <!-- Recommendation -->
-        <div class="exec-rec exec-rec-consider">
-          <div class="exec-rec-icon">⚠</div>
+        <div class="exec-rec exec-rec-consider" id="exec-rec">
+          <div class="exec-rec-icon" id="exec-rec-icon">⚠</div>
           <div>
-            <div class="exec-rec-title">Conditional Consideration — Pending Revision</div>
-            <div class="exec-rec-body">Strong dialogue and clear protagonist motivation. Act 2 pacing gap (pp.34–51) and soft midpoint are addressable in one revision pass. Recommend requesting revised draft before full consideration.</div>
+            <div class="exec-rec-title" id="exec-rec-title">Conditional Consideration — Pending Revision</div>
+            <div class="exec-rec-body" id="exec-rec-body">Strong dialogue and clear protagonist motivation. Act 2 pacing gap (pp.34–51) and soft midpoint are addressable in one revision pass. Recommend requesting revised draft before full consideration.</div>
           </div>
         </div>
 
@@ -3208,6 +3208,49 @@ function populateReport(d) {
     } else if (d.save_the_cat.summary) {
       stcEl.textContent = d.save_the_cat.summary.slice(0, 60);
     }
+  }
+
+  // ── Exec Mode — populate the development assessment from real data ──
+  const _dimName = { structure:'Structure', conflict:'Conflict', dialogue:'Dialogue', pacing:'Pacing', visual:'Visual' };
+  const _setExec = (id, v) => { const e = document.getElementById(id); if (e && v != null && v !== '') e.textContent = v; };
+
+  if (Array.isArray(d.story_dna) && d.story_dna.length)
+    _setExec('exec-comp', d.story_dna.map(x => x.film).filter(Boolean).join(' · '));
+  if (d.overall_score != null) _setExec('exec-craft', d.overall_score + ' / 100');
+  _setExec('exec-page-count', (_scriptType === 'short' ? 'Short Film' : 'Feature') + ' · ' + (window._scriptPageCount || '—') + ' pages');
+
+  if (d.scores) {
+    const _e = Object.entries(d.scores).filter(([, v]) => typeof v === 'number').sort((a, b) => b[1] - a[1]);
+    if (_e.length) {
+      const [hiK, hiV] = _e[0], [loK, loV] = _e[_e.length - 1];
+      _setExec('exec-strength', (_dimName[hiK] || hiK) + ' · ' + hiV);
+      const loRef = d.categories?.[loK]?.page_ref;
+      _setExec('exec-flag', (_dimName[loK] || loK) + ' · ' + (loRef || loV));
+    }
+  }
+
+  if (d.exec) {
+    _setExec('exec-genre', d.exec.genre);
+    _setExec('exec-budget', d.exec.budget_tier);
+    if (d.exec.named_characters != null) _setExec('exec-named', d.exec.named_characters + ' named');
+  }
+
+  // Recommendation verdict — from the exec analysis, or derived from craft score
+  let _verdict = d.exec?.recommendation;
+  if (!_verdict && d.overall_score != null) _verdict = d.overall_score >= 80 ? 'Recommend' : (d.overall_score >= 65 ? 'Consider' : 'Pass');
+  if (_verdict) {
+    const _map = {
+      Recommend: { color: 'var(--green)', icon: '✓', title: 'Recommend — Strong Craft' },
+      Consider:  { color: 'var(--amber)', icon: '⚠', title: 'Consider — Pending Revision' },
+      Pass:      { color: 'var(--sub)',   icon: '✕', title: 'Pass — Not Ready for Coverage' }
+    };
+    const _m = _map[_verdict] || _map.Consider;
+    const _ic = document.getElementById('exec-rec-icon');
+    const _ti = document.getElementById('exec-rec-title');
+    const _bo = document.getElementById('exec-rec-body');
+    if (_ic) { _ic.textContent = _m.icon; _ic.style.color = _m.color; }
+    if (_ti) { _ti.textContent = _m.title; _ti.style.color = _m.color; }
+    if (_bo && d.exec?.recommendation_note) _bo.textContent = d.exec.recommendation_note;
   }
 
   // Pacing flag — update from real category data
