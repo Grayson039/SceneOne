@@ -1268,6 +1268,13 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   #screen-upload{padding:48px 20px;}
   .upload-wrap{max-width:100%;}
 }
+/* ── Accessibility ───────────────────────────────────────────── */
+.so-skip-link{position:absolute;left:-999px;top:0;z-index:9999;background:var(--cyan,#3eede7);color:#08080a;padding:10px 16px;font-weight:800;text-decoration:none;border-radius:0 0 8px 0;}
+.so-skip-link:focus{left:0;}
+a:focus-visible,button:focus-visible,[role="button"]:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--cyan,#3eede7);outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}
+}
 </style>
 <!-- pdf.js for client-side PDF text extraction -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -1275,6 +1282,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
+<a class="so-skip-link" href="#screen-upload">Skip to upload</a>
 
 <!-- ══════════════════════ SCREEN 0: WELCOME / SIGN UP ══════════════════════ -->
 <div class="screen" id="screen-welcome">
@@ -1754,8 +1762,8 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <div class="stt-hint" id="stt-hint">Feature length (~80–120 pages)</div>
 
     <div class="drop-zone" id="drop-zone">
-      <input type="file" id="file-input" accept=".pdf" onchange="handleFile(this)">
-      <div class="drop-icon">
+      <input type="file" id="file-input" accept=".pdf" onchange="handleFile(this)" aria-label="Upload your script — PDF only">
+      <div class="drop-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
       </div>
       <div class="drop-main">Drop your script here</div>
@@ -2538,7 +2546,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
           </div>
           <div class="exec-stat">
             <div class="exec-stat-label">Save the Cat Beat</div>
-            <div class="exec-stat-val">All 15 present · Midpoint soft</div>
+            <div class="exec-stat-val" id="exec-stc-beat">All 15 present · Midpoint soft</div>
           </div>
         </div>
 
@@ -3188,6 +3196,19 @@ function populateReport(d) {
   if (pgSub) pgSub.textContent = pg + ' pages · ' + (d.character_count ? d.character_count + ' characters' : 'Feature');
   if (pgExec) pgExec.textContent = 'Feature · ' + pg + ' pages';
   if (pgHeat) pgHeat.textContent = 'Page by page · ' + pg + ' pages';
+
+  // Exec Mode — Save the Cat beat read, from the real save_the_cat analysis
+  const stcEl = document.getElementById('exec-stc-beat');
+  if (stcEl && d.save_the_cat) {
+    const beatName = s => (typeof s === 'string') ? s.split(/\s[—–-]\s/)[0].trim().slice(0, 26) : '';
+    const strong = beatName(d.save_the_cat.strongest_beat);
+    const weak = beatName(d.save_the_cat.weakest_beat);
+    if (strong || weak) {
+      stcEl.textContent = (strong ? 'Strong: ' + strong : '') + (strong && weak ? ' · ' : '') + (weak ? 'Soft: ' + weak : '');
+    } else if (d.save_the_cat.summary) {
+      stcEl.textContent = d.save_the_cat.summary.slice(0, 60);
+    }
+  }
 
   // Pacing flag — update from real category data
   const pacingCat = d.categories?.pacing;
@@ -5391,7 +5412,7 @@ function _showLimitReached(msg) {
 </div>
 
 <!-- ══════════ FIRST-USE TOS ACKNOWLEDGEMENT MODAL ══════════ -->
-<div class="tos-modal-overlay" id="tos-modal">
+<div class="tos-modal-overlay" id="tos-modal" role="dialog" aria-modal="true" aria-label="Before you see your report — terms acknowledgement">
   <div class="tos-modal">
     <div class="tos-modal-eye">Before you see your report</div>
     <div class="tos-modal-title">A few things you should know.</div>
