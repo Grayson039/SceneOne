@@ -5294,7 +5294,9 @@ async function _runAnalysis() {
     if (data?.error) throw new Error(data.error);
 
     _onApiDone(data);
-    _saveSubmission(title, data);
+    // Don't re-save / re-count an identical re-upload served from cache —
+    // the submission already exists from the first analysis of this draft.
+    if (!data.cached) _saveSubmission(title, data);
 
   } catch (err) {
     console.error('SceneOne analysis error:', err);
