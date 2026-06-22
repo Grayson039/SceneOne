@@ -5278,8 +5278,9 @@ let _currentUser = null;
 let _currentSubId = null;
 let _dashSort = 'score';
 function getNextLoader() {
+  // Star Wars crawl (0) retired — rotate between Film Countdown (1) and Clapperboard (2)
   let next;
-  do { next = Math.floor(Math.random() * 3); } while (next === _lastLoader);
+  do { next = 1 + Math.floor(Math.random() * 2); } while (next === _lastLoader);
   _lastLoader = next;
   return next;
 }
@@ -5301,8 +5302,7 @@ function startProcessing() {
 
   goTo('processing');
   const which = getNextLoader();
-  if (which === 0) runStarWars();
-  else if (which === 1) runCountdown();
+  if (which === 1) runCountdown();
   else runClapper();
 
   // Kick off real API call (non-blocking — runs in parallel with loader)
@@ -5635,6 +5635,23 @@ function _showLimitReached(msg) {
     </div>
   </div>
 </div>
+
+<!-- View router — lets the case-study embed deep-link into a screen via ?view= -->
+<script>
+(function(){
+  function routeView(){
+    try{
+      var v = new URLSearchParams(location.search).get('view');
+      if(!v) return;
+      var map = { exec:'exec-profile', 'exec-profile':'exec-profile', dashboard:'dashboard', discovery:'dashboard', writer:'writer-profile', 'writer-profile':'writer-profile', upload:'upload' };
+      var screen = map[v];
+      if(screen && typeof goTo==='function' && document.getElementById('screen-'+screen)) goTo(screen);
+    }catch(e){}
+  }
+  routeView();
+  setTimeout(routeView, 400);
+})();
+</script>
 
 </body>
 </html>

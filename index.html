@@ -182,6 +182,10 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offse
 .demo-dot{width:11px;height:11px;border-radius:50%;}
 .demo-url{margin-left:10px;font-size:11px;color:var(--sub);font-family:'Courier Prime',monospace;}
 .demo-frame iframe{width:100%;height:680px;border:0;display:block;background:#0F0F0F;}
+.demo-toggle{display:inline-flex;gap:4px;padding:4px;border-radius:100px;background:var(--card);border:1px solid var(--border);margin-bottom:22px;}
+.demo-tab{padding:9px 20px;border-radius:100px;border:none;background:transparent;color:var(--sub);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;letter-spacing:.3px;}
+.demo-tab:hover{color:var(--text);}
+.demo-tab.active{background:var(--cyan);color:#0F0F0F;}
 /* ── Respect reduced-motion preference ────────────────────────── */
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
@@ -222,7 +226,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offse
   <div class="hero-stats">
     <div class="hero-stat"><div class="hero-stat-val" data-val="10">10</div><div class="hero-stat-lbl">Screens Shipped</div></div>
     <div class="hero-stat"><div class="hero-stat-val" data-val="5">5</div><div class="hero-stat-lbl">Craft Dimensions</div></div>
-    <div class="hero-stat"><div class="hero-stat-val" data-val="3">3</div><div class="hero-stat-lbl">Cinematic Loaders</div></div>
+    <div class="hero-stat"><div class="hero-stat-val" data-val="2">2</div><div class="hero-stat-lbl">Cinematic Loaders</div></div>
     <div class="hero-stat"><div class="hero-stat-val" data-val="2">2</div><div class="hero-stat-lbl">Sided Marketplace</div></div>
     <div class="hero-stat"><div class="hero-stat-val" data-val="0" data-prefix="$">$0</div><div class="hero-stat-lbl">To Start</div></div>
   </div>
@@ -239,15 +243,21 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offse
 <section id="demo" aria-label="Live product demo">
   <div class="section-eyebrow">See It Work</div>
   <div class="section-title">The real product, running right here.</div>
-  <p class="section-sub">This is the live app embedded below &mdash; not a screenshot. Hit &ldquo;Try with Sample Script&rdquo; to watch the full flow: the cinematic loader, an AI coverage report graded against Save the Cat, the pacing heatmap, and the Creative Choice score-burn.</p>
+  <p class="section-sub">This is the live app embedded below &mdash; not a screenshot. Toggle between the two sides of the platform: try the <strong style="color:var(--text)">Writer</strong> flow (hit &ldquo;Try with Sample Script&rdquo; for the full loader &rarr; AI coverage report &rarr; Creative Choice score-burn), or switch to the <strong style="color:var(--text)">Industry Reader</strong> dashboard.</p>
+  <div style="text-align:center;">
+    <div class="demo-toggle" role="tablist" aria-label="Choose which side of the platform to preview">
+      <button class="demo-tab active" id="demo-tab-writer" role="tab" aria-selected="true" onclick="setDemoView('writer')">Writer side</button>
+      <button class="demo-tab" id="demo-tab-exec" role="tab" aria-selected="false" onclick="setDemoView('exec')">Industry Reader</button>
+    </div>
+  </div>
   <div class="demo-frame">
     <div class="demo-bar" aria-hidden="true">
       <span class="demo-dot" style="background:#ff5f57"></span>
       <span class="demo-dot" style="background:#febc2e"></span>
       <span class="demo-dot" style="background:#28c840"></span>
-      <span class="demo-url">sceneone.net</span>
+      <span class="demo-url" id="demo-url">sceneone.net</span>
     </div>
-    <iframe src="landing.html" title="SceneOne live product demo" loading="lazy"></iframe>
+    <iframe src="landing.html" id="demo-iframe" title="SceneOne live product demo" loading="lazy"></iframe>
   </div>
   <p style="font-size:12px;color:var(--sub);text-align:center;margin-top:14px;">Best experienced full-screen &mdash; <a href="landing.html" target="_blank" rel="noopener" style="color:var(--cyan);text-decoration:none;">open the live app in a new tab &rarr;</a></p>
 </section>
@@ -367,12 +377,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offse
   <div class="section-title">Built by someone who loves film.</div>
   <p class="section-sub">SceneOne doesn&rsquo;t just look cinematic &mdash; it speaks the language of film at every transition, every state, every moment of waiting. These are not decorations. They are the product&rsquo;s personality made tangible.</p>
   <div class="loader-grid">
-    <div class="loader-card">
-      <div class="loader-icon">&#11088;</div>
-      <div class="loader-name">Star Wars Crawl</div>
-      <div class="loader-phrase">&ldquo;Scene Set. Your script report is ready.&rdquo;</div>
-      <div class="loader-status ls-built">Built &#10003;</div>
-    </div>
     <div class="loader-card">
       <div class="loader-icon">&#127902;</div>
       <div class="loader-name">Film Countdown</div>
@@ -516,7 +520,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offse
     <div class="decision-card">
       <div class="decision-num">Decision 07</div>
       <div class="decision-title">Randomized Cinematic Loading Experiences &mdash; Virality Baked In</div>
-      <div class="decision-body">The loading screen is the one moment the writer is captive and waiting. Three randomized experiences: Star Wars crawl, Film Countdown, Clapperboard. Writers upload twice just to see which one they get. Virality is designed in, not bolted on.</div>
+      <div class="decision-body">The loading screen is the one moment the writer is captive and waiting. Two randomized experiences: a Film Countdown and a Clapperboard. Writers upload again just to see which one they get. Virality is designed in, not bolted on.</div>
       <span class="decision-badge badge-high">High Priority</span>
     </div>
     <div class="decision-card">
@@ -708,6 +712,18 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offse
     statObs.observe(el);
   });
 })();
+
+// Demo embed — toggle between the Writer flow and the Exec dashboard
+function setDemoView(v){
+  var f=document.getElementById('demo-iframe');
+  var w=document.getElementById('demo-tab-writer'), e=document.getElementById('demo-tab-exec');
+  var url=document.getElementById('demo-url');
+  var exec=(v==='exec');
+  if(f) f.src = exec ? 'landing.html?view=exec' : 'landing.html';
+  if(url) url.textContent = exec ? 'sceneone.net · reader view' : 'sceneone.net';
+  if(w){ w.classList.toggle('active',!exec); w.setAttribute('aria-selected',String(!exec)); }
+  if(e){ e.classList.toggle('active',exec); e.setAttribute('aria-selected',String(exec)); }
+}
 </script>
 </body>
 </html>
