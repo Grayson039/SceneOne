@@ -162,13 +162,40 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
 .reveal-d7{transition-delay:.49s;}
 .reveal-d8{transition-delay:.56s;}
 .reveal-d9{transition-delay:.63s;}
+/* ── Accessibility: skip link ─────────────────────────────────── */
+.skip-link{position:absolute;left:-999px;top:0;z-index:1000;background:var(--cyan);color:#0F0F0F;padding:10px 16px;border-radius:0 0 8px 0;font-size:13px;font-weight:800;text-decoration:none;}
+.skip-link:focus{left:0;}
+a:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:4px;}
+/* ── Role / tools meta bar ────────────────────────────────────── */
+.meta-bar{display:flex;flex-wrap:wrap;gap:28px;justify-content:center;margin-top:40px;padding-top:32px;border-top:1px solid var(--border);}
+.meta-item{text-align:center;}
+.meta-k{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:5px;}
+.meta-v{font-size:12px;font-weight:700;color:var(--text);}
+/* ── Live status pill ─────────────────────────────────────────── */
+.status-pill{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:100px;background:rgba(76,175,125,0.1);border:1px solid rgba(76,175,125,0.3);color:var(--green);font-size:11px;font-weight:700;margin-bottom:20px;letter-spacing:.5px;}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(76,175,125,0.5);}70%{box-shadow:0 0 0 7px rgba(76,175,125,0);}100%{box-shadow:0 0 0 0 rgba(76,175,125,0);}}
+/* ── Live demo embed ──────────────────────────────────────────── */
+.demo-frame{width:100%;max-width:1000px;margin:0 auto;border-radius:16px;overflow:hidden;border:1px solid var(--border2);background:var(--card);box-shadow:0 30px 80px rgba(0,0,0,0.5);}
+.demo-bar{display:flex;align-items:center;gap:7px;padding:11px 14px;background:#141414;border-bottom:1px solid var(--border);}
+.demo-dot{width:11px;height:11px;border-radius:50%;}
+.demo-url{margin-left:10px;font-size:11px;color:var(--sub);font-family:'Courier Prime',monospace;}
+.demo-frame iframe{width:100%;height:680px;border:0;display:block;background:#0F0F0F;}
+/* ── Respect reduced-motion preference ────────────────────────── */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
+  html{scroll-behavior:auto;}
+  .reveal{opacity:1 !important;transform:none !important;}
+}
 </style>
 </head>
 <body>
 
+<a class="skip-link" href="#problem">Skip to content</a>
+
 <!-- NAV -->
-<nav>
-  <a class="nav-brand" href="https://willgraysondesign.com">WG<span>.</span></a>
+<nav aria-label="Primary">
+  <a class="nav-brand" href="https://willgraysondesign.com" aria-label="Will Grayson — portfolio home">WG<span>.</span></a>
   <div class="nav-links">
     <a class="nav-link" href="#problem">Problem</a>
     <a class="nav-link" href="#features">Features</a>
@@ -177,27 +204,52 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
     <a class="nav-link" href="#legal">Legal</a>
     <a class="nav-link" href="#roadmap">Roadmap</a>
   </div>
-  <a class="nav-cta" href="landing.html" target="_blank">Try the Prototype &rarr;</a>
+  <a class="nav-cta" href="landing.html" target="_blank" rel="noopener">Try It Live &rarr;</a>
 </nav>
 
 <!-- HERO -->
 <div class="hero">
+  <div class="status-pill"><span class="status-dot" aria-hidden="true"></span> Live in production at sceneone.net</div>
   <div class="hero-eyebrow">Case Study &middot; AI Product Design</div>
   <h1 class="hero-title">Scene<span>One</span></h1>
   <div class="hero-mission">&ldquo;Democratizing Hollywood, one script at a time.&rdquo;</div>
-  <p class="hero-sub">An AI-powered screenplay feedback tool that gives every writer the same studio-grade coverage Hollywood charges $100 for &mdash; free, in minutes, graded against the same framework the industry uses.</p>
+  <p class="hero-sub">An AI-powered screenplay feedback tool that gives every writer the same studio-grade coverage Hollywood charges $100 for &mdash; free, in minutes. Not a mockup: a shipped product with real Claude-powered analysis, accounts, payments, and a two-sided marketplace &mdash; live and running today.</p>
   <div class="hero-ctas">
-    <a class="btn-primary" href="landing.html" target="_blank">Try the Prototype &rarr;</a>
+    <a class="btn-primary" href="landing.html" target="_blank" rel="noopener">Try It Live &rarr;</a>
     <a class="btn-secondary" href="#problem">Read the Case Study &darr;</a>
   </div>
   <div class="hero-stats">
-    <div class="hero-stat"><div class="hero-stat-val" data-val="7">7</div><div class="hero-stat-lbl">Screens Built</div></div>
-    <div class="hero-stat"><div class="hero-stat-val" data-val="3">3</div><div class="hero-stat-lbl">Cinematic Loaders</div></div>
+    <div class="hero-stat"><div class="hero-stat-val" data-val="10">10</div><div class="hero-stat-lbl">Screens Shipped</div></div>
     <div class="hero-stat"><div class="hero-stat-val" data-val="5">5</div><div class="hero-stat-lbl">Craft Dimensions</div></div>
+    <div class="hero-stat"><div class="hero-stat-val" data-val="3">3</div><div class="hero-stat-lbl">Cinematic Loaders</div></div>
     <div class="hero-stat"><div class="hero-stat-val" data-val="2">2</div><div class="hero-stat-lbl">Sided Marketplace</div></div>
     <div class="hero-stat"><div class="hero-stat-val" data-val="0" data-prefix="$">$0</div><div class="hero-stat-lbl">To Start</div></div>
   </div>
+  <div class="meta-bar">
+    <div class="meta-item"><div class="meta-k">Role</div><div class="meta-v">Solo &mdash; Design + Build</div></div>
+    <div class="meta-item"><div class="meta-k">Timeline</div><div class="meta-v">2026 &middot; Ongoing</div></div>
+    <div class="meta-item"><div class="meta-k">Design</div><div class="meta-v">Figma</div></div>
+    <div class="meta-item"><div class="meta-k">Build</div><div class="meta-v">JS &middot; Supabase &middot; Claude</div></div>
+    <div class="meta-item"><div class="meta-k">Platform</div><div class="meta-v">Responsive Web</div></div>
+  </div>
 </div>
+
+<!-- LIVE DEMO -->
+<section id="demo" aria-label="Live product demo">
+  <div class="section-eyebrow">See It Work</div>
+  <div class="section-title">The real product, running right here.</div>
+  <p class="section-sub">This is the live app embedded below &mdash; not a screenshot. Hit &ldquo;Try with Sample Script&rdquo; to watch the full flow: the cinematic loader, an AI coverage report graded against Save the Cat, the pacing heatmap, and the Creative Choice score-burn.</p>
+  <div class="demo-frame">
+    <div class="demo-bar" aria-hidden="true">
+      <span class="demo-dot" style="background:#ff5f57"></span>
+      <span class="demo-dot" style="background:#febc2e"></span>
+      <span class="demo-dot" style="background:#28c840"></span>
+      <span class="demo-url">sceneone.net</span>
+    </div>
+    <iframe src="landing.html" title="SceneOne live product demo" loading="lazy"></iframe>
+  </div>
+  <p style="font-size:12px;color:var(--sub);text-align:center;margin-top:14px;">Best experienced full-screen &mdash; <a href="landing.html" target="_blank" rel="noopener" style="color:var(--cyan);text-decoration:none;">open the live app in a new tab &rarr;</a></p>
+</section>
 
 <!-- MISSION -->
 <section id="mission">
@@ -281,6 +333,11 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
       <h3>Script Title Parsing</h3>
       <p>SceneOne detects your script title from the first page on upload and confirms it with you before analysis starts. Always editable &mdash; your title, your control. No assumptions.</p>
     </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-cyan">&#9889;</div>
+      <h3>Instant Re-Uploads</h3>
+      <p>Every draft is fingerprinted on upload. Re-submit the same script and the report loads instantly from cache &mdash; no re-analysis, no second wait, no wasted compute. The expensive work happens once.</p>
+    </div>
   </div>
 </section>
 
@@ -344,9 +401,9 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
 
 <!-- MARKETPLACE -->
 <section id="marketplace">
-  <div class="section-eyebrow">Phase 2 &mdash; Discovery Dashboard</div>
+  <div class="section-eyebrow">The Marketplace &middot; Live Discovery Dashboard</div>
   <div class="section-title">The two-sided marketplace no coverage tool has built.</div>
-  <p class="section-sub">Writers opt in to list their logline and Story DNA. Verified industry readers browse scripts that have already cleared a quality bar. Every script on the dashboard has been through SceneOne&rsquo;s analysis &mdash; no more wading through 10,000 unvetted submissions.</p>
+  <p class="section-sub">Writers opt in to list their logline and Story DNA. Verified industry readers browse scripts that have already cleared a quality bar. Every script on the dashboard has been through SceneOne&rsquo;s analysis &mdash; no more wading through 10,000 unvetted submissions. The dashboard is wired to a live Supabase database with real listing data and access controls.</p>
   <div class="marketplace-split">
     <div class="mkt-side">
       <div class="mkt-side-label writer">Writer Side</div>
@@ -380,7 +437,7 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
 <!-- SCREENS -->
 <section id="screens">
   <div class="section-eyebrow">The Screens</div>
-  <div class="section-title">7 screens. One cohesive system.</div>
+  <div class="section-title">10 screens. One cohesive system.</div>
   <div class="screens-grid">
     <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Welcome / Sign Up</div><div class="screen-card-tag">Screen 0</div></div><div class="screen-card-body"><p>Create Account and Sign In tabs. Password strength meter with 4 live requirements. Form validation &mdash; button stays grey until all fields are valid. Age confirmation (18+) and content policy summary.</p></div></div>
     <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Onboarding</div><div class="screen-card-tag">Screen 0b</div></div><div class="screen-card-body"><p>6-step walkthrough: Save the Cat grading framework, plain English feedback, Creative Choice (you have the final word), Fix It inline editor, Logline + Story DNA pitch tools, and processing time honesty.</p></div></div>
@@ -390,6 +447,8 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
     <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Writer Profile</div><div class="screen-card-tag">Screen 6</div></div><div class="screen-card-body"><p>Avatar, member stats, script listing cards with status chips (Live / Private / Under Review / Approved / Expired), activity feed, pending request approvals with Approve/Decline inline.</p></div></div>
     <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Exec Profile</div><div class="screen-card-tag">Screen 7</div></div><div class="screen-card-body"><p>Flux-inspired. Left sidebar nav with notification badges. Donut ring charts &mdash; scripts reviewed, active access, pending requests, avg score. Requested scripts list with status chips. Full activity feed.</p></div></div>
     <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Exec Mode (Report)</div><div class="screen-card-tag">Toggle View</div></div><div class="screen-card-body"><p>9-stat development assessment grid: Genre, Budget Tier, Format, Craft Score, Primary Strength, Primary Flag, Named Characters, Comp Titles, Save the Cat Beat. Recommendation card. Browse Discovery Dashboard button.</p></div></div>
+    <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Pricing &amp; Plans</div><div class="screen-card-tag">Screen 8</div></div><div class="screen-card-body"><p>Free / Writer $12 / Pro $29 tiers with feature lists and &ldquo;coming soon&rdquo; tags. Stripe Payment Links wired into each CTA &mdash; checkout pre-fills email so the webhook matches the account.</p></div></div>
+    <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Admin Verification</div><div class="screen-card-tag">Screen 9</div></div><div class="screen-card-body"><p>Internal dashboard to approve or revoke industry-reader accounts &mdash; reviews submitted credentials (IMDbPro, company email, LinkedIn) and flips the verified flag in Supabase. Gated to the platform owner.</p></div></div>
   </div>
 </section>
 
@@ -407,7 +466,7 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
     <div class="decision-card">
       <div class="decision-num">Decision 02</div>
       <div class="decision-title">Save the Cat as the Grading Framework</div>
-      <div class="decision-body">AI feedback without a documented methodology is just opinion. Save the Cat gives every score a traceable foundation &mdash; the same blueprint Hollywood uses. Stated clearly in onboarding so writers know exactly what they&rsquo;re being evaluated against.</div>
+      <div class="decision-body">AI feedback without a documented methodology is just opinion. Save the Cat gives every score a traceable foundation &mdash; the same blueprint Hollywood uses. The grading model is explicitly instructed to evaluate structure against the 15 Save the Cat beats, and every report returns a beat-level read &mdash; strongest beat, weakest beat, with page references. Stated clearly in onboarding so writers know exactly what they&rsquo;re being evaluated against.</div>
       <span class="decision-badge badge-high">High Priority</span>
     </div>
     <div class="decision-card">
@@ -440,6 +499,12 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
       <div class="decision-body">The loading screen is the one moment the writer is captive and waiting. Three randomized experiences: Star Wars crawl, Film Countdown, Clapperboard. Writers upload twice just to see which one they get. Virality is designed in, not bolted on.</div>
       <span class="decision-badge badge-high">High Priority</span>
     </div>
+    <div class="decision-card">
+      <div class="decision-num">Decision 08</div>
+      <div class="decision-title">Enforce the Business Logic on the Server, Not the Browser</div>
+      <div class="decision-body">Plan limits and pricing can&rsquo;t live in the frontend &mdash; anyone can bypass that. The grading function checks each caller&rsquo;s plan and monthly usage server-side before spending a cent on AI, and fingerprints every draft (SHA-256) so an identical re-upload returns from cache instantly &mdash; no second model call, no wasted compute. Correctness and cost control built into the backend, not bolted on after.</div>
+      <span class="decision-badge badge-high">High Priority &middot; Engineering</span>
+    </div>
   </div>
 </section>
 
@@ -454,7 +519,7 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
     <div class="legal-card"><h3>Content Policy</h3><p>The &ldquo;legitimate studio&rdquo; test: could this be produced by a real studio? If yes, it&rsquo;s allowed. Four hard prohibited categories &mdash; content that requires real harm to exist. SceneOne supports provocative, dark, and challenging work.</p></div>
     <div class="legal-card"><h3>Marketplace Rules</h3><p>Writer 72-hour response window, 14-day reader access expiry, timestamped IP certificates (Certificate of Prior Upload), reader credential verification, contact preference (platform vs. personal email), co-writer rights and notifications.</p></div>
   </div>
-  <div class="legal-disclaimer">&#9888; Legal package is a working draft. To be reviewed by a qualified attorney before publishing. Contact legal@sceneone.app</div>
+  <div class="legal-disclaimer">&#9888; Legal package is a working draft. To be reviewed by a qualified attorney before publishing. Contact legal@sceneone.net</div>
 </section>
 
 <!-- ROADMAP -->
@@ -464,11 +529,11 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
   <div class="phase-list">
     <div class="phase-item">
       <div class="phase-num done">1</div>
-      <div><div class="phase-title">Coverage Tool &mdash; Built</div><div class="phase-body">AI script feedback graded against Save the Cat. 7 screens. Fix It inline editor. Creative Choice. Pacing heatmap. Logline + Story DNA. 3 cinematic loading experiences. Two-sided marketplace prototype. Legal architecture. Co-writer credits.</div></div>
+      <div><div class="phase-title">The Live Product &mdash; Shipped</div><div class="phase-body">Live in production: a real Supabase database + accounts, Claude-powered grading against Save the Cat, server-side plan limits, Stripe subscriptions, SHA-256 fingerprint caching (identical re-uploads return instantly), and the Discovery Dashboard on real data. 10 screens, Fix It inline editor, Creative Choice score-burn, pacing heatmap, 3 cinematic loaders, admin verification, and the full legal architecture.</div></div>
     </div>
     <div class="phase-item">
       <div class="phase-num" style="color:var(--gold)">2</div>
-      <div><div class="phase-title">Live Discovery Dashboard &mdash; Next</div><div class="phase-body">Real Supabase database. Claude API integration. Reader verification system. Co-writer email notifications via Resend. IP timestamp certificates. Stripe payments. sceneone.app domain.</div></div>
+      <div><div class="phase-title">Marketplace at Scale &mdash; Next</div><div class="phase-body">Co-writer email notifications (Resend), timestamped IP certificates, a streamlined reader-verification pipeline, the Pro Storyboard Breakdown feature, and the move to the sceneone.app domain with deeper mobile polish.</div></div>
     </div>
     <div class="phase-item">
       <div class="phase-num planned">3</div>
@@ -482,14 +547,14 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
   <div class="section-eyebrow">Tech Stack</div>
   <div class="section-title">Production-ready architecture from day one.</div>
   <div class="tech-grid">
-    <div class="tech-card"><div class="tech-name">React + Tailwind</div><div class="tech-role">Frontend</div></div>
-    <div class="tech-card"><div class="tech-name">Node.js + Express</div><div class="tech-role">Backend</div></div>
-    <div class="tech-card"><div class="tech-name">Supabase</div><div class="tech-role">DB + Auth + Storage</div></div>
-    <div class="tech-card"><div class="tech-name">Claude API</div><div class="tech-role">AI Analysis</div></div>
-    <div class="tech-card"><div class="tech-name">Resend</div><div class="tech-role">Email Notifications</div></div>
-    <div class="tech-card"><div class="tech-name">Stripe</div><div class="tech-role">Payments</div></div>
-    <div class="tech-card"><div class="tech-name">Vercel + Railway</div><div class="tech-role">Hosting</div></div>
-    <div class="tech-card"><div class="tech-name">~$1.65/script</div><div class="tech-role">API Cost</div></div>
+    <div class="tech-card"><div class="tech-name">Vanilla JS + HTML</div><div class="tech-role">Frontend &middot; no framework</div></div>
+    <div class="tech-card"><div class="tech-name">Supabase Edge Functions</div><div class="tech-role">Backend &middot; Deno / TS</div></div>
+    <div class="tech-card"><div class="tech-name">Supabase</div><div class="tech-role">Postgres &middot; Auth &middot; RLS</div></div>
+    <div class="tech-card"><div class="tech-name">Claude Sonnet 4.6</div><div class="tech-role">AI Analysis</div></div>
+    <div class="tech-card"><div class="tech-name">pdf.js</div><div class="tech-role">Script Parsing</div></div>
+    <div class="tech-card"><div class="tech-name">Stripe</div><div class="tech-role">Subscriptions</div></div>
+    <div class="tech-card"><div class="tech-name">GitHub Pages</div><div class="tech-role">Hosting</div></div>
+    <div class="tech-card"><div class="tech-name">SHA-256 Cache</div><div class="tech-role">$0 re-uploads</div></div>
   </div>
 </section>
 
@@ -537,7 +602,7 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
   <div class="cs-footer-brand">Scene<span>One</span></div>
   <div class="cs-footer-sub">&ldquo;Democratizing Hollywood, one script at a time.&rdquo;</div>
   <div class="cs-footer-links">
-    <a class="cs-footer-link" href="landing.html" target="_blank">Try the Prototype &rarr;</a>
+    <a class="cs-footer-link" href="landing.html" target="_blank" rel="noopener">Try It Live &rarr;</a>
     <a class="cs-footer-link" href="https://willgraysondesign.com">Portfolio</a>
     <a class="cs-footer-link" href="#">Terms of Service</a>
     <a class="cs-footer-link" href="#">Privacy Policy</a>
@@ -549,6 +614,16 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
 
 <script>
 (function(){
+  // ── Mark purely decorative icons as hidden from screen readers ──
+  document.querySelectorAll('.feature-icon,.loader-icon,.status-dot,.demo-dot').forEach(el=>el.setAttribute('aria-hidden','true'));
+
+  // ── Respect reduced-motion: render final state, skip animations ─
+  const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (REDUCED) {
+    document.querySelectorAll('.hero-stat-val[data-val]').forEach(el=>{ el.textContent=(el.dataset.prefix||'')+el.dataset.val; });
+    return; // no reveal observers, no count-up
+  }
+
   // ── Auto-apply reveal classes to targeted elements ──────────────
   const STAGGER_SELECTORS = [
     '.ps-card','.feature-card','.screen-card','.legal-card',
