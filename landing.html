@@ -5279,7 +5279,18 @@ async function _runAnalysis() {
       body: { script_text: scriptText, title, user_email: _currentUser?.email || null, script_type: _scriptType },
     });
 
-    if (fnError) throw new Error(fnError.message || 'Edge function error');
+    // Plan/usage limit (HTTP 429) → friendly message, not a raw error
+    if (fnError) {
+      const status = fnError.context && fnError.context.status;
+      if (status === 429) {
+        let limitMsg = '';
+        try { const b = await fnError.context.clone().json(); if (b && b.message) limitMsg = b.message; } catch (_e) {}
+        _showLimitReached(limitMsg);
+        return;
+      }
+      throw new Error(fnError.message || 'Edge function error');
+    }
+    if (data && data.error === 'limit_reached') { _showLimitReached(data.message || ''); return; }
     if (data?.error) throw new Error(data.error);
 
     _onApiDone(data);
@@ -5297,6 +5308,27 @@ async function _runAnalysis() {
       showUploadError('Analysis failed: ' + (err?.message || 'Unknown error') + ' — check the browser console for details.');
     }, 2500);
   }
+}
+
+// ─── Friendly plan-limit handling (HTTP 429 from grade-script) ───
+function _showLimitReached(msg) {
+  goTo('upload');
+  const zone = document.querySelector('.drop-zone');
+  let box = document.getElementById('limit-reached-msg');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'limit-reached-msg';
+    box.style.cssText = 'margin-top:16px;padding:16px 18px;border-radius:12px;border:1px solid rgba(62,237,231,0.35);background:rgba(62,237,231,0.08);color:var(--text,#e8e8ea);font-size:14px;line-height:1.55;text-align:center;';
+    if (zone && zone.parentNode) zone.parentNode.insertBefore(box, zone.nextSibling);
+    else document.body.appendChild(box);
+  }
+  const detail = msg || "You’ve used all of this month’s script analyses on your current plan.";
+  box.innerHTML = '<div style="font-weight:700;margin-bottom:6px;">You’ve reached this month’s limit</div>'
+    + '<div style="opacity:.85;margin-bottom:14px;">' + detail + ' Your limit resets at the start of next month.</div>'
+    + '<button id="limit-see-plans" style="padding:9px 20px;border-radius:999px;border:none;background:var(--cyan,#3eede7);color:#08080a;font-weight:700;cursor:pointer;">See Plans →</button>';
+  box.style.display = 'block';
+  const btn = document.getElementById('limit-see-plans');
+  if (btn) btn.onclick = function(){ box.style.display = 'none'; goTo('pricing'); };
 }
 
 // ─── UPDATE TOS for co-writers ───
