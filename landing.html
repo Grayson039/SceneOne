@@ -421,7 +421,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .rep-body{display:grid;grid-template-columns:220px 1fr;flex:1;}
 
 /* Sidebar */
-.rep-sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:20px 0;overflow-y:auto;position:sticky;top:0;max-height:100vh;align-self:start;}
+.rep-sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:20px 0;overflow-y:auto;position:sticky;top:calc(var(--rep-bar-h,81px) + 6px);max-height:calc(100vh - var(--rep-bar-h,81px) - 6px);align-self:start;}
 .sidebar-top{padding:0 16px 18px;border-bottom:1px solid var(--border);margin-bottom:14px;}
 .sidebar-status{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border-radius:100px;margin-bottom:10px;}
 .s-cyan{background:var(--cyan);color:#0F0F0F;}
@@ -3420,7 +3420,15 @@ function goTo(id){
     loadScriptHistory();
   }
   if (id === 'dashboard') loadDashboard();
+  if (id === 'report') syncRepBarHeight();
 }
+
+// Keep the score sidebar pinned just below the (sticky) report top bar
+function syncRepBarHeight(){
+  const b = document.querySelector('.rep-bar');
+  if (b && b.offsetHeight) document.documentElement.style.setProperty('--rep-bar-h', b.offsetHeight + 'px');
+}
+window.addEventListener('resize', syncRepBarHeight);
 
 // ─── UPLOAD ───
 const dz=document.getElementById('drop-zone');
