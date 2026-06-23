@@ -14,7 +14,7 @@
   --border:    rgba(255,255,255,0.07);
   --border2:   rgba(255,255,255,0.12);
   --text:      #ECECEC;
-  --sub:       #888892;
+  --sub:       #A6A6B2;
   --cyan:      #3EEDE7;
   --cyan-d:    rgba(62,237,231,0.09);
   --cyan-b:    rgba(62,237,231,0.20);
@@ -1275,6 +1275,15 @@ a:focus-visible,button:focus-visible,[role="button"]:focus-visible,input:focus-v
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}
 }
+/* ── Embedded mode (case-study iframe) — clean, demo-focused ──── */
+/* Scrollbar hidden visually; content stays scrollable (wheel/keyboard) = ADA-safe */
+html.embedded{scrollbar-width:none;-ms-overflow-style:none;}
+html.embedded::-webkit-scrollbar{width:0;height:0;display:none;}
+body.embedded .upload-back{display:none !important;}
+/* Reverse emphasis: make "Try with Sample Script" the primary CTA in the demo */
+body.embedded .analyze-btn{background:transparent !important;color:var(--cyan) !important;border:1px solid rgba(62,237,231,0.4) !important;box-shadow:none !important;opacity:1 !important;}
+body.embedded .sample-btn{background:var(--cyan) !important;color:#08080a !important;border:none !important;font-weight:800 !important;animation:sampleNudge 2.2s ease-in-out infinite;}
+@keyframes sampleNudge{0%,100%{box-shadow:0 0 0 0 rgba(62,237,231,0.45);}50%{box-shadow:0 0 0 9px rgba(62,237,231,0);}}
 </style>
 <!-- pdf.js for client-side PDF text extraction -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -4965,6 +4974,7 @@ function handleFile(i) {
 
 function setFile(f) {
   _uploadedFile = f;
+  window._isSampleRun = false; // real upload — subject to the plan limit
   // Drop-zone success flash
   const dz = document.querySelector('.drop-zone');
   if (dz) {
@@ -5256,6 +5266,7 @@ function useSample() {
 
   // Create a real File blob so _runAnalysis() calls the live API
   _uploadedFile = new File([SAMPLE_SCRIPT_TEXT], 'the-last-hour-draft1.txt', { type: 'text/plain' });
+  window._isSampleRun = true; // demo script — exempt from the plan limit server-side
 
   document.getElementById('analyze-btn').classList.add('ready');
   setTimeout(() => checkTosBeforeAnalysis(), 600);
@@ -5340,7 +5351,7 @@ async function _runAnalysis() {
 
     // Call Supabase Edge Function
     const { data, error: fnError } = await supabaseClient.functions.invoke('grade-script', {
-      body: { script_text: scriptText, title, user_email: _currentUser?.email || null, script_type: _scriptType },
+      body: { script_text: scriptText, title, user_email: _currentUser?.email || null, script_type: _scriptType, is_sample: !!window._isSampleRun },
     });
 
     // Plan/usage limit (HTTP 429) → friendly message, not a raw error
@@ -5639,6 +5650,10 @@ function _showLimitReached(msg) {
 <!-- View router — lets the case-study embed deep-link into a screen via ?view= -->
 <script>
 (function(){
+  // Embedded in the case-study iframe? Apply demo-focused styling.
+  try{ if(window.self!==window.top){ document.documentElement.classList.add('embedded'); document.body.classList.add('embedded'); } }
+  catch(e){ document.documentElement.classList.add('embedded'); document.body.classList.add('embedded'); }
+
   function routeView(){
     try{
       var v = new URLSearchParams(location.search).get('view');

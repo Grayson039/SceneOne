@@ -62,11 +62,16 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
 
   try {
-    const { script_text, title } = await req.json();
+    const { script_text, title, is_sample } = await req.json();
 
     if (!script_text || script_text.trim().length < 200) {
       return json({ error: 'Script text too short or missing.' }, 400);
     }
+
+    // The fixed sample/demo script is never blocked by the plan limit (it's a
+    // demo). Guarded by a small length cap so it can't be abused to bypass
+    // limits with a full script.
+    const isSampleDemo = is_sample === true && script_text.trim().length < 8000;
 
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
     const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -109,8 +114,8 @@ serve(async (req) => {
       // ignore -- treat as anonymous
     }
 
-    // ----- Enforce plan limits for LOGGED-IN users --------------------------
-    if (user) {
+    // ----- Enforce plan limits for LOGGED-IN users (sample demo exempt) -----
+    if (user && !isSampleDemo) {
       // (admin client created above — bypasses RLS to read plan + count usage)
       let plan = 'free';
       try {
