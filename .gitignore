@@ -1,0 +1,25 @@
+# ─── Secrets — NEVER commit ──────────────────────────────────────────────
+# This repo is published to sceneone.net via GitHub Pages: every committed
+# file is served publicly. A real .env here would expose your keys at
+# https://sceneone.net/.env — so secret files are ignored, templates are kept.
+.env
+.env.*
+*.env
+supabase/.env
+supabase/functions/**/.env
+
+# keep the templates (negations must come AFTER the ignore rules above)
+!.env.example
+!*.env.example
+
+# ─── Supabase local / scratch ────────────────────────────────────────────
+supabase/.temp/
+
+# ─── Backups / scratch ───────────────────────────────────────────────────
+*.OLD.ts
+*.bak
+
+# ─── OS / editor / tooling ───────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+node_modules/
