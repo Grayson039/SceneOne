@@ -1,0 +1,25 @@
+# SceneOne — Supabase project config.
+# Per-function settings the CLI applies on `supabase functions deploy`.
+project_id = "zzsjgaijrngxkaqakplm"
+
+# Existing grading function — keep JWT verification ON (matches current prod).
+# The frontend always sends at least the anon key, so the public sample demo
+# still works; a real user token is required for plan enforcement.
+[functions.grade-script]
+verify_jwt = true
+
+# Creates a Stripe Checkout Session for the signed-in user. Needs the user's
+# JWT (sent automatically by supabaseClient.functions.invoke) to know who's paying.
+[functions.create-checkout]
+verify_jwt = true
+
+# Opens the Stripe Customer Portal (cancel / change plan / update card) for the
+# signed-in user. Needs their JWT to resolve their Stripe customer.
+[functions.create-portal]
+verify_jwt = true
+
+# Stripe calls this directly with NO Supabase JWT — it authenticates instead by
+# verifying Stripe's signature header. JWT verification MUST be off or Stripe
+# webhooks get rejected with 401.
+[functions.stripe-webhook]
+verify_jwt = false
