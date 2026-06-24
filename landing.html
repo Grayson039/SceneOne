@@ -1568,7 +1568,7 @@ body.embedded .sample-btn{background:var(--cyan) !important;color:#08080a !impor
           <li><span class="pf-check">✓</span>Score delta between drafts</li>
           <li><span class="pf-check" style="color:var(--sub)">–</span><span style="color:var(--sub)">Storyboard Breakdown</span></li>
         </ul>
-        <button class="pricing-cta pricing-cta-primary" onclick="window.open('https://buy.stripe.com/14AfZh5vW4mKh1ueqm00000','_blank')">Get Writer →</button>
+        <button class="pricing-cta pricing-cta-primary" onclick="startCheckout('writer')">Get Writer →</button>
       </div>
 
       <!-- PRO -->
@@ -1584,7 +1584,7 @@ body.embedded .sample-btn{background:var(--cyan) !important;color:#08080a !impor
           <li><span class="pf-check pf-soon">◎</span>Storyboard Breakdown <span class="pf-soon-tag">Soon</span></li>
           <li><span class="pf-check pf-soon">◎</span>AI scene reconstruction <span class="pf-soon-tag">Soon</span></li>
         </ul>
-        <button class="pricing-cta pricing-cta-ghost" onclick="window.open('https://buy.stripe.com/3cIeVd5vW6uS4eIfuq00001','_blank')">Get Pro →</button>
+        <button class="pricing-cta pricing-cta-ghost" onclick="startCheckout('pro')">Get Pro →</button>
       </div>
 
     </div>
@@ -2095,6 +2095,7 @@ body.embedded .sample-btn{background:var(--cyan) !important;color:#08080a !impor
       <button class="pnav-btn active" onclick="goTo('writer-profile')">My Profile</button>
       <button class="pnav-btn" onclick="goTo('report')">My Reports</button>
       <button class="pnav-btn" onclick="goTo('upload')">New Script</button>
+      <button class="pnav-btn" onclick="manageSubscription(this)">Manage Plan</button>
       <button class="pnav-btn" onclick="handleSignOut()" style="color:var(--sub);margin-left:8px;">Sign Out</button>
     </div>
   </nav>
@@ -4511,6 +4512,77 @@ async function showForgotPassword(emailId = 'login-email', statusId = 'forgot-st
     '✓ Check your email. If an account exists for <strong>' + safeEmail +
     '</strong>, a reset link is on its way. The link expires in 1 hour.');
 }
+
+// ─── STRIPE CHECKOUT ───
+// Hosted Payment Links — used ONLY as a fallback if the create-checkout edge
+// function isn't reachable yet (e.g. not deployed). The primary path below ties
+// the purchase to the signed-in account so the webhook can fulfil it.
+const PAYMENT_LINKS = {
+  writer: 'https://buy.stripe.com/14AfZh5vW4mKh1ueqm00000',
+  pro:    'https://buy.stripe.com/3cIeVd5vW6uS4eIfuq00001',
+};
+
+async function startCheckout(plan) {
+  try {
+    // Must be signed in, otherwise the payment can't be linked to an account.
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+      alert('Create an account or sign in first — that way your upgrade is linked to your account automatically.');
+      try { goTo('welcome'); } catch (_e) {}
+      return;
+    }
+
+    // Ask the backend to open a Checkout Session stamped with our user id.
+    const { data, error } = await supabaseClient.functions.invoke('create-checkout', {
+      body: { plan },
+    });
+    if (error || !data?.url) throw new Error(error?.message || 'no checkout url');
+
+    window.location.href = data.url; // hand off to Stripe's hosted checkout
+  } catch (e) {
+    console.warn('SceneOne: create-checkout unavailable, falling back to payment link —', e?.message);
+    if (PAYMENT_LINKS[plan]) {
+      window.open(PAYMENT_LINKS[plan], '_blank');
+    } else {
+      alert('Checkout is temporarily unavailable. Please try again shortly.');
+    }
+  }
+}
+
+// Open the Stripe Customer Portal so the user can cancel / change plan / update
+// their card. Cancelling there triggers customer.subscription.deleted, which the
+// stripe-webhook function catches and downgrades the account to free.
+async function manageSubscription(btn) {
+  const label = btn?.textContent;
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) { alert('Please sign in to manage your plan.'); return; }
+    if (btn) { btn.textContent = 'Opening…'; btn.disabled = true; }
+
+    const { data, error } = await supabaseClient.functions.invoke('create-portal', { body: {} });
+    if (error || !data?.url) {
+      // 404 from the function = no Stripe customer yet (never subscribed).
+      throw new Error(data?.error || error?.message || 'no portal url');
+    }
+    window.location.href = data.url;
+  } catch (e) {
+    console.warn('SceneOne: manageSubscription failed —', e?.message);
+    alert("We couldn't open the billing portal — you may not have an active subscription yet. To upgrade, see the Plans screen.");
+  } finally {
+    if (btn) { btn.textContent = label; btn.disabled = false; }
+  }
+}
+
+// On return from Stripe, give the user honest feedback (the webhook applies the
+// upgrade server-side, which can take a few seconds).
+(function checkoutReturn() {
+  const status = new URLSearchParams(location.search).get('checkout');
+  if (status === 'success') {
+    setTimeout(() => alert('🎉 Payment received — thank you! Your plan activates within a few seconds. If it doesn’t show yet, refresh the page.'), 400);
+  } else if (status === 'cancelled') {
+    setTimeout(() => alert('Checkout cancelled — no charge was made. You can upgrade any time from the Plans screen.'), 400);
+  }
+})();
 
 // Apply patch after a tick so original goTo is defined
 // Apply patch after a tick so original goTo is defined
