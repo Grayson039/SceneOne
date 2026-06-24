@@ -1349,6 +1349,7 @@ body.embedded .sample-btn{background:var(--cyan) !important;color:#08080a !impor
       <div style="text-align:center;margin-top:10px;">
         <span style="font-size:11px;color:var(--sub);cursor:pointer;text-decoration:underline;" onclick="showForgotPassword()">Forgot your password?</span>
       </div>
+      <div id="forgot-status" style="display:none;font-size:11.5px;line-height:1.5;text-align:center;margin-top:10px;"></div>
     </div>
 
     <div class="auth-divider">
@@ -1667,6 +1668,10 @@ body.embedded .sample-btn{background:var(--cyan) !important;color:#08080a !impor
         </div>
         <div id="exec-signin-error" style="font-size:11px;color:#e06c6c;margin-bottom:12px;display:none;"></div>
         <button class="exec-submit" id="exec-signin-btn" onclick="handleExecSignIn()">Sign In →</button>
+        <div style="text-align:center;margin-top:10px;">
+          <span style="font-size:11px;color:var(--sub);cursor:pointer;text-decoration:underline;" onclick="showForgotPassword('exec-signin-email','exec-forgot-status')">Forgot your password?</span>
+        </div>
+        <div id="exec-forgot-status" style="display:none;font-size:11.5px;line-height:1.5;text-align:center;margin-top:10px;"></div>
       </div>
     </div>
 
@@ -4466,12 +4471,45 @@ async function handleLogin() {
   }, 100);
 }
 
-function showForgotPassword() {
-  const emailEl = document.getElementById('login-email');
-  const email = emailEl?.value;
-  alert(email
-    ? 'Password reset sent to ' + email + '. Check your inbox.'
-    : 'Enter your email address first, then tap Forgot Password.');
+// Password reset must ALWAYS land on production, no matter where it's triggered
+// (local file://, staging, embedded iframe). This site has no env-var build step,
+// so the production URL is intentionally hardcoded for this flow.
+const RESET_REDIRECT_URL = 'https://sceneone.net/reset-password.html';
+
+async function showForgotPassword(emailId = 'login-email', statusId = 'forgot-status') {
+  const emailEl = document.getElementById(emailId);
+  const statusEl = document.getElementById(statusId);
+  const email = (emailEl?.value || '').trim();
+
+  const setStatus = (color, html) => {
+    if (!statusEl) return;
+    statusEl.style.color = color;
+    statusEl.innerHTML = html;
+    statusEl.style.display = 'block';
+  };
+
+  if (!email.includes('@') || !email.includes('.')) {
+    if (emailEl) { emailEl.style.borderColor = 'rgba(232,146,58,0.6)'; emailEl.focus(); }
+    setStatus('var(--amber)', 'Enter the email on your account above, then tap “Forgot your password?”');
+    return;
+  }
+
+  setStatus('var(--sub)', 'Sending reset link…');
+
+  try {
+    if (!supabaseClient) throw new Error('Supabase client unavailable');
+    await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: RESET_REDIRECT_URL });
+  } catch (e) {
+    // Swallow the error on purpose: we show the SAME confirmation whether or not the
+    // email is registered (and even on transient failures) so we never leak which
+    // addresses have accounts. Real failures are still visible in the console.
+    console.warn('SceneOne: password reset request failed —', e?.message);
+  }
+
+  const safeEmail = email.replace(/[<>&"]/g, '');
+  setStatus('var(--cyan)',
+    '✓ Check your email. If an account exists for <strong>' + safeEmail +
+    '</strong>, a reset link is on its way. The link expires in 1 hour.');
 }
 
 // Apply patch after a tick so original goTo is defined
