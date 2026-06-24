@@ -13,13 +13,24 @@ made by the assistant.
 - **Step D — code committed `6a1eeab`; DEPLOYED (live, ACTIVE v1).** create-portal reviewed (PASS). Stripe Customer Portal not yet enabled.
 
 ## ✅ Deploy done (2026-06-24): secrets pushed; all functions ACTIVE. Webhook registered + signing secret deployed.
+## ✅ SANDBOX TEST PASSED (2026-06-24): Get Writer -> Stripe Checkout ($12, correct price, email prefilled)
+##    -> paid with 4242 -> webhook fired -> profiles row created with plan='writer' + stripe_customer_id='cus_...'.
+##    Full money path verified end-to-end. The "profiles row" gotcha did NOT occur (upsert created the row;
+##    role has a default). create-checkout, stripe-webhook, and the DB write all confirmed working in test mode.
+##
 ## ▶️ REMAINING STEPS:
-##   1. [Stripe, you] Enable Customer Portal: Settings -> Billing -> Customer portal -> Activate (allow "cancel subscription"). Needed for the "Manage Plan" button.
-##   2. [Test] Sign in to the app, click Get Writer, pay with 4242 4242 4242 4242 (any future expiry/CVC),
-##      then check Supabase -> Table editor -> profiles: that user's plan should flip to 'writer' + stripe_customer_id filled.
+##   1. [Stripe, you] Enable Customer Portal: Settings -> Billing -> Customer portal -> Activate (allow "cancel subscription"). Needed for the "Manage Plan" button. (Test the portal via create-portal after.)
+##   2. [GO LIVE — wide awake, real money] Swap supabase/.env to LIVE values:
+##        - STRIPE_SECRET_KEY = sk_live_...
+##        - STRIPE_WRITER_PRICE_ID / STRIPE_PRO_PRICE_ID = LIVE-mode price_ ids (create/activate products in live mode)
+##        - Create a SEPARATE live-mode webhook endpoint (same URL + 4 events) -> its whsec_ -> STRIPE_WEBHOOK_SECRET
+##      Then: supabase secrets set --env-file ./supabase/.env --project-ref zzsjgaijrngxkaqakplm  (re-push)
+##            supabase functions deploy stripe-webhook --project-ref zzsjgaijrngxkaqakplm          (re-deploy)
+##      NOTE: one .env — switching to live keys ends sandbox/4242 testing. Test fully first (DONE).
 ##   3. [git push, you] Publish landing.html to sceneone.net (GitHub Pages). Currently NOT pushed.
-##   4. [Watch] "profiles row" gotcha — if a test payment succeeds but plan doesn't update, it's the writer-has-no-profiles-row issue; see STRIPE-SETUP.md backfill SQL.
-##   5. [Later] Go live: redo with sk_live_ keys + a separate live webhook endpoint/secret.
+##   4. [UX gap found during test] Logged-in writers have NO persistent "Upgrade" button — pricing screen is
+##      only reachable pre-login ("See pricing") or after hitting the monthly limit ("See Plans"). Consider a
+##      persistent "Upgrade" link in the signed-in header to reduce the conversion leak. (Not yet built.)
 - **Step E — code committed `937284f`; live-verify pending.** landing.html wiring reviewed (PASS). "Confirmed working against deployed functions" needs the functions deployed first; until then buttons fall back to hosted Payment Links.
 - **Step F — DONE.** `SCENEONE-HOW-THIS-WORKS.md` plain-English explainer written and committed.
 
