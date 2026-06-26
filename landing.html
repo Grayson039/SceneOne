@@ -1305,6 +1305,8 @@ body.embedded .sample-btn{background:var(--cyan) !important;color:#08080a !impor
 .pricing-modal-btn-cta{width:100%;padding:12px;background:var(--cyan);color:#000;border:none;border-radius:8px;font-weight:600;font-size:16px;cursor:pointer;transition:all 0.3s ease;}
 .pricing-modal-btn-cta:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(62,237,231,0.3);}
 @media(max-width:768px){.pricing-modal-grid{grid-template-columns:1fr;}}
+.pricing-modal-btn{position:fixed;top:20px;right:20px;z-index:1000;padding:12px 24px;background:var(--cyan);color:#000;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 12px rgba(62,237,231,0.3);}
+.pricing-modal-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(62,237,231,0.3);}
 </style>
 <!-- pdf.js for client-side PDF text extraction -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -1841,7 +1843,7 @@ body.embedded .sample-btn{background:var(--cyan) !important;color:#08080a !impor
     <button class="analyze-btn" id="analyze-btn" onclick="checkTosBeforeAnalysis()">Analyze My Script →</button>
 
     <div class="or-row"><div class="or-line"></div><div class="or-text">or just want to see it work?</div><div class="or-line"></div></div>
-    <button class="sample-btn" onclick="useSample()"><button class="pricing-modal-btn" onclick="openPricingModal()">View Pricing Plans</button>
+   
 
 <!-- PRICING MODAL -->
 <div id="pricing-modal" class="pricing-modal" onclick="closePricingModal(event)">
@@ -5843,6 +5845,6 @@ function _showLimitReached(msg) {
 function openPricingModal(){document.getElementById('pricing-modal').classList.add('active');}
 function closePricingModal(e){if(!e||e.target.id==='pricing-modal')document.getElementById('pricing-modal').classList.remove('active');}
 </script>
-
+<button class="pricing-modal-btn" onclick="openPricingModal()">View Pricing Plans</button>
 </body>
 </html>
