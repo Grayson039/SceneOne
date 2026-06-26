@@ -5469,7 +5469,7 @@ async function _runAnalysis() {
 
     // Call Supabase Edge Function
     const { data, error: fnError } = await supabaseClient.functions.invoke('grade-script', {
-      body: { script_text: scriptText, title, user_email: _currentUser?.email || null, script_type: _scriptType, is_sample: !!window._isSampleRun },
+        body: JSON.stringify({ script_text: scriptText, title, user_email: _currentUser?.email || null, script_type: _scriptType, is_sample: !!window._isSampleRun }),
     });
 
     // Plan/usage limit (HTTP 429) → friendly message, not a raw error
