@@ -5468,9 +5468,13 @@ async function _runAnalysis() {
     window._scriptPageCount = Math.max(1, Math.round(scriptText.trim().length / 1500));
 
     // Call Supabase Edge Function
-    const { data, error: fnError } = await supabaseClient.functions.invoke('grade-script', {
-        body: JSON.stringify({ script_text: scriptText, title, user_email: _currentUser?.email || null, script_type: _scriptType, is_sample: !!window._isSampleRun }),
-    });
+    const response = await fetch('https://zzsjgaijrngxkaqakpim.supabase.co/functions/v1/grade-script', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ script_text: scriptText, title, user_email: _currentUser?.email || null, script_type: _scriptType, is_sample: !!window._isSampleRun })
+});
+const data = await response.json();
+const fnError = response.ok ? null : { context: { status: response.status } };
 
     // Plan/usage limit (HTTP 429) → friendly message, not a raw error
     if (fnError) {
