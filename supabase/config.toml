@@ -2,21 +2,24 @@
 # Per-function settings the CLI applies on `supabase functions deploy`.
 project_id = "zzsjgaijrngxkaqakplm"
 
-# Existing grading function — keep JWT verification ON (matches current prod).
-# The frontend always sends at least the anon key, so the public sample demo
-# still works; a real user token is required for plan enforcement.
+# grade-script handles both anonymous sample calls (no JWT) and logged-in users.
+# verify_jwt = false so anonymous demo calls aren't rejected at the gateway.
+# The function manually calls auth.getUser() to identify logged-in users.
+# Plan enforcement happens server-side regardless of login state.
 [functions.grade-script]
-verify_jwt = true
+verify_jwt = false
 
-# Creates a Stripe Checkout Session for the signed-in user. Needs the user's
-# JWT (sent automatically by supabaseClient.functions.invoke) to know who's paying.
+# create-checkout and create-portal require a signed-in user — they verify the
+# JWT manually via auth.getUser() and return 401 if no valid session is found.
+# Supabase's built-in verify_jwt is left false because the anon key sent by the
+# browser (via functions.invoke) is technically a valid JWT even for anon users,
+# which would allow unauthenticated callers through the gateway check.
+# Manual auth.getUser() is the correct approach here.
 [functions.create-checkout]
-verify_jwt = true
+verify_jwt = false
 
-# Opens the Stripe Customer Portal (cancel / change plan / update card) for the
-# signed-in user. Needs their JWT to resolve their Stripe customer.
 [functions.create-portal]
-verify_jwt = true
+verify_jwt = false
 
 # Stripe calls this directly with NO Supabase JWT — it authenticates instead by
 # verifying Stripe's signature header. JWT verification MUST be off or Stripe

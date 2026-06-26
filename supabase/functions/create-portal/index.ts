@@ -20,7 +20,7 @@ import Stripe from 'https://esm.sh/stripe@17?target=deno&no-check';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const CORS = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': 'https://sceneone.net',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
 
     return json({ url: portal.url });
   } catch (err) {
-    console.error('create-portal error:', err);
-    return json({ error: (err as Error).message || 'Could not open the billing portal.' }, 500);
+    console.error('create-portal error:', err); // full detail server-side only
+    return json({ error: 'Could not open the billing portal. Please try again.' }, 500);
   }
 });

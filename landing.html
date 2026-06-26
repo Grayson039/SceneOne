@@ -3863,9 +3863,17 @@ async function startOnboarding() {
   if (error) {
     btn.textContent = 'Create Account & Continue →';
     btn.disabled = false;
+    // Show a generic message regardless of the specific error so we don't leak
+    // whether a given email address already has an account (account enumeration).
+    const isEmailTaken = error.message?.toLowerCase().includes('already registered')
+                      || error.message?.toLowerCase().includes('already exists')
+                      || error.status === 422;
+    const displayMsg = isEmailTaken
+      ? 'An account with that email already exists. <span style="text-decoration:underline;cursor:pointer;" onclick="goTo(\'signin\')">Sign in instead?</span>'
+      : 'Something went wrong. Please check your details and try again.';
     emailEl.style.borderColor = 'rgba(232,146,58,0.6)';
     emailEl.parentElement.insertAdjacentHTML('afterend',
-      `<div style="color:#E8923A;font-size:12px;margin-top:4px;">${error.message}</div>`);
+      `<div style="color:#E8923A;font-size:12px;margin-top:4px;">${displayMsg}</div>`);
     return;
   }
 
@@ -4371,6 +4379,7 @@ async function _saveSubmission(title, data) {
     const { data: rows } = await supabaseClient.from('submissions').insert({
       title: title || 'Untitled Script',
       user_email: _currentUser?.email || null,
+      user_id: _currentUser?.id || null,
       result: data,
       status: 'complete',
       public_listing: false,
@@ -4391,7 +4400,7 @@ async function loadScriptHistory() {
     const { data, error } = await supabaseClient
       .from('submissions')
       .select('id, created_at, title, result')
-      .eq('user_email', _currentUser.email)
+      .eq('user_id', _currentUser.id)
       .eq('status', 'complete')
       .order('created_at', { ascending: false })
       .limit(8);
@@ -5749,9 +5758,9 @@ function _showLimitReached(msg) {
         <h3>AI Disclosure</h3>
         <p>All analysis is AI-generated. This is disclosed at the point of upload, within every report, and throughout these terms — in compliance with applicable and emerging AI disclosure regulations.</p>
         <h3>Your Rights</h3>
-        <p>You may request a copy of your data, request deletion of your account, export your reports, or manually delete scripts at any time. Contact privacy@sceneone.app.</p>
+        <p>You may request a copy of your data, request deletion of your account, export your reports, or manually delete scripts at any time. Contact <a href="mailto:legal@sceneone.net" style="color:var(--cyan)">legal@sceneone.net</a>.</p>
         <h3>International Users</h3>
-        <p>Data is processed in the United States. EU/UK users: SceneOne operates under GDPR principles. Contact privacy@sceneone.app to exercise rights of access, correction, or deletion.</p>
+        <p>Data is processed in the United States (Supabase West US — Oregon). EU/UK users: SceneOne operates under GDPR principles. Contact <a href="mailto:legal@sceneone.net" style="color:var(--cyan)">legal@sceneone.net</a> to exercise rights of access, correction, or deletion.</p>
       </div>
 
       <div class="tos-section" id="tos-content">

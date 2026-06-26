@@ -19,7 +19,7 @@ import Stripe from 'https://esm.sh/stripe@17?target=deno&no-check';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const CORS = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': 'https://sceneone.net',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
@@ -105,7 +105,7 @@ Deno.serve(async (req) => {
 
     return json({ url: session.url });
   } catch (err) {
-    console.error('create-checkout error:', err);
-    return json({ error: (err as Error).message || 'Could not start checkout.' }, 500);
+    console.error('create-checkout error:', err); // full detail server-side only
+    return json({ error: 'Could not start checkout. Please try again.' }, 500);
   }
 });
