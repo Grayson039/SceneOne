@@ -602,7 +602,8 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .rev-impact{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-top:4px;}
 
 /* Activity feed */
-.feed-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow);}
+.feed-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow);transition:all .2s;}
+.feed-card:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.4);border-color:rgba(62,237,231,0.2);}
 .feed-card h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:#fff;margin-bottom:3px;}
 .feed-card-sub{font-size:12px;color:var(--sub);margin-bottom:16px;}
 .feed-item{display:flex;gap:11px;padding:10px 0;border-bottom:1px solid var(--border);}
@@ -784,8 +785,10 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .req-heading{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:#fff;margin-bottom:8px;}
 .req-sub{font-size:13px;color:var(--sub);line-height:1.65;margin-bottom:32px;}
 
-.req-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:16px;transition:border-color .3s,opacity .3s;}
+.req-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;transition:all .2s;}
+.req-card:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.4);border-color:rgba(62,237,231,0.2);}
 .req-card.approved{border-color:rgba(76,175,125,0.35);}
+.req-card.approved:hover{border-color:rgba(76,175,125,0.5);}
 .req-card.declined{opacity:0.45;}
 
 .req-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px;}
@@ -1011,7 +1014,8 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .mkt-cancel{display:block;text-align:center;font-size:12px;color:var(--sub);margin-top:10px;cursor:pointer;background:none;border:none;width:100%;}
 
 /* ─── MY LISTING (Writer) ─── */
-.my-listing-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow);}
+.my-listing-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow);transition:all .2s;}
+.my-listing-card:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.4);border-color:rgba(62,237,231,0.2);}
 .my-listing-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .my-listing-title{font-size:13px;font-weight:800;color:#fff;}
 .listing-toggle-wrap{display:flex;align-items:center;gap:8px;}
@@ -1069,8 +1073,8 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .feed-sort button.active{background:var(--card2);color:#fff;}
 
 /* Script cards */
-.script-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:12px;transition:border-color .2s;cursor:pointer;box-shadow:var(--shadow);}
-.script-card:hover{border-color:rgba(62,237,231,0.25);}
+.script-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:12px;transition:all .2s;cursor:pointer;box-shadow:var(--shadow);}
+.script-card:hover{border-color:rgba(62,237,231,0.35);box-shadow:0 4px 16px rgba(0,0,0,0.4);transform:translateY(-1px);}
 .script-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;}
 .script-card-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:900;color:#fff;line-height:1.2;}
 .script-card-score{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--cyan);flex-shrink:0;line-height:1;}
@@ -4090,11 +4094,11 @@ function nextExobStep(n) {
 }
 function skipExecOnboard() {
   localStorage.setItem('sceneone_exec_onboard_done', '1');
-  goTo('dashboard');
+  goTo('exec-profile');
 }
 function finishExecOnboard() {
   localStorage.setItem('sceneone_exec_onboard_done', '1');
-  goTo('dashboard');
+  goTo('exec-profile');
   setTimeout(() => showHappyHunting(), 300);
 }
 
@@ -4145,7 +4149,7 @@ async function handleExecSignIn() {
   if (!hasSeenExecOnboard) {
     goTo('exec-onboard');
   } else {
-    goTo('dashboard');
+    goTo('exec-profile');
   }
 }
 
