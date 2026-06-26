@@ -1320,8 +1320,8 @@ body.embedded .pricing-modal-btn{display:none !important;}
 .pricing-modal-btn-cta:hover{background:#00e5d4;transform:translateY(-1px);box-shadow:0 12px 24px rgba(62,237,231,0.4);}
 .pricing-modal-btn-cta:active{transform:translateY(0);box-shadow:0 6px 12px rgba(62,237,231,0.2);}
 @media(max-width:768px){.pricing-modal-grid{grid-template-columns:1fr;}.pricing-modal-content{padding:32px;}.pricing-modal-card{padding:28px;}}
-.pricing-modal-btn{position:fixed;bottom:120px;left:50%;transform:translateX(-50%);padding:10px 20px;background:var(--cyan);color:#000;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px;z-index:100;}
-.pricing-modal-btn:hover{transform:translateX(-50%) translateY(-2px);box-shadow:0 8px 16px rgba(62,237,231,0.3);}
+.pricing-modal-btn{display:block;width:fit-content;margin:24px auto 0;padding:10px 20px;background:var(--cyan);color:#000;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px;}
+.pricing-modal-btn:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(62,237,231,0.3);}
 </style>
 <!-- pdf.js for client-side PDF text extraction -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
