@@ -1284,6 +1284,27 @@ body.embedded .upload-back{display:none !important;}
 body.embedded .analyze-btn{background:transparent !important;color:var(--cyan) !important;border:1px solid rgba(62,237,231,0.4) !important;box-shadow:none !important;opacity:1 !important;}
 body.embedded .sample-btn{background:var(--cyan) !important;color:#08080a !important;border:none !important;font-weight:800 !important;animation:sampleNudge 2.2s ease-in-out infinite;}
 @keyframes sampleNudge{0%,100%{box-shadow:0 0 0 0 rgba(62,237,231,0.45);}50%{box-shadow:0 0 0 9px rgba(62,237,231,0);}}
+.pricing-modal-btn{display:inline-block;margin-top:16px;padding:12px 24px;background:var(--cyan);color:#000;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.3s ease;}
+.pricing-modal-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(62,237,231,0.3);}
+.pricing-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:none;justify-content:center;align-items:center;z-index:9999;}
+.pricing-modal.active{display:flex;animation:fadeIn 0.3s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.pricing-modal-content{background:var(--bg1);border:1px solid rgba(62,237,231,0.2);border-radius:16px;padding:40px;max-width:900px;width:90%;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.pricing-modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:32px;color:var(--text);cursor:pointer;width:40px;height:40px;display:flex;align-items:center;justify-content:center;}
+.pricing-modal-content h2{text-align:center;margin-bottom:40px;font-size:28px;}
+.pricing-modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.pricing-modal-card{border:1px solid rgba(62,237,231,0.2);border-radius:12px;padding:32px;position:relative;transition:all 0.3s ease;}
+.pricing-modal-card:hover{border-color:var(--cyan);box-shadow:0 12px 32px rgba(62,237,231,0.15);}
+.pricing-modal-card.featured{border-color:var(--cyan);background:linear-gradient(135deg,rgba(62,237,231,0.05) 0%,rgba(62,237,231,0) 100%);}
+.pricing-modal-card .badge{position:absolute;top:-12px;left:24px;background:var(--cyan);color:#000;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;}
+.pricing-modal-card h3{font-size:20px;margin-bottom:12px;}
+.price{font-size:36px;font-weight:700;color:var(--cyan);margin-bottom:24px;}
+.price span{font-size:16px;opacity:0.7;}
+.features{list-style:none;padding:0;margin:0 0 24px 0;}
+.features li{padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.pricing-modal-btn-cta{width:100%;padding:12px;background:var(--cyan);color:#000;border:none;border-radius:8px;font-weight:600;font-size:16px;cursor:pointer;transition:all 0.3s ease;}
+.pricing-modal-btn-cta:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(62,237,231,0.3);}
+@media(max-width:768px){.pricing-modal-grid{grid-template-columns:1fr;}}
 </style>
 <!-- pdf.js for client-side PDF text extraction -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -1820,7 +1841,39 @@ body.embedded .sample-btn{background:var(--cyan) !important;color:#08080a !impor
     <button class="analyze-btn" id="analyze-btn" onclick="checkTosBeforeAnalysis()">Analyze My Script →</button>
 
     <div class="or-row"><div class="or-line"></div><div class="or-text">or just want to see it work?</div><div class="or-line"></div></div>
-    <button class="sample-btn" onclick="useSample()">
+    <button class="sample-btn" onclick="useSample()"><button class="pricing-modal-btn" onclick="openPricingModal()">View Pricing Plans</button>
+
+<!-- PRICING MODAL -->
+<div id="pricing-modal" class="pricing-modal" onclick="closePricingModal(event)">
+  <div class="pricing-modal-content" onclick="event.stopPropagation()">
+    <button class="pricing-modal-close" onclick="closePricingModal()">×</button>
+    <h2>Simple, Transparent Pricing</h2>
+    <div class="pricing-modal-grid">
+      <div class="pricing-modal-card">
+        <h3>Writer</h3>
+        <div class="price">$12<span>/mo</span></div>
+        <ul class="features">
+          <li>✓ 5 script analyses/month</li>
+          <li>✓ Save reports to library</li>
+          <li>✓ Email support</li>
+        </ul>
+        <button class="pricing-modal-btn-cta" onclick="startCheckout('writer')">Get Writer</button>
+      </div>
+      <div class="pricing-modal-card featured">
+        <div class="badge">Most Popular</div>
+        <h3>Pro</h3>
+        <div class="price">$29<span>/mo</span></div>
+        <ul class="features">
+          <li>✓ Unlimited analyses</li>
+          <li>✓ Priority support</li>
+          <li>✓ Team collaboration</li>
+          <li>✓ Advanced reports</li>
+        </ul>
+        <button class="pricing-modal-btn-cta featured" onclick="startCheckout('pro')">Get Pro</button>
+      </div>
+    </div>
+  </div>
+</div>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       Try with Sample Script — <em>"The Last Hour"</em>
     </button>
@@ -5787,6 +5840,8 @@ function _showLimitReached(msg) {
   // normal in-app navigation still works.
   [0,300,700,1300,2200].forEach(function(t){ setTimeout(routeView, t); });
 })();
+function openPricingModal(){document.getElementById('pricing-modal').classList.add('active');}
+function closePricingModal(e){if(!e||e.target.id==='pricing-modal')document.getElementById('pricing-modal').classList.remove('active');}
 </script>
 
 </body>
