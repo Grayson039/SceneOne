@@ -3151,6 +3151,20 @@ She grabs her jacket.</textarea>
 </div>
 
 <script>
+// ─── HTML ESCAPE UTILITY ───────────────────────────────────────────────────
+// Use esc() whenever inserting user-controlled text into innerHTML.
+// This prevents stored XSS: a script title or logline containing <script> or
+// onerror= handlers cannot execute because the characters are entity-encoded.
+function esc(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
 // ─── SCENEONE CONFIG — fill in tonight before pushing ───
 const SUPABASE_URL      = 'https://zzsjgaijrngxkaqakplm.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_yuptAX-fJGnyTuDgReScEg_bqg7qPEx';
@@ -3907,7 +3921,7 @@ function finishOnboarding() {
     setTimeout(()=>{
       const desc=document.querySelector('.upload-desc');
       if(desc&&!desc.dataset.greeted){
-        desc.innerHTML='<span style="color:var(--cyan);font-weight:700">Welcome, '+userName+'. </span>'+desc.innerHTML;
+        desc.innerHTML='<span style="color:var(--cyan);font-weight:700">Welcome, '+esc(userName)+'. </span>'+desc.innerHTML;
         desc.dataset.greeted='1';
       }
     },100);
@@ -4042,8 +4056,8 @@ async function loadDashboard() {
     feed.innerHTML = rows.map(row => {
       const r = row.result || {};
       const score = r.overall_score || '—';
-      const logline = r.logline ? `<div class="script-card-logline">${r.logline}</div>` : '';
-      const dna = (r.story_dna||[]).slice(0,3).map(d=>`<div class="dna-tag">${d.film} ${d.pct}%</div>`).join('');
+      const logline = r.logline ? `<div class="script-card-logline">${esc(r.logline)}</div>` : '';
+      const dna = (r.story_dna||[]).slice(0,3).map(d=>`<div class="dna-tag">${esc(d.film)} ${esc(String(d.pct))}%</div>`).join('');
       const scores = r.scores || {};
       const bars = Object.entries(scores).slice(0,3).map(([k,v])=>
         `<div class="mini-score">${k.charAt(0).toUpperCase()+k.slice(1)}</div><div class="mini-bar-strip"><div class="mini-bar-strip-fill fill-c" style="width:${v}%"></div></div>`
@@ -4053,7 +4067,7 @@ async function loadDashboard() {
       const safeTitle = (row.title||'').replace(/'/g,"\\'");
       return `<div class="script-card">
         <div class="script-card-top">
-          <div><div class="script-card-title">${(row.title||'UNTITLED').toUpperCase()}</div>
+          <div><div class="script-card-title">${esc(row.title||'UNTITLED').toUpperCase()}</div>
           <div class="script-card-genre">SceneOne Verified · Listed ${listed}</div></div>
           <div class="script-card-score" style="color:${scoreColor}">${score}</div>
         </div>
@@ -4402,7 +4416,7 @@ async function loadScriptHistory() {
           </svg>
         </div>
         <div class="history-info">
-          <div class="history-title">${row.title}</div>
+          <div class="history-title">${esc(row.title)}</div>
           <div class="history-meta">${date}${bestLabel ? ' &middot; Best: ' + bestLabel : ''}</div>
         </div>
         <div class="history-scores">
