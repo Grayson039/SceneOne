@@ -92,7 +92,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 3
   <div class="auth-card">
     <h2>Admin Access</h2>
     <p>Sign in with your SceneOne admin account.</p>
-    <div class="field"><label>Email</label><input type="email" id="admin-email" placeholder="w1lldebeest3@gmail.com"></div>
+    <div class="field"><label>Email</label><input type="email" id="admin-email" placeholder="Admin email address"></div>
     <div class="field"><label>Password</label><input type="password" id="admin-password" placeholder="Password"></div>
     <div class="auth-error" id="admin-error"></div>
     <button class="btn-primary" id="admin-signin-btn" onclick="adminSignIn()">Sign In →</button>
@@ -219,7 +219,8 @@ function renderExecList(containerId, execs, isVerified) {
   el.innerHTML = execs.map(e => {
     const initials = (e.display_name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
     const joined = new Date(e.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-    const imdbLink = e.imdb_url ? `<a class="exec-imdb" href="${e.imdb_url}" target="_blank">↗ View IMDb / LinkedIn</a>` : '<span style="font-size:11px;color:var(--sub)">No IMDb provided</span>';
+    const safeUrl = /^https?:\/\//i.test(e.imdb_url || '') ? e.imdb_url : null;
+    const imdbLink = safeUrl ? `<a class="exec-imdb" href="${safeUrl}" target="_blank" rel="noopener noreferrer">↗ View IMDb / LinkedIn</a>` : '<span style="font-size:11px;color:var(--sub)">No IMDb provided</span>';
     const actionBtn = isVerified
       ? `<button class="btn-revoke" onclick="setVerified('${e.id}', false, this)">Revoke Access</button>`
       : `<button class="btn-approve" onclick="setVerified('${e.id}', true, this)">✓ Approve</button>`;

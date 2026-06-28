@@ -150,6 +150,14 @@ serve(async (req) => {
       // treat as anonymous
     }
 
+    // ── Require auth for full (non-sample) analyses ─────────────────────────
+    if (!user && !isSampleDemo) {
+      return json({
+        error: 'auth_required',
+        message: 'Create a free account to analyze your full script.',
+      }, 401, cors);
+    }
+
     // ── Plan limits (logged-in users, non-sample) ───────────────────────────
     if (user && !isSampleDemo) {
       let plan = 'free';
