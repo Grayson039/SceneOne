@@ -1327,6 +1327,7 @@ body.embedded .pricing-modal-btn{display:none !important;}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <!-- Supabase JS client -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
 <body>
 <a class="so-skip-link" href="#screen-upload">Skip to upload</a>
@@ -1368,6 +1369,7 @@ body.embedded .pricing-modal-btn{display:none !important;}
           <span id="req-special">One special character (!@#$...)</span>
         </div>
       </div>
+      <div id="ts-writer-signup" style="margin-bottom:10px;"></div>
       <button class="form-submit" id="signup-submit" onclick="startOnboarding()">Create Account & Continue →</button>
     </div>
 
@@ -1383,6 +1385,7 @@ body.embedded .pricing-modal-btn{display:none !important;}
         <label class="form-label">Password</label>
         <input class="form-input" type="password" placeholder="Your password" id="login-password" oninput="checkLoginReady()">
       </div>
+      <div id="ts-writer-login" style="margin-bottom:10px;"></div>
       <button class="form-submit" id="login-submit" onclick="handleLogin()" style="background:var(--card2);color:#fff;border:1px solid var(--border2);">Sign In →</button>
       <div style="text-align:center;margin-top:10px;">
         <span style="font-size:12px;color:var(--sub);cursor:pointer;text-decoration:underline;" onclick="showForgotPassword()">Forgot your password?</span>
@@ -1688,6 +1691,7 @@ body.embedded .pricing-modal-btn{display:none !important;}
           <label class="form-label">Password</label>
           <input class="form-input" id="exec-password" type="password" placeholder="8+ characters" autocomplete="new-password">
         </div>
+        <div id="ts-exec-signup" style="margin-bottom:10px;"></div>
         <button class="exec-submit" id="exec-submit-btn" onclick="handleExecSignup()">Request Industry Access →</button>
         <div style="font-size:10px;color:var(--sub);text-align:center;margin-top:12px;line-height:1.55;">We review credentials within 24 hours. You\'ll receive an email when approved.</div>
       </div>
@@ -1705,6 +1709,7 @@ body.embedded .pricing-modal-btn{display:none !important;}
           <input class="form-input" id="exec-signin-password" type="password" placeholder="Password" autocomplete="current-password">
         </div>
         <div id="exec-signin-error" style="font-size:12px;color:#e06c6c;margin-bottom:12px;display:none;"></div>
+        <div id="ts-exec-signin" style="margin-bottom:10px;"></div>
         <button class="exec-submit" id="exec-signin-btn" onclick="handleExecSignIn()">Sign In →</button>
         <div style="text-align:center;margin-top:10px;">
           <span style="font-size:12px;color:var(--sub);cursor:pointer;text-decoration:underline;" onclick="showForgotPassword('exec-signin-email','exec-forgot-status')">Forgot your password?</span>
@@ -3532,6 +3537,49 @@ function goTo(id){
   }
   if (id === 'dashboard') loadDashboard();
   if (id === 'report') syncRepBarHeight();
+  if (id === 'welcome') setTimeout(_tsRenderWriterForms, 150);
+  if (id === 'exec-signup') setTimeout(_tsRenderExecForms, 150);
+}
+
+// ─── Cloudflare Turnstile ────────────────────────────────────────────────────
+const _TS_SITE_KEY = '0x4AAAAADrnusj8lT1xi7OE';
+const _tsWidgets = {};
+const _tsTokens = {};
+
+function _tsMakeOpts(key) {
+  return {
+    sitekey: _TS_SITE_KEY,
+    callback:          (t) => { _tsTokens[key] = t; },
+    'expired-callback':()  => { _tsTokens[key] = null; },
+    'error-callback':  ()  => { _tsTokens[key] = null; },
+  };
+}
+
+function _tsRender(containerId, key) {
+  if (!window.turnstile) return;
+  if (_tsWidgets[key] !== undefined) return;
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  _tsWidgets[key] = turnstile.render(el, _tsMakeOpts(key));
+}
+
+function _tsReset(key) {
+  _tsTokens[key] = null;
+  if (window.turnstile && _tsWidgets[key] !== undefined) {
+    turnstile.reset(_tsWidgets[key]);
+  }
+}
+
+function _tsGetToken(key) { return _tsTokens[key] || null; }
+
+function _tsRenderWriterForms() {
+  _tsRender('ts-writer-signup', 'writerSignup');
+  _tsRender('ts-writer-login',  'writerLogin');
+}
+
+function _tsRenderExecForms() {
+  _tsRender('ts-exec-signup', 'execSignup');
+  _tsRender('ts-exec-signin', 'execSignin');
 }
 
 // Keep the score sidebar pinned just below the (sticky) report top bar
@@ -3874,8 +3922,9 @@ async function startOnboarding() {
   const { data, error } = await supabaseClient.auth.signUp({
     email,
     password,
-    options: { data: { full_name: name } }
+    options: { data: { full_name: name }, captchaToken: _tsGetToken('writerSignup') }
   });
+  _tsReset('writerSignup');
 
   if (error) {
     btn.textContent = 'Create Account & Continue →';
@@ -4161,7 +4210,8 @@ async function handleExecSignIn() {
   errEl.style.display = 'none';
   if (!email || !password) { errEl.textContent = 'Enter your email and password.'; errEl.style.display = ''; return; }
   btn.textContent = 'Signing in…'; btn.disabled = true;
-  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password, options: { captchaToken: _tsGetToken('execSignin') } });
+  _tsReset('execSignin');
   if (error || !data.user) {
     errEl.textContent = error?.message || 'Sign in failed.';
     errEl.style.display = '';
@@ -4223,9 +4273,11 @@ async function handleExecSignup() {
         company,
         exec_title: _selectedExecRole,
         imdb_url: imdb || null,
-      }
+      },
+      captchaToken: _tsGetToken('execSignup'),
     }
   });
+  _tsReset('execSignup');
 
   if (error) {
     btn.textContent = error.message;
@@ -4559,7 +4611,8 @@ async function handleLogin() {
   btn.textContent = 'Signing in…';
   btn.disabled = true;
 
-  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass, options: { captchaToken: _tsGetToken('writerLogin') } });
+  _tsReset('writerLogin');
 
   if (error) {
     btn.textContent = 'Sign In →';
