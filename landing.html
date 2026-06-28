@@ -3271,6 +3271,26 @@ function _finalizeReport() {
     if (isFirstTime) {
       isFirstTime = false;
       setTimeout(() => {
+        if (_reportData) {
+          const catNames = { structure:'Structure', conflict:'Conflict', dialogue:'Dialogue', pacing:'Pacing', visual:'Visual' };
+          const sc = _reportData.scores || {};
+          const entries = Object.entries(sc).filter(([,v])=>typeof v==='number');
+          if (entries.length) {
+            entries.sort(([,a],[,b])=>b-a);
+            const [bestKey, bestVal] = entries[0];
+            const [lowKey, lowVal]   = entries[entries.length-1];
+            const cel1 = document.getElementById('cel-overall');
+            const celBv = document.getElementById('cel-best-val');
+            const celBl = document.getElementById('cel-best-lbl');
+            const celLv = document.getElementById('cel-low-val');
+            const celLl = document.getElementById('cel-low-lbl');
+            if (cel1)  cel1.textContent  = _reportData.overall_score ?? '—';
+            if (celBv) celBv.textContent = bestVal;
+            if (celBl) celBl.textContent = 'Best: ' + (catNames[bestKey] || bestKey);
+            if (celLv) celLv.textContent = lowVal;
+            if (celLl) celLl.textContent = 'Fix: ' + (catNames[lowKey] || lowKey);
+          }
+        }
         const cel = document.getElementById('ob-celebrate');
         cel.style.display = 'flex';
         cel.classList.add('show');
@@ -3796,12 +3816,9 @@ function toggleEd(id){
 }
 function reanalyze(edId,flId){
   const btn=document.querySelector(`#${edId} .re-btn`);
-  btn.textContent='Analyzing...'; btn.style.opacity='.6';
-  setTimeout(()=>{
-    btn.textContent='Re-Analyze This Scene'; btn.style.opacity='1';
-    document.getElementById(flId).classList.add('show');
-    document.getElementById(edId).classList.remove('open');
-  },1800);
+  if (!btn) return;
+  btn.textContent='Coming soon…'; btn.style.opacity='.6';
+  setTimeout(()=>{ btn.textContent='Re-Analyze This Scene'; btn.style.opacity='1'; },1800);
 }
 
 function scrollTo2(id){
@@ -3869,7 +3886,7 @@ async function startOnboarding() {
                       || error.message?.toLowerCase().includes('already exists')
                       || error.status === 422;
     const displayMsg = isEmailTaken
-      ? 'An account with that email already exists. <span style="text-decoration:underline;cursor:pointer;" onclick="goTo(\'signin\')">Sign in instead?</span>'
+      ? 'An account with that email already exists. <span style="text-decoration:underline;cursor:pointer;" onclick="goTo(\'welcome\');switchAuthTab(\'login\')">Sign in instead?</span>'
       : 'Something went wrong. Please check your details and try again.';
     emailEl.style.borderColor = 'rgba(232,146,58,0.6)';
     emailEl.parentElement.insertAdjacentHTML('afterend',
@@ -4549,7 +4566,7 @@ async function handleLogin() {
     btn.disabled = false;
     passEl.style.borderColor = 'rgba(232,146,58,0.6)';
     passEl.parentElement.insertAdjacentHTML('afterend',
-      `<div style="color:#E8923A;font-size:12px;margin-top:4px;">${error.message}</div>`);
+      `<div style="color:#E8923A;font-size:12px;margin-top:4px;">${esc(error.message)}</div>`);
     return;
   }
 
@@ -4838,17 +4855,17 @@ function updateSidebarScore(catId, newScore) {
 }
 
 function updateOverallScore() {
-  // Recalculate overall from current scores
-  const scores = [82, 71, 91, 68, 80]; // base scores — update as CC applied
   const overallEl = document.querySelector('.sidebar-score-big');
-  const topStatEl = document.querySelector('.top-stat-val');
   if (!overallEl) return;
-  const avg = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
-  // Burn the overall too
+  // Read live scores from DOM (set by populateReport / applyCreativeChoice)
+  const scoreEls = document.querySelectorAll('.scat-score');
+  const vals = Array.from(scoreEls).map(el => parseInt(el.textContent, 10)).filter(n => !isNaN(n));
+  if (!vals.length) return;
+  const avg = Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
   overallEl.style.transition = 'all .3s';
   overallEl.style.filter = 'brightness(1.5)';
   setTimeout(() => {
-    overallEl.textContent = avg + 1; // slight bump for drama
+    overallEl.textContent = avg;
     overallEl.style.filter = 'none';
   }, 300);
 }
@@ -5056,10 +5073,10 @@ function approveRequest(id, name, company, email) {
       <div class="req-approved-icon">&#10003;</div>
       <div>
         <div class="req-approved-title">Approved &mdash; 14-Day Access Granted</div>
-        <div class="req-approved-detail">${name} at ${company} can now read your script. Access expires ${expiryStr}.</div>
+        <div class="req-approved-detail">${esc(name)} at ${esc(company)} can now read your script. Access expires ${esc(expiryStr)}.</div>
         <div class="req-approved-contact">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          ${email}
+          ${esc(email)}
         </div>
       </div>
     </div>`;
@@ -5133,10 +5150,6 @@ function showHappyHunting() {
   }, 2800);
 }
 
-function requestScriptAccess(btn) {
-  btn.textContent = '✓ Requested — Writer notified';
-  btn.classList.add('requested');
-}
 
 
 // ─── TITLE + CO-WRITERS ───
@@ -5611,9 +5624,9 @@ function _showLimitReached(msg) {
     if (zone && zone.parentNode) zone.parentNode.insertBefore(box, zone.nextSibling);
     else document.body.appendChild(box);
   }
-  const detail = msg || "You’ve used all of this month’s script analyses on your current plan.";
-  box.innerHTML = '<div style="font-weight:700;margin-bottom:8px;">You’ve reached this month’s limit</div>'
-    + '<div style="opacity:.85;margin-bottom:16px;">' + detail + ' Your limit resets at the start of next month.</div>'
+  const detail = esc(msg || "You’ve used all of this month’s script analyses on your current plan.");
+  box.innerHTML = ‘<div style="font-weight:700;margin-bottom:8px;">You’ve reached this month’s limit</div>’
+    + ‘<div style="opacity:.85;margin-bottom:16px;">’ + detail + ‘ Your limit resets at the start of next month.</div>’
     + '<button id="limit-see-plans" style="padding:9px 20px;border-radius:999px;border:none;background:var(--cyan,#3eede7);color:#08080a;font-weight:700;cursor:pointer;">See Plans →</button>';
   box.style.display = 'block';
   const btn = document.getElementById('limit-see-plans');
@@ -5633,16 +5646,16 @@ function _showLimitReached(msg) {
     <div class="ob-celebrate-sub">You just got the same feedback Hollywood charges $100 for. Here's what SceneOne found in your script.</div>
     <div class="ob-celebrate-stats">
       <div class="ob-cel-stat">
-        <div class="ob-cel-stat-val">79</div>
+        <div class="ob-cel-stat-val" id="cel-overall">—</div>
         <div class="ob-cel-stat-lbl">Overall</div>
       </div>
       <div class="ob-cel-stat">
-        <div class="ob-cel-stat-val" style="color:var(--green)">91</div>
-        <div class="ob-cel-stat-lbl">Best: Dialogue</div>
+        <div class="ob-cel-stat-val" style="color:var(--green)" id="cel-best-val">—</div>
+        <div class="ob-cel-stat-lbl" id="cel-best-lbl">Best</div>
       </div>
       <div class="ob-cel-stat">
-        <div class="ob-cel-stat-val" style="color:var(--amber)">68</div>
-        <div class="ob-cel-stat-lbl">Fix: Pacing</div>
+        <div class="ob-cel-stat-val" style="color:var(--amber)" id="cel-low-val">—</div>
+        <div class="ob-cel-stat-lbl" id="cel-low-lbl">Opportunity</div>
       </div>
     </div>
     <button class="ob-celebrate-cta" onclick="dismissCelebrate()">Read my script feedback report →</button>
@@ -5783,7 +5796,7 @@ function _showLimitReached(msg) {
           <li>Targeted harassment, doxxing, or threats against specific real private individuals</li>
           <li>Content designed solely to incite real-world violence with no narrative purpose</li>
         </ul>
-        <p>Prohibited content results in immediate account termination and reporting to authorities where legally required. Report violations to report@sceneone.app.</p>
+        <p>Prohibited content results in immediate account termination and reporting to authorities where legally required. Report violations to <a href="mailto:report@sceneone.net" style="color:var(--cyan)">report@sceneone.net</a>.</p>
       </div>
 
       <div class="tos-section" id="tos-marketplace">
