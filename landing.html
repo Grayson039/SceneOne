@@ -4067,8 +4067,24 @@ function skipTour() {
 window.addEventListener('load',()=>{
   const writerBtn = document.getElementById('path-writer-btn');
   const execBtn   = document.getElementById('path-exec-btn');
-  if(writerBtn) writerBtn.addEventListener('click', () => goTo('welcome'));
-  if(execBtn)   execBtn.addEventListener('click',   () => goTo('exec-signup'));
+  if(writerBtn) writerBtn.addEventListener('click', () => {
+    if (_currentUser) { goTo('upload'); return; }
+    goTo('welcome');
+  });
+  if(execBtn) execBtn.addEventListener('click', async () => {
+    if (_currentUser) {
+      // Already signed in — check if this account has exec access
+      const { data: profile } = await supabaseClient.from('profiles').select('role,verified').eq('id', _currentUser.id).maybeSingle();
+      if (profile?.role === 'exec' && profile?.verified) {
+        const hasSeenExecOnboard = localStorage.getItem('sceneone_exec_onboard_done');
+        goTo(hasSeenExecOnboard ? 'exec-profile' : 'exec-onboard');
+        return;
+      }
+    }
+    // Not logged in, or no exec profile — go to exec auth, default to Sign In tab
+    goTo('exec-signup');
+    switchExecTab(_currentUser ? 'signup' : 'signin');
+  });
 
   const overlay=document.getElementById('ob-tooltip-overlay');
   if(overlay){ overlay.style.display='none'; overlay.classList.remove('active'); }
