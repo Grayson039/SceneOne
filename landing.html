@@ -4313,6 +4313,7 @@ function switchExecTab(tab) {
   const isSignup = tab === 'signup';
   document.getElementById('exec-panel-signup').style.display = isSignup ? '' : 'none';
   document.getElementById('exec-panel-signin').style.display = isSignup ? 'none' : '';
+  if (!isSignup) setTimeout(() => _tsRender('ts-exec-signin', 'execSignin'), 50);
   document.getElementById('exec-tab-signup').style.cssText = isSignup
     ? 'flex:1;padding:10px;font-size:12px;font-weight:700;background:var(--gold);color:#0F0F0F;border:none;cursor:pointer;transition:all .15s;'
     : 'flex:1;padding:10px;font-size:12px;font-weight:700;background:transparent;color:var(--sub);border:none;cursor:pointer;transition:all .15s;';
