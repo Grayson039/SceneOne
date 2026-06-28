@@ -1049,7 +1049,8 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .dash-body{display:grid;grid-template-columns:260px 1fr;flex:1;}
 
 /* Filters sidebar */
-.dash-filters{background:var(--bg2);border-right:1px solid var(--border);padding:20px;position:sticky;top:57px;height:calc(100vh - 57px);overflow-y:auto;}
+.dash-filters{background:var(--bg2);border-right:1px solid var(--border);padding:20px;position:sticky;top:57px;height:calc(100vh - 57px);overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;}
+.dash-filters::-webkit-scrollbar{display:none;}
 .filter-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sub);margin-bottom:12px;}
 .filter-group{margin-bottom:24px;}
 .filter-group-label{font-size:12px;font-weight:700;color:rgba(255,255,255,0.6);margin-bottom:8px;}
@@ -1804,10 +1805,13 @@ body.embedded .pricing-modal-btn{display:none !important;}
 <!-- ══════════════════════ SCREEN 2: UPLOAD ══════════════════════ -->
 <div class="screen" id="screen-upload">
   <div class="upload-wrap">
-    <button class="upload-back" onclick="goTo('landing')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-      Back
-    </button>
+    <div style="display:flex;justify-content:space-between;align-items:center;width:100%;max-width:480px;margin:0 auto 8px;">
+      <button class="upload-back" onclick="goTo('landing')" style="position:static;margin:0;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </button>
+      <button onclick="handleSignOut()" style="background:none;border:none;color:var(--sub);font-size:12px;font-weight:600;cursor:pointer;padding:4px 8px;">Sign Out</button>
+    </div>
     <div class="upload-eyebrow">Upload Your Script</div>
     <div class="upload-title">Ready when you are.</div>
     <div class="upload-desc">Drop your script below. We accept PDF, FDX, and Fountain files. Analysis takes 2–4 minutes — good feedback takes time. Even ours.</div>
@@ -2555,6 +2559,7 @@ body.embedded .pricing-modal-btn{display:none !important;}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Export PDF
         </button>
+        <button class="bar-btn" onclick="handleSignOut()" style="padding:5px 10px;font-size:10px;color:var(--sub);">Sign Out</button>
       </div>
     </div>
   </nav>
@@ -4137,6 +4142,7 @@ async function loadDashboard() {
         <div style="font-size:32px;margin-bottom:16px;">🎬</div>
         <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:8px;">No scripts listed yet.</div>
         <div style="font-size:12px;color:var(--sub);line-height:1.7;">Writers opt in from their coverage report.<br>Check back soon — scripts are being graded every day.</div>
+        <button class="pricing-modal-btn" onclick="openPricingModal()" style="margin-top:24px;">View Pricing Plans</button>
       </div>`;
       return;
     }
@@ -5966,6 +5972,5 @@ function _showLimitReached(msg) {
 function openPricingModal(){document.getElementById('pricing-modal').classList.add('active');}
 function closePricingModal(e){if(!e||e.target.id==='pricing-modal')document.getElementById('pricing-modal').classList.remove('active');}
 </script>
-<button class="pricing-modal-btn" onclick="openPricingModal()">View Pricing Plans</button>
 </body>
 </html>
