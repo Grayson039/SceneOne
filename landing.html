@@ -5521,6 +5521,7 @@ function confirmTitle() {
   document.getElementById('crawl-title').textContent = val;
   document.getElementById('rep-title').textContent = val + ' — Draft 1';
   document.getElementById('title-confirm-overlay').classList.remove('show');
+  checkAnalyzeReady();
 }
 
 function checkAnalyzeReady() {
