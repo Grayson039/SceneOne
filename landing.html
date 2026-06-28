@@ -3643,6 +3643,8 @@ function onTurnstileLoad() {
 function _tsMakeOpts(key) {
   return {
     sitekey: _TS_SITE_KEY,
+    appearance: 'always',
+    theme: 'dark',
     callback:          (t) => { _tsTokens[key] = t; },
     'expired-callback':()  => { _tsTokens[key] = null; },
     'error-callback':  ()  => { _tsTokens[key] = null; },
