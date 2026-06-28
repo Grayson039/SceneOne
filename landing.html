@@ -3673,6 +3673,18 @@ function _tsReset(key) {
 
 function _tsGetToken(key) { return _tsTokens[key] || null; }
 
+// Wait up to maxMs for Turnstile to auto-complete; resolves with token or null
+function _tsAwaitToken(key, maxMs = 5000) {
+  return new Promise(resolve => {
+    if (_tsTokens[key]) { resolve(_tsTokens[key]); return; }
+    const start = Date.now();
+    const poll = setInterval(() => {
+      if (_tsTokens[key]) { clearInterval(poll); resolve(_tsTokens[key]); }
+      else if (Date.now() - start > maxMs) { clearInterval(poll); resolve(null); }
+    }, 100);
+  });
+}
+
 function _tsRenderWriterForms() {
   _tsRender('ts-writer-signup', 'writerSignup');
   _tsRender('ts-writer-login',  'writerLogin');
@@ -4104,7 +4116,7 @@ async function startOnboarding() {
   const { data, error } = await supabaseClient.auth.signUp({
     email,
     password,
-    options: { data: { full_name: name }, captchaToken: _tsGetToken('writerSignup') }
+    options: { data: { full_name: name }, captchaToken: await _tsAwaitToken('writerSignup') }
   });
   _tsReset('writerSignup');
 
@@ -4410,7 +4422,8 @@ async function handleExecSignIn() {
   errEl.style.display = 'none';
   if (!email || !password) { errEl.textContent = 'Enter your email and password.'; errEl.style.display = ''; return; }
   btn.textContent = 'Signing in…'; btn.disabled = true;
-  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password, options: { captchaToken: _tsGetToken('execSignin') } });
+  const captchaToken = await _tsAwaitToken('execSignin');
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password, options: { captchaToken } });
   _tsReset('execSignin');
   if (error || !data.user) {
     errEl.textContent = error?.message || 'Sign in failed.';
@@ -4474,7 +4487,7 @@ async function handleExecSignup() {
         exec_title: _selectedExecRole,
         imdb_url: imdb || null,
       },
-      captchaToken: _tsGetToken('execSignup'),
+      captchaToken: await _tsAwaitToken('execSignup'),
     }
   });
   _tsReset('execSignup');
@@ -4811,7 +4824,7 @@ async function handleLogin() {
   btn.textContent = 'Signing in…';
   btn.disabled = true;
 
-  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass, options: { captchaToken: _tsGetToken('writerLogin') } });
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass, options: { captchaToken: await _tsAwaitToken('writerLogin') } });
   _tsReset('writerLogin');
 
   if (error) {
