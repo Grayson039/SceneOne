@@ -5528,8 +5528,10 @@ function confirmTitle() {
   const val = (input?.value || '').trim().toUpperCase() || 'UNTITLED SCRIPT';
 
   if (titleInput) titleInput.value = val;
-  document.getElementById('crawl-title').textContent = val;
-  document.getElementById('rep-title').textContent = val + ' — Draft 1';
+  const crawlEl = document.getElementById('crawl-title');
+  if (crawlEl) crawlEl.textContent = val;
+  const repEl = document.getElementById('rep-title');
+  if (repEl) repEl.textContent = val + ' — Draft 1';
   document.getElementById('title-confirm-overlay').classList.remove('show');
   checkAnalyzeReady();
 }
