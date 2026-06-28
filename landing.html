@@ -5625,8 +5625,8 @@ function _showLimitReached(msg) {
     else document.body.appendChild(box);
   }
   const detail = esc(msg || "You’ve used all of this month’s script analyses on your current plan.");
-  box.innerHTML = ‘<div style="font-weight:700;margin-bottom:8px;">You’ve reached this month’s limit</div>’
-    + ‘<div style="opacity:.85;margin-bottom:16px;">’ + detail + ‘ Your limit resets at the start of next month.</div>’
+  box.innerHTML = '<div style="font-weight:700;margin-bottom:8px;">You&#39;ve reached this month&#39;s limit</div>'
+    + '<div style="opacity:.85;margin-bottom:16px;">' + detail + ' Your limit resets at the start of next month.</div>'
     + '<button id="limit-see-plans" style="padding:9px 20px;border-radius:999px;border:none;background:var(--cyan,#3eede7);color:#08080a;font-weight:700;cursor:pointer;">See Plans →</button>';
   box.style.display = 'block';
   const btn = document.getElementById('limit-see-plans');
