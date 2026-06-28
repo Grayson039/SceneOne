@@ -315,29 +315,36 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .star{position:absolute;background:#fff;border-radius:50%;animation:twinkle var(--dur) ease-in-out infinite;animation-delay:var(--delay);}
 @keyframes twinkle{0%,100%{opacity:var(--mop);}50%{opacity:1;}}
 
-/* ── STAR WARS ── */
-.crawl-perspective{position:absolute;inset:0;perspective:400px;perspective-origin:50% 100%;display:flex;align-items:flex-end;justify-content:center;}
-.crawl-wrap{width:100%;max-width:640px;transform:rotateX(22deg);transform-origin:50% 100%;padding:0 40px;position:relative;}
-@media(max-width:768px){.crawl-wrap{padding:0 20px;}.crawl-perspective{perspective-origin:50% 110%;}}
-.crawl-text{animation:crawl 52s linear forwards;animation-play-state:paused;}
-.crawl-text.go{animation-play-state:running;}
-@keyframes crawl{from{transform:translateY(110vh);}to{transform:translateY(-380%);}}
-.crawl-title{font-family:'Playfair Display',serif;font-size:clamp(30px,5vw,52px);font-weight:900;color:var(--gold);text-align:center;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;line-height:1.1;}
-.crawl-ep{font-size:clamp(12px,1.8vw,15px);font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(201,168,76,0.65);text-align:center;margin-bottom:12px;}
-.crawl-body{font-family:'Inter',sans-serif;font-size:clamp(16px,2.2vw,20px);line-height:1.95;color:var(--gold);text-align:justify;margin-bottom:32px;}
-.crawl-hr{border:none;border-top:1px solid rgba(201,168,76,0.25);margin:20px 0;}
-.crawl-sec{font-size:clamp(10px,1.3vw,13px);font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(201,168,76,0.55);text-align:center;margin-bottom:16px;}
-.crawl-row{display:flex;justify-content:space-between;font-size:clamp(11px,1.5vw,15px);color:var(--gold);margin-bottom:9px;padding:0 6px;}
-.crawl-row .lbl{opacity:.75;} .crawl-row .sc{font-weight:700;}
-.crawl-fade-t{position:absolute;top:0;left:0;right:0;height:180px;background:linear-gradient(to bottom,#000 40%,transparent);z-index:10;pointer-events:none;}
-@media(max-width:768px){.crawl-fade-t{height:220px;}}
-.crawl-fade-b{position:absolute;bottom:0;left:0;right:0;height:180px;background:linear-gradient(to top,#000,transparent);z-index:10;pointer-events:none;}
-.ep-logo{position:absolute;top:24px;left:50%;transform:translateX(-50%);z-index:20;text-align:center;animation:logo-s 3s ease-in forwards;animation-play-state:paused;}
-@media(max-width:768px){.ep-logo{top:16px;}.ep-logo-text{font-size:clamp(20px,7vw,40px);}}
-.ep-logo.go{animation-play-state:running;}
-@keyframes logo-s{0%{opacity:1;transform:translateX(-50%) scale(1);}80%{opacity:1;transform:translateX(-50%) scale(.05);}100%{opacity:0;transform:translateX(-50%) scale(.02);}}
-.ep-logo-text{font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,54px);font-weight:900;color:#0f5a5e;letter-spacing:-1px;}
-.ep-logo-text span{color:#1d8080;}
+/* ── SCREENPLAY TYPEWRITER ── */
+#loader-typewriter{display:none;position:absolute;inset:0;background:#0d0d0d;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:48px;overflow:hidden;}
+#loader-typewriter.active{display:flex;}
+.tw-machine-wrap{position:relative;width:min(500px,88vw);}
+.tw-paper{background:#f5f0e8;border-radius:3px 3px 0 0;padding:clamp(24px,5vw,44px) clamp(28px,7vw,64px) 80px;font-family:'Courier New',Courier,monospace;font-size:clamp(11px,1.6vw,13.5px);line-height:1.9;color:#1a1a1a;box-shadow:0 -8px 40px rgba(0,0,0,0.7),0 2px 0 rgba(0,0,0,0.3);min-height:340px;position:relative;overflow:hidden;}
+.tw-paper-fade{position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to bottom,transparent,#f5f0e8);pointer-events:none;}
+.tw-roll{height:18px;background:linear-gradient(to bottom,#d8d0c2,#c8bfaf);border-radius:0 0 2px 2px;box-shadow:0 4px 12px rgba(0,0,0,0.5);}
+.tw-slug{font-weight:700;text-transform:uppercase;margin-bottom:0;}
+.tw-char{text-align:center;font-weight:700;text-transform:uppercase;margin-top:4px;margin-bottom:0;}
+.tw-paren{text-align:center;margin:0;padding:0 80px;}
+.tw-dialogue{margin:0 clamp(20px,8vw,80px);text-align:left;}
+.tw-cursor{display:inline-block;width:7px;height:1em;background:#1a1a1a;margin-left:1px;vertical-align:text-bottom;animation:tw-blink .6s step-end infinite;}
+@keyframes tw-blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.tw-label{color:rgba(255,255,255,0.35);font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-top:18px;text-align:center;}
+
+/* ── SPOTLIGHT / NOIR ── */
+#loader-spotlight{display:none;position:absolute;inset:0;background:#000;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
+#loader-spotlight.active{display:flex;}
+.spot-beam{position:absolute;top:0;left:50%;transform:translateX(-50%);width:0;height:0;border-left:260px solid transparent;border-right:260px solid transparent;border-top:120vh solid rgba(255,255,255,0.04);pointer-events:none;z-index:1;}
+.spot-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.12'/%3E%3C/svg%3E");z-index:2;pointer-events:none;animation:grain-flicker .1s steps(1) infinite;}
+.spot-circle{width:clamp(180px,35vw,260px);height:clamp(180px,35vw,260px);border-radius:50%;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;position:relative;z-index:3;}
+.spot-circle::before{content:'';position:absolute;inset:12px;border-radius:50%;border:1px solid rgba(255,255,255,0.05);}
+.spot-text-wrap{position:absolute;z-index:4;text-align:center;padding:0 40px;max-width:480px;}
+.spot-title{font-family:'Playfair Display',serif;font-size:clamp(11px,1.6vw,14px);font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:20px;}
+.spot-phrase{font-family:'Playfair Display',serif;font-size:clamp(20px,3.5vw,32px);font-weight:900;color:#fff;line-height:1.3;min-height:2.6em;transition:opacity .4s ease;}
+.spot-phrase.fade{opacity:0;}
+.spot-sub{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:16px;}
+.spot-dust{position:absolute;inset:0;z-index:2;pointer-events:none;}
+.spot-dust-p{position:absolute;width:1px;height:1px;background:rgba(255,255,255,0.6);border-radius:50%;animation:dust-float var(--dd) linear infinite;animation-delay:var(--dl);left:var(--dl2);top:100%;}
+@keyframes dust-float{to{transform:translateY(-110vh);opacity:0;}}
 
 /* ── FILM COUNTDOWN ── */
 #loader-countdown{display:none;position:absolute;inset:0;background:#0a0a0a;justify-content:center;align-items:center;flex-direction:column;}
@@ -1372,7 +1379,7 @@ body.embedded .pricing-modal-btn{display:none !important;}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <!-- Supabase JS client -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad" async defer></script>
 </head>
 <body>
 <a class="so-skip-link" href="#screen-upload">Skip to upload</a>
@@ -1968,51 +1975,28 @@ body.embedded .pricing-modal-btn{display:none !important;}
 <!-- ══════════════════════ SCREEN 3: PROCESSING ══════════════════════ -->
 <div class="screen" id="screen-processing">
 
-  <!-- ── LOADER A: STAR WARS ── -->
-  <div id="loader-starwars" style="position:absolute;inset:0;display:none;">
-    <div class="stars" id="stars"></div>
-    <div class="crawl-fade-t"></div>
-    <div class="crawl-fade-b"></div>
-    <div class="ep-logo" id="ep-logo"><div class="ep-logo-text">Scene<span>One</span></div></div>
-    <div class="crawl-perspective">
-      <div class="crawl-wrap">
-        <div class="crawl-text" id="crawl-text">
-          <div class="crawl-ep">SceneOne Script Feedback Report</div>
-          <div class="crawl-title" id="crawl-title">THE LAST HOUR</div>
-          <div class="crawl-body">A long time ago, in a development office far, far away, a writer dared to commit their story to the page.</div>
-          <div class="crawl-body">SceneOne has been dispatched to analyze the craft — to find what is working, what needs work, and what the story is truly about.</div>
-          <hr class="crawl-hr">
-          <div class="crawl-sec">Step 1 — Parsing your script</div>
-          <div class="crawl-body" style="text-align:center;font-size:clamp(11px,1.4vw,14px)">Breaking your script into acts, scenes,<br>characters, dialogue blocks and action lines...<br>This structured data is stored — the expensive<br>analysis happens once, then it's cached forever.</div>
-          <hr class="crawl-hr">
-          <div class="crawl-sec">Step 2 — Category analysis</div>
-          <div class="crawl-body" style="text-align:center;font-size:clamp(11px,1.4vw,14px)">Each craft dimension receives only<br>its relevant pages — not the full script.<br>Dialogue gets dialogue. Structure gets<br>act breaks. Efficient by design.</div>
-          <hr class="crawl-hr">
-          <div class="crawl-sec">Step 3 — Evidence gathering</div>
-          <div class="crawl-body" style="text-align:center;font-size:clamp(11px,1.4vw,14px)">Identifying your strongest lines.<br>Flagging pacing gaps with page references.<br>Finding the argument that isn't about<br>what the characters say it's about.</div>
-          <hr class="crawl-hr">
-          <div class="crawl-sec">Preliminary Findings</div>
-          <div class="crawl-row"><span class="lbl">Structure</span><span class="sc">Analyzing...</span></div>
-          <div class="crawl-row"><span class="lbl">Conflict</span><span class="sc">Analyzing...</span></div>
-          <div class="crawl-row"><span class="lbl">Dialogue</span><span class="sc">Analyzing...</span></div>
-          <div class="crawl-row"><span class="lbl">Pacing</span><span class="sc">Analyzing...</span></div>
-          <div class="crawl-row"><span class="lbl">Visual Storytelling</span><span class="sc">Analyzing...</span></div>
-          <div style="height:220px"></div>
-        </div>
+  <!-- ── LOADER A: SCREENPLAY TYPEWRITER ── -->
+  <div id="loader-typewriter">
+    <div class="tw-machine-wrap">
+      <div class="tw-paper" id="tw-paper">
+        <div id="tw-content"></div><span class="tw-cursor" id="tw-cursor"></span>
+        <div class="tw-paper-fade"></div>
       </div>
+      <div class="tw-roll"></div>
     </div>
-    <!-- Live reading stream -->
-    <div class="live-stream" id="live-stream">
-      <div class="ls-title">Live Reading</div>
-      <div class="ls-item" id="ls-0"><div class="ls-dot"></div>Parsing script structure</div>
-      <div class="ls-item" id="ls-1"><div class="ls-dot"></div>Identifying characters</div>
-      <div class="ls-item" id="ls-2"><div class="ls-dot"></div>Mapping act breaks</div>
-      <div class="ls-item" id="ls-3"><div class="ls-dot"></div>Tracking protagonist arc</div>
-      <div class="ls-item" id="ls-4"><div class="ls-dot"></div>Analyzing dialogue</div>
-      <div class="ls-item" id="ls-5"><div class="ls-dot"></div>Measuring pacing</div>
-      <div class="ls-item" id="ls-6"><div class="ls-dot"></div>Visual storytelling</div>
-      <div class="ls-item" id="ls-7"><div class="ls-dot"></div>Gathering evidence</div>
-      <div class="ls-item" id="ls-8"><div class="ls-dot"></div>Compiling report</div>
+    <div class="tw-label" id="tw-label">Reading your script...</div>
+  </div>
+
+  <!-- ── LOADER D: SPOTLIGHT / NOIR ── -->
+  <div id="loader-spotlight">
+    <div class="spot-beam"></div>
+    <div class="spot-grain"></div>
+    <div class="spot-dust" id="spot-dust"></div>
+    <div class="spot-circle"></div>
+    <div class="spot-text-wrap">
+      <div class="spot-title">SceneOne · Analysis In Progress</div>
+      <div class="spot-phrase" id="spot-phrase">Reading your pages...</div>
+      <div class="spot-sub" id="spot-sub">Parsing structure</div>
     </div>
   </div>
 
@@ -3648,6 +3632,14 @@ const _TS_SITE_KEY = '0x4AAAAADrnusj8lT1xi7OE';
 const _tsWidgets = {};
 const _tsTokens = {};
 
+// Called by Turnstile script once loaded — re-render any containers now visible
+function onTurnstileLoad() {
+  const active = document.querySelector('.screen.active');
+  if (!active) return;
+  if (active.id === 'screen-welcome') _tsRenderWriterForms();
+  if (active.id === 'screen-exec-signup') _tsRenderExecForms();
+}
+
 function _tsMakeOpts(key) {
   return {
     sitekey: _TS_SITE_KEY,
@@ -3659,9 +3651,16 @@ function _tsMakeOpts(key) {
 
 function _tsRender(containerId, key) {
   if (!window.turnstile) return;
-  if (_tsWidgets[key] !== undefined) return;
   const el = document.getElementById(containerId);
   if (!el) return;
+  // If already rendered and iframe is present, skip
+  if (_tsWidgets[key] !== undefined && el.querySelector('iframe')) return;
+  // Previous render attempt failed (hidden element) — clean up and retry
+  if (_tsWidgets[key] !== undefined) {
+    try { turnstile.remove(_tsWidgets[key]); } catch(e){}
+    delete _tsWidgets[key];
+    el.innerHTML = '';
+  }
   _tsWidgets[key] = turnstile.render(el, _tsMakeOpts(key));
 }
 
@@ -3728,48 +3727,128 @@ const countdownPhrases = [
   'Gathering evidence...','Compiling report...','Final checks...'
 ];
 
-function genStars(){
-  const c=document.getElementById('stars'); if(!c)return; c.innerHTML='';
-  for(let i=0;i<200;i++){
-    const s=document.createElement('div'); s.className='star';
-    const sz=Math.random()*2.4+0.4;
-    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--dur:${2+Math.random()*4}s;--delay:${Math.random()*4}s;--mop:${.1+Math.random()*.3};`;
-    c.appendChild(s);
-  }
-}
-
-
-
-// ── Star Wars ──
-function runStarWars(){
-  document.getElementById('loader-starwars').style.display='block';
+// ── Screenplay Typewriter ──
+function runTypewriter(){
+  document.getElementById('loader-typewriter').classList.add('active');
   document.getElementById('loader-countdown').classList.remove('active');
   document.getElementById('loader-clapper').classList.remove('active');
-  genStars();
-  setTimeout(()=>document.getElementById('ep-logo').classList.add('go'), 500);
-  setTimeout(()=>{
-    document.getElementById('crawl-text').classList.add('go');
-    document.getElementById('live-stream').classList.add('show');
-    runLiveStream();
-  }, 3500);
-  runProgressBar(readingPhrases, 18000, '"Scene Set. Your script report is ready."');
+  document.getElementById('loader-spotlight').classList.remove('active');
+
+  const title = (window._uploadedTitle || 'UNTITLED').toUpperCase();
+  const content = document.getElementById('tw-content');
+  const label = document.getElementById('tw-label');
+  const paper = document.getElementById('tw-paper');
+  content.innerHTML = '';
+  paper.scrollTop = 0;
+
+  const lines = [
+    { cls:'tw-slug', text:'FADE IN:' },
+    { cls:'tw-slug', text:'' },
+    { cls:'tw-slug', text:'INT. DEVELOPMENT OFFICE — DAY' },
+    { cls:'tw-action', text:'' },
+    { cls:'tw-action', text:'A screenplay sits on a desk. Pages weathered from rewrites.' },
+    { cls:'tw-action', text:'Someone, finally, is paying attention.' },
+    { cls:'tw-action', text:'' },
+    { cls:'tw-slug', text:'EXT. THE SYSTEM — CONTINUOUS' },
+    { cls:'tw-action', text:'' },
+    { cls:'tw-action', text:'SceneOne parses the structure. Act breaks emerge. Characters' },
+    { cls:'tw-action', text:'take shape. Dialogue is weighed against subtext.' },
+    { cls:'tw-action', text:'' },
+    { cls:'tw-char', text:'ALGORITHM' },
+    { cls:'tw-paren', text:'(reading carefully)' },
+    { cls:'tw-dialogue', text:`"${title}." This one has something.` },
+    { cls:'tw-action', text:'' },
+    { cls:'tw-slug', text:'INT. ANALYSIS ENGINE — MOMENTS LATER' },
+    { cls:'tw-action', text:'' },
+    { cls:'tw-action', text:'Evidence gathered. Scores compiled. The craft examined' },
+    { cls:'tw-action', text:'across five dimensions. The report is almost ready.' },
+  ];
+
+  const phrases = ['Reading your script...','Parsing act structure...','Identifying characters...','Analyzing dialogue...','Measuring pacing...','Gathering evidence...','Compiling your report...'];
+  let pi = 0;
+  const phraseInt = setInterval(()=>{ if(pi < phrases.length) label.textContent = phrases[pi++]; }, 2600);
+
+  let li = 0, ci = 0;
+  let currentEl = null;
+
+  function typeLine(){
+    if(li >= lines.length) return;
+    const { cls, text } = lines[li];
+    if(ci === 0){
+      currentEl = document.createElement('p');
+      currentEl.className = cls;
+      currentEl.style.margin = '0';
+      currentEl.textContent = '';
+      content.appendChild(currentEl);
+    }
+    if(ci < text.length){
+      currentEl.textContent += text[ci];
+      ci++;
+      // Scroll paper up as content grows
+      paper.scrollTop = paper.scrollHeight;
+      const delay = text[ci-1] === ' ' ? 40 : (Math.random() > 0.85 ? 120 : 45);
+      setTimeout(typeLine, delay);
+    } else {
+      li++; ci = 0;
+      setTimeout(typeLine, li < lines.length && lines[li]?.text === '' ? 80 : 180);
+    }
+  }
+  typeLine();
+  runProgressBar(readingPhrases, 18000, '"The page is read. Your report is ready."', ()=>clearInterval(phraseInt));
 }
 
-function runLiveStream(){
-  const items = document.querySelectorAll('.ls-item');
-  let idx = 0;
-  function next(){
-    if(idx > 0) items[idx-1].classList.remove('active'), items[idx-1].classList.add('done');
-    if(idx < items.length){ items[idx].classList.add('active'); idx++; setTimeout(next, 1800+Math.random()*800); }
+// ── Spotlight / Noir ──
+function runSpotlight(){
+  document.getElementById('loader-spotlight').classList.add('active');
+  document.getElementById('loader-typewriter').classList.remove('active');
+  document.getElementById('loader-countdown').classList.remove('active');
+  document.getElementById('loader-clapper').classList.remove('active');
+
+  // Dust particles
+  const dustEl = document.getElementById('spot-dust');
+  dustEl.innerHTML = '';
+  for(let i=0;i<40;i++){
+    const p=document.createElement('div'); p.className='spot-dust-p';
+    p.style.cssText=`--dd:${4+Math.random()*8}s;--dl:${Math.random()*6}s;--dl2:${20+Math.random()*60}%;`;
+    dustEl.appendChild(p);
   }
-  next();
+
+  const phrases = [
+    { main:'Reading your pages.', sub:'Parsing script structure' },
+    { main:'Mapping the acts.', sub:'Identifying story beats' },
+    { main:'Every character has a secret.', sub:'Analyzing character arcs' },
+    { main:'What does the dialogue hide?', sub:'Examining subtext' },
+    { main:'Scene by scene. Beat by beat.', sub:'Measuring pacing' },
+    { main:'The story reveals itself.', sub:'Visual storytelling analysis' },
+    { main:'Gathering the evidence.', sub:'Compiling findings' },
+    { main:'Your report is almost ready.', sub:'Finalizing scores' },
+  ];
+
+  const phraseEl = document.getElementById('spot-phrase');
+  const subEl = document.getElementById('spot-sub');
+  let pi = 0;
+
+  function nextPhrase(){
+    if(pi >= phrases.length) return;
+    phraseEl.classList.add('fade');
+    setTimeout(()=>{
+      phraseEl.textContent = phrases[pi].main;
+      subEl.textContent = phrases[pi].sub;
+      phraseEl.classList.remove('fade');
+      pi++;
+      if(pi < phrases.length) setTimeout(nextPhrase, 2200 + Math.random()*600);
+    }, 400);
+  }
+  setTimeout(nextPhrase, 600);
+  runProgressBar(readingPhrases, 18000, '"Lights up. Your script report is ready."');
 }
 
 // ── Film Countdown ──
 function runCountdown(){
-  document.getElementById('loader-starwars').style.display='none';
   document.getElementById('loader-countdown').classList.add('active');
   document.getElementById('loader-clapper').classList.remove('active');
+  document.getElementById('loader-typewriter').classList.remove('active');
+  document.getElementById('loader-spotlight').classList.remove('active');
 
   let count = 8;
   const numEl = document.getElementById('cd-num');
@@ -3816,9 +3895,10 @@ function runCountdown(){
 
 // ── Clapperboard ──
 function runClapper(){
-  document.getElementById('loader-starwars').style.display='none';
   document.getElementById('loader-countdown').classList.remove('active');
   document.getElementById('loader-clapper').classList.add('active');
+  document.getElementById('loader-typewriter').classList.remove('active');
+  document.getElementById('loader-spotlight').classList.remove('active');
 
   // Set script title on clapperboard
   const title = document.getElementById('crawl-title')?.textContent || 'THE LAST HOUR';
@@ -5687,9 +5767,9 @@ let _currentUser = null;
 let _currentSubId = null;
 let _dashSort = 'score';
 function getNextLoader() {
-  // Star Wars crawl (0) retired — rotate between Film Countdown (1) and Clapperboard (2)
+  // 1=Countdown, 2=Clapper, 3=Typewriter, 4=Spotlight
   let next;
-  do { next = 1 + Math.floor(Math.random() * 2); } while (next === _lastLoader);
+  do { next = 1 + Math.floor(Math.random() * 4); } while (next === _lastLoader);
   _lastLoader = next;
   return next;
 }
@@ -5712,7 +5792,9 @@ function startProcessing() {
   goTo('processing');
   const which = getNextLoader();
   if (which === 1) runCountdown();
-  else runClapper();
+  else if (which === 2) runClapper();
+  else if (which === 3) runTypewriter();
+  else runSpotlight();
 
   // Kick off real API call (non-blocking — runs in parallel with loader)
   _runAnalysis();
