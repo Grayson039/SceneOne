@@ -1173,8 +1173,9 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 #screen-exec-profile.active{display:flex;}
 
 /* Exec sidebar nav */
-.exec-layout{display:grid;grid-template-columns:220px 1fr;flex:1;}
-.exec-sidenav{background:var(--bg2);border-right:1px solid var(--border);padding:20px 12px;position:sticky;top:57px;height:calc(100vh - 57px);}
+.exec-layout{display:grid;grid-template-columns:200px 1fr;flex:1;}
+.exec-sidenav{background:var(--bg2);border-right:1px solid var(--border);padding:20px 12px;position:sticky;top:57px;height:calc(100vh - 57px);overflow-y:auto;scrollbar-width:none;}
+.exec-sidenav::-webkit-scrollbar{display:none;}
 .exec-sidenav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;cursor:pointer;transition:background .15s;margin-bottom:2px;}
 .exec-sidenav-item:hover{background:rgba(255,255,255,0.04);}
 .exec-sidenav-item.active{background:rgba(62,237,231,0.07);}
@@ -1182,21 +1183,76 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .exec-sidenav-label{font-size:12px;font-weight:600;color:var(--text);}
 .exec-sidenav-badge{margin-left:auto;font-size:10px;font-weight:800;color:#0F0F0F;background:var(--cyan);padding:2px 6px;border-radius:10px;}
 .exec-sidenav-badge.amber{background:var(--amber);}
-
-/* Exec main */
 .exec-main{padding:24px;overflow-y:auto;}
-
-/* Exec hero */
-.exec-hero{background:linear-gradient(135deg,rgba(20,20,22,0.9),rgba(10,37,64,0.6));border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;display:flex;gap:16px;align-items:flex-start;}
-.exec-avatar{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--amber),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:#0F0F0F;flex-shrink:0;}
-.exec-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:2px;}
-.exec-title{font-size:12px;color:var(--sub);margin-bottom:8px;}
-.exec-verified{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--green);background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.2);border-radius:4px;padding:3px 8px;}
-
-/* Exec stat ring */
-.exec-stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;}
-.exec-stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;transition:all .2s;}
-.exec-stat-card:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.4);}
+/* ── Dashboard banner ── */
+.exec-dash-banner{position:relative;border-radius:20px;overflow:hidden;margin-bottom:20px;padding:28px 32px;background:linear-gradient(120deg,#0a1628 0%,#0d2340 40%,#0a2a2a 100%);border:1px solid rgba(62,237,231,0.15);}
+.exec-dash-banner::after{content:'';position:absolute;top:-60px;right:-40px;width:320px;height:320px;background:radial-gradient(circle,rgba(62,237,231,0.07) 0%,transparent 70%);pointer-events:none;}
+.exec-banner-greeting{font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:rgba(62,237,231,0.6);margin-bottom:8px;}
+.exec-banner-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:#fff;margin-bottom:16px;line-height:1.2;}
+.exec-banner-name span{color:var(--cyan);}
+.exec-banner-pills{display:flex;gap:10px;flex-wrap:wrap;}
+.exec-pill{display:flex;align-items:center;gap:7px;padding:7px 14px;border-radius:100px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);font-size:11px;font-weight:700;color:var(--text);}
+.exec-pill-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+/* ── Bento grid ── */
+.exec-bento{display:grid;grid-template-columns:1fr 300px;gap:16px;margin-bottom:16px;}
+.exec-bento-left{display:flex;flex-direction:column;gap:16px;}
+/* ── Featured card ── */
+.exec-featured{border-radius:18px;padding:24px;position:relative;overflow:hidden;border:1px solid rgba(62,237,231,0.18);background:linear-gradient(135deg,rgba(12,30,50,0.98),rgba(8,20,35,0.99));}
+.exec-featured::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),rgba(62,237,231,0.15));}
+.exec-featured-eyebrow{font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.exec-featured-eyebrow::after{content:'';flex:1;height:1px;background:rgba(62,237,231,0.12);}
+.exec-featured-body{display:flex;gap:20px;align-items:flex-start;}
+.exec-score-ring{width:76px;height:76px;flex-shrink:0;position:relative;}
+.exec-score-ring svg{transform:rotate(-90deg);}
+.exec-score-ring-val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#fff;line-height:1;}
+.exec-score-ring-lbl{font-size:8px;color:var(--sub);margin-top:2px;}
+.exec-featured-info{flex:1;}
+.exec-featured-genre{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:6px;}
+.exec-featured-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:4px;line-height:1.1;}
+.exec-featured-meta{font-size:11px;color:var(--sub);margin-bottom:10px;}
+.exec-featured-logline{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.65;margin-bottom:16px;font-style:italic;border-left:2px solid rgba(62,237,231,0.25);padding-left:10px;}
+.exec-featured-actions{display:flex;gap:8px;}
+.exec-req-btn{padding:9px 20px;border-radius:100px;border:none;background:var(--cyan);color:#08080a;font-weight:800;font-size:12px;cursor:pointer;transition:all .2s;}
+.exec-req-btn:hover{background:#5cf5ee;transform:translateY(-1px);}
+.exec-ghost-btn{padding:9px 16px;border-radius:100px;border:1px solid var(--border2);background:transparent;color:var(--sub);font-weight:700;font-size:12px;cursor:pointer;transition:all .15s;}
+.exec-ghost-btn:hover{color:var(--text);}
+/* ── New scripts ── */
+.exec-new-badge{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.22);border-radius:4px;padding:3px 8px;margin-bottom:14px;}
+.exec-new-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;background:rgba(255,255,255,0.02);border:1px solid transparent;cursor:pointer;transition:all .15s;margin-bottom:4px;}
+.exec-new-item:last-child{margin-bottom:0;}
+.exec-new-item:hover{background:rgba(255,255,255,0.05);border-color:var(--border);}
+.exec-new-score{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;}
+.exec-new-info{flex:1;min-width:0;}
+.exec-new-title{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.exec-new-meta{font-size:10px;color:var(--sub);margin-top:1px;}
+.exec-new-action{font-size:10px;font-weight:700;color:var(--cyan);flex-shrink:0;}
+/* ── Right widgets ── */
+.exec-right-col{display:flex;flex-direction:column;gap:16px;}
+.exec-widget{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;}
+.exec-widget-head{font-size:9px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--sub);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+.exec-hot-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.exec-hot-item:last-child{border-bottom:none;}
+.exec-hot-rank{font-size:11px;font-weight:900;color:var(--sub);width:14px;text-align:center;flex-shrink:0;}
+.exec-hot-score{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;}
+.exec-hot-info{flex:1;min-width:0;}
+.exec-hot-title{font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.exec-hot-meta{font-size:10px;color:var(--sub);margin-top:1px;}
+.exec-hot-req{font-size:10px;color:var(--amber);font-weight:700;flex-shrink:0;}
+.exec-genre-row{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.exec-genre-row:last-child{margin-bottom:0;}
+.exec-genre-label{font-size:11px;color:var(--sub);width:76px;flex-shrink:0;}
+.exec-genre-bar-wrap{flex:1;height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
+.exec-genre-bar{height:100%;border-radius:3px;}
+.exec-genre-count{font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);width:18px;text-align:right;flex-shrink:0;}
+/* ── Requests + Activity ── */
+.req-script-item{display:flex;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--border);}
+.req-script-item:last-child{border-bottom:none;}
+.req-score-mini{font-family:'Playfair Display',serif;font-size:16px;font-weight:900;color:var(--cyan);width:32px;flex-shrink:0;text-align:center;}
+.req-info{flex:1;min-width:0;}
+.req-title{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
+.req-meta{font-size:10px;color:var(--sub);}
+.req-status{flex-shrink:0;}
+/* keep legacy classes for stat cards */
 .exec-stat-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
 .exec-stat-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sub);}
 .exec-stat-delta{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;}
@@ -1204,28 +1260,16 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .delta-neg{color:var(--amber);background:rgba(232,146,58,0.1);}
 .exec-stat-value{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;line-height:1;}
 .exec-stat-sub{font-size:10px;color:var(--sub);margin-top:4px;}
-
-/* Donut ring chart */
 .donut-wrap{position:relative;width:80px;height:80px;margin:0 auto 10px;}
 .donut-wrap svg{transform:rotate(-90deg);}
 .donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .donut-val{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:#fff;line-height:1;}
 .donut-lbl{font-size:10px;color:var(--sub);}
-
-/* Requested scripts list */
-.req-script-item{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
-.req-script-item:last-child{border-bottom:none;}
-.req-score-mini{font-family:'Playfair Display',serif;font-size:16px;font-weight:900;color:var(--cyan);width:32px;flex-shrink:0;text-align:center;}
-.req-info{flex:1;min-width:0;}
-.req-title{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
-.req-meta{font-size:10px;color:var(--sub);}
-.req-status{flex-shrink:0;}
-
 @media(max-width:768px){
   .writer-stats-row{grid-template-columns:repeat(2,1fr);}
   .exec-layout{grid-template-columns:1fr;}
   .exec-sidenav{display:none;}
-  .exec-stats-grid{grid-template-columns:repeat(2,1fr);}
+  .exec-bento{grid-template-columns:1fr;}
 }
 
 
@@ -2366,161 +2410,214 @@ body.embedded .pricing-modal-btn{display:none !important;}
     <!-- Main content -->
     <main class="exec-main">
 
-      <!-- Exec hero -->
-      <div class="exec-hero">
-        <div class="exec-avatar">MC</div>
-        <div>
-          <div class="exec-name">M. Chen</div>
-          <div class="exec-title">Development Executive · Participant Media</div>
-          <div class="exec-verified">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg>
-            Verified Reader · IMDbPro on file
+      <!-- ── Cinematic banner ── -->
+      <div class="exec-dash-banner">
+        <div class="exec-banner-greeting">Welcome back</div>
+        <div class="exec-banner-name">Good to see you, <span>M. Chen.</span></div>
+        <div class="exec-banner-pills">
+          <div class="exec-pill">
+            <div class="exec-pill-dot" style="background:var(--cyan);box-shadow:0 0 6px var(--cyan);"></div>
+            <span>24 scripts available</span>
+          </div>
+          <div class="exec-pill">
+            <div class="exec-pill-dot" style="background:var(--gold);box-shadow:0 0 6px var(--gold);"></div>
+            <span>3 new since your last visit</span>
+          </div>
+          <div class="exec-pill">
+            <div class="exec-pill-dot" style="background:var(--amber);box-shadow:0 0 6px var(--amber);"></div>
+            <span>2 requests pending</span>
           </div>
         </div>
       </div>
 
-      <!-- Stat cards grid — Flux inspired -->
-      <div class="exec-stats-grid">
+      <!-- ── Bento grid ── -->
+      <div class="exec-bento">
 
-        <div class="exec-stat-card">
-          <div class="exec-stat-top">
-            <div class="exec-stat-label">Scripts Reviewed</div>
-            <div class="exec-stat-delta delta-pos">+3 this month</div>
-          </div>
-          <div class="exec-stat-value" style="color:var(--cyan);">24</div>
-          <div class="exec-stat-sub">Since joining SceneOne</div>
-          <!-- Mini donut -->
-          <div class="donut-wrap" style="margin-top:12px;">
-            <svg width="80" height="80" viewBox="0 0 80 80">
-              <circle cx="40" cy="40" r="30" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/>
-              <circle cx="40" cy="40" r="30" fill="none" stroke="var(--cyan)" stroke-width="10" stroke-dasharray="113 75" stroke-linecap="round"/>
-            </svg>
-            <div class="donut-center"><div class="donut-val">60%</div><div class="donut-lbl">read rate</div></div>
-          </div>
-        </div>
+        <!-- Left column -->
+        <div class="exec-bento-left">
 
-        <div class="exec-stat-card">
-          <div class="exec-stat-top">
-            <div class="exec-stat-label">Active Access</div>
-            <div class="exec-stat-delta delta-neg">2 expiring soon</div>
-          </div>
-          <div class="exec-stat-value" style="color:var(--amber);">3</div>
-          <div class="exec-stat-sub">Scripts in 14-day window</div>
-          <div class="donut-wrap" style="margin-top:12px;">
-            <svg width="80" height="80" viewBox="0 0 80 80">
-              <circle cx="40" cy="40" r="30" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/>
-              <circle cx="40" cy="40" r="30" fill="none" stroke="var(--amber)" stroke-width="10" stroke-dasharray="56 132" stroke-linecap="round"/>
-            </svg>
-            <div class="donut-center"><div class="donut-val" style="color:var(--amber);">3</div><div class="donut-lbl">active</div></div>
-          </div>
-        </div>
-
-        <div class="exec-stat-card">
-          <div class="exec-stat-top">
-            <div class="exec-stat-label">Pending Requests</div>
-            <div class="exec-stat-delta delta-pos">+1 today</div>
-          </div>
-          <div class="exec-stat-value" style="color:var(--gold);">3</div>
-          <div class="exec-stat-sub">Awaiting writer approval</div>
-          <div style="margin-top:10px;display:flex;flex-direction:column;gap:5px;">
-            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--sub);">
-              <span>The Last Hour</span><span style="color:var(--amber)">58h left</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--sub);">
-              <span>Drift</span><span style="color:var(--green)">71h left</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--sub);">
-              <span>Signal Lost</span><span style="color:var(--green)">68h left</span>
+          <!-- Featured script -->
+          <div class="exec-featured">
+            <div class="exec-featured-eyebrow">&#9733; Featured Script</div>
+            <div class="exec-featured-body">
+              <div class="exec-score-ring">
+                <svg width="76" height="76" viewBox="0 0 76 76">
+                  <circle cx="38" cy="38" r="30" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
+                  <circle cx="38" cy="38" r="30" fill="none" stroke="var(--cyan)" stroke-width="8" stroke-dasharray="165 23" stroke-linecap="round"/>
+                </svg>
+                <div class="exec-score-ring-val">88<div class="exec-score-ring-lbl">score</div></div>
+              </div>
+              <div class="exec-featured-info">
+                <div class="exec-featured-genre">Psychological Thriller &nbsp;·&nbsp; 94 pages</div>
+                <div class="exec-featured-title">DRIFT</div>
+                <div class="exec-featured-meta">Comp: <em>Whiplash</em> 50% &nbsp;·&nbsp; Added 2 days ago</div>
+                <div class="exec-featured-logline">"A burned-out investigator chasing one last case discovers the only person who can clear her name is the one person who wants her to fail."</div>
+                <div class="exec-featured-actions">
+                  <button class="exec-req-btn" onclick="showReaderRequest()">Request Script →</button>
+                  <button class="exec-ghost-btn" onclick="goTo('dashboard')">Browse All</button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="exec-stat-card">
-          <div class="exec-stat-top">
-            <div class="exec-stat-label">Avg Score — Requested</div>
-            <div class="exec-stat-delta delta-pos">↑ quality</div>
+          <!-- New since last visit -->
+          <div class="exec-widget">
+            <div class="exec-widget-head">
+              New Since Your Last Visit
+              <span onclick="goTo('dashboard')" style="color:var(--cyan);font-size:9px;cursor:pointer;font-weight:700;">See all →</span>
+            </div>
+            <div class="exec-new-badge">&#9679; 3 New</div>
+            <div class="exec-new-item">
+              <div class="exec-new-score" style="background:rgba(62,237,231,0.1);color:var(--cyan);">91</div>
+              <div class="exec-new-info">
+                <div class="exec-new-title">THE LAST HOUR</div>
+                <div class="exec-new-meta">Sci-Fi Thriller &nbsp;·&nbsp; 112 pages &nbsp;·&nbsp; Arrival 45%</div>
+              </div>
+              <div class="exec-new-action">Request →</div>
+            </div>
+            <div class="exec-new-item">
+              <div class="exec-new-score" style="background:rgba(201,168,76,0.1);color:var(--gold);">85</div>
+              <div class="exec-new-info">
+                <div class="exec-new-title">SIGNAL LOST</div>
+                <div class="exec-new-meta">Drama &nbsp;·&nbsp; 101 pages &nbsp;·&nbsp; Manchester 38%</div>
+              </div>
+              <div class="exec-new-action">Request →</div>
+            </div>
+            <div class="exec-new-item">
+              <div class="exec-new-score" style="background:rgba(76,175,125,0.1);color:var(--green);">82</div>
+              <div class="exec-new-info">
+                <div class="exec-new-title">UNDERTOW</div>
+                <div class="exec-new-meta">Comedy &nbsp;·&nbsp; 89 pages &nbsp;·&nbsp; Little Miss Sunshine 41%</div>
+              </div>
+              <div class="exec-new-action">Request →</div>
+            </div>
           </div>
-          <div class="exec-stat-value" style="color:var(--green);">87</div>
-          <div class="exec-stat-sub">Scripts you've requested</div>
-          <div class="donut-wrap" style="margin-top:12px;">
-            <svg width="80" height="80" viewBox="0 0 80 80">
-              <circle cx="40" cy="40" r="30" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/>
-              <circle cx="40" cy="40" r="30" fill="none" stroke="var(--green)" stroke-width="10" stroke-dasharray="164 24" stroke-linecap="round"/>
-            </svg>
-            <div class="donut-center"><div class="donut-val" style="color:var(--green);">87</div><div class="donut-lbl">avg</div></div>
+
+          <!-- Active requests -->
+          <div class="exec-widget">
+            <div class="exec-widget-head">Active &amp; Pending Requests</div>
+            <div class="req-script-item">
+              <div class="req-score-mini">88</div>
+              <div class="req-info">
+                <div class="req-title">DRIFT</div>
+                <div class="req-meta">Drama · 108 pages · Access window: 11 days left</div>
+              </div>
+              <div class="req-status"><span class="status-chip chip-approved">Approved</span></div>
+            </div>
+            <div class="req-script-item">
+              <div class="req-score-mini">82</div>
+              <div class="req-info">
+                <div class="req-title">THE LAST HOUR</div>
+                <div class="req-meta">Psychological Thriller · 94 pages · Awaiting writer</div>
+              </div>
+              <div class="req-status"><span class="status-chip chip-review">Pending</span></div>
+            </div>
+            <div class="req-script-item">
+              <div class="req-score-mini">85</div>
+              <div class="req-info">
+                <div class="req-title">SIGNAL LOST</div>
+                <div class="req-meta">Sci-Fi Thriller · 112 pages · Awaiting writer</div>
+              </div>
+              <div class="req-status"><span class="status-chip chip-review">Pending</span></div>
+            </div>
           </div>
+
         </div>
 
-      </div>
+        <!-- Right column -->
+        <div class="exec-right-col">
 
-      <!-- Recently requested scripts -->
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-          <div class="section-head" style="margin-bottom:0;">Active & Requested Scripts</div>
-          <button class="pnav-btn" onclick="goTo('dashboard')" style="font-size:10px;">Browse More →</button>
-        </div>
-
-        <div class="req-script-item">
-          <div class="req-score-mini">82</div>
-          <div class="req-info">
-            <div class="req-title">THE LAST HOUR</div>
-            <div class="req-meta">Psychological Thriller · 94 pages · Whiplash 40%</div>
+          <!-- Hot this week -->
+          <div class="exec-widget">
+            <div class="exec-widget-head">&#128293; Hot This Week</div>
+            <div class="exec-hot-item">
+              <div class="exec-hot-rank">1</div>
+              <div class="exec-hot-score" style="background:rgba(62,237,231,0.1);color:var(--cyan);">91</div>
+              <div class="exec-hot-info">
+                <div class="exec-hot-title">THE LAST HOUR</div>
+                <div class="exec-hot-meta">Sci-Fi Thriller · 112p</div>
+              </div>
+              <div class="exec-hot-req">8 requests</div>
+            </div>
+            <div class="exec-hot-item">
+              <div class="exec-hot-rank">2</div>
+              <div class="exec-hot-score" style="background:rgba(62,237,231,0.1);color:var(--cyan);">88</div>
+              <div class="exec-hot-info">
+                <div class="exec-hot-title">DRIFT</div>
+                <div class="exec-hot-meta">Drama · 108p</div>
+              </div>
+              <div class="exec-hot-req">6 requests</div>
+            </div>
+            <div class="exec-hot-item">
+              <div class="exec-hot-rank">3</div>
+              <div class="exec-hot-score" style="background:rgba(201,168,76,0.1);color:var(--gold);">85</div>
+              <div class="exec-hot-info">
+                <div class="exec-hot-title">SIGNAL LOST</div>
+                <div class="exec-hot-meta">Sci-Fi Thriller · 112p</div>
+              </div>
+              <div class="exec-hot-req">4 requests</div>
+            </div>
+            <div class="exec-hot-item">
+              <div class="exec-hot-rank">4</div>
+              <div class="exec-hot-score" style="background:rgba(76,175,125,0.1);color:var(--green);">82</div>
+              <div class="exec-hot-info">
+                <div class="exec-hot-title">UNDERTOW</div>
+                <div class="exec-hot-meta">Comedy · 89p</div>
+              </div>
+              <div class="exec-hot-req">3 requests</div>
+            </div>
           </div>
-          <div class="req-status"><span class="status-chip chip-review">Pending</span></div>
-        </div>
 
-        <div class="req-script-item">
-          <div class="req-score-mini">88</div>
-          <div class="req-info">
-            <div class="req-title">DRIFT</div>
-            <div class="req-meta">Drama · 108 pages · Whiplash 50%</div>
+          <!-- Genre breakdown -->
+          <div class="exec-widget">
+            <div class="exec-widget-head">Available by Genre</div>
+            <div class="exec-genre-row">
+              <div class="exec-genre-label">Thriller</div>
+              <div class="exec-genre-bar-wrap"><div class="exec-genre-bar" style="width:75%;background:var(--cyan);"></div></div>
+              <div class="exec-genre-count">9</div>
+            </div>
+            <div class="exec-genre-row">
+              <div class="exec-genre-label">Drama</div>
+              <div class="exec-genre-bar-wrap"><div class="exec-genre-bar" style="width:58%;background:var(--gold);"></div></div>
+              <div class="exec-genre-count">7</div>
+            </div>
+            <div class="exec-genre-row">
+              <div class="exec-genre-label">Sci-Fi</div>
+              <div class="exec-genre-bar-wrap"><div class="exec-genre-bar" style="width:42%;background:#9b7fe8;"></div></div>
+              <div class="exec-genre-count">5</div>
+            </div>
+            <div class="exec-genre-row">
+              <div class="exec-genre-label">Comedy</div>
+              <div class="exec-genre-bar-wrap"><div class="exec-genre-bar" style="width:25%;background:var(--amber);"></div></div>
+              <div class="exec-genre-count">3</div>
+            </div>
           </div>
-          <div class="req-status"><span class="status-chip chip-approved">Approved</span></div>
-        </div>
 
-        <div class="req-script-item">
-          <div class="req-score-mini">85</div>
-          <div class="req-info">
-            <div class="req-title">SIGNAL LOST</div>
-            <div class="req-meta">Sci-Fi Thriller · 112 pages · Arrival 45%</div>
+          <!-- Activity feed -->
+          <div class="exec-widget">
+            <div class="exec-widget-head">Recent Activity</div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--cyan)"></div>
+              <div class="activity-text"><strong>Access approved</strong> — Drift writer approved your request.</div>
+              <div class="activity-time">1d ago</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--gold)"></div>
+              <div class="activity-text"><strong>3 new scripts</strong> match your genre filters above 80.</div>
+              <div class="activity-time">2d ago</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--sub)"></div>
+              <div class="activity-text"><strong>Access expired</strong> — 14-day window for Undertow closed.</div>
+              <div class="activity-time">3d ago</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--green)"></div>
+              <div class="activity-text"><strong>Account verified</strong> — IMDbPro confirmed. Full access granted.</div>
+              <div class="activity-time">1w ago</div>
+            </div>
           </div>
-          <div class="req-status"><span class="status-chip chip-review">Pending</span></div>
-        </div>
 
-        <div class="req-script-item">
-          <div class="req-score-mini" style="color:var(--sub);">79</div>
-          <div class="req-info">
-            <div class="req-title">UNDERTOW</div>
-            <div class="req-meta">Drama · 101 pages · accessed 14 days</div>
-          </div>
-          <div class="req-status"><span class="status-chip chip-expired">Expired</span></div>
-        </div>
-
-      </div>
-
-      <!-- Recent Activity -->
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;">
-        <div class="section-head">Recent Activity</div>
-
-        <div class="activity-item">
-          <div class="activity-dot" style="background:var(--cyan)"></div>
-          <div class="activity-text"><strong>Access approved</strong> — Drift writer approved your request. 14-day read window started.</div>
-          <div class="activity-time">1d ago</div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot" style="background:var(--gold)"></div>
-          <div class="activity-text"><strong>3 new scripts</strong> match your genre filters and score above 80. Browse the Discovery Dashboard.</div>
-          <div class="activity-time">2d ago</div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot" style="background:var(--sub)"></div>
-          <div class="activity-text"><strong>Access expired</strong> — 14-day window for Undertow closed automatically.</div>
-          <div class="activity-time">3d ago</div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot" style="background:var(--cyan)"></div>
-          <div class="activity-text"><strong>Account verified</strong> — IMDbPro and LinkedIn credentials confirmed. Full dashboard access granted.</div>
-          <div class="activity-time">1w ago</div>
         </div>
       </div>
 
