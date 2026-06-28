@@ -3624,7 +3624,7 @@ function goTo(id){
   if (id === 'dashboard') loadDashboard();
   if (id === 'report') syncRepBarHeight();
   if (id === 'welcome') setTimeout(_tsRenderWriterForms, 150);
-  if (id === 'exec-signup') setTimeout(_tsRenderExecForms, 150);
+  // exec Turnstile widgets render on submit, not on screen load (avoids focus-steal on mobile)
 }
 
 // ─── Cloudflare Turnstile ────────────────────────────────────────────────────
@@ -3632,12 +3632,11 @@ const _TS_SITE_KEY = '0x4AAAAADrnusj8lT1xi7OE';
 const _tsWidgets = {};
 const _tsTokens = {};
 
-// Called by Turnstile script once loaded — re-render any containers now visible
+// Called by Turnstile script once loaded — pre-render writer forms only (exec forms render on submit to avoid focus-steal on mobile)
 function onTurnstileLoad() {
   const active = document.querySelector('.screen.active');
   if (!active) return;
   if (active.id === 'screen-welcome') _tsRenderWriterForms();
-  if (active.id === 'screen-exec-signup') _tsRenderExecForms();
 }
 
 function _tsMakeOpts(key) {
@@ -4407,7 +4406,7 @@ function switchExecTab(tab) {
   const isSignup = tab === 'signup';
   document.getElementById('exec-panel-signup').style.display = isSignup ? '' : 'none';
   document.getElementById('exec-panel-signin').style.display = isSignup ? 'none' : '';
-  if (!isSignup) setTimeout(() => _tsRender('ts-exec-signin', 'execSignin'), 50);
+  // Turnstile renders on submit, not on tab switch
   document.getElementById('exec-tab-signup').style.cssText = isSignup
     ? 'flex:1;padding:10px;font-size:12px;font-weight:700;background:var(--gold);color:#0F0F0F;border:none;cursor:pointer;transition:all .15s;'
     : 'flex:1;padding:10px;font-size:12px;font-weight:700;background:transparent;color:var(--sub);border:none;cursor:pointer;transition:all .15s;';
@@ -4424,6 +4423,7 @@ async function handleExecSignIn() {
   errEl.style.display = 'none';
   if (!email || !password) { errEl.textContent = 'Enter your email and password.'; errEl.style.display = ''; return; }
   btn.textContent = 'Signing in…'; btn.disabled = true;
+  _tsRender('ts-exec-signin', 'execSignin');
   const captchaToken = await _tsAwaitToken('execSignin');
   const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password, options: { captchaToken } });
   _tsReset('execSignin');
@@ -4489,7 +4489,7 @@ async function handleExecSignup() {
         exec_title: _selectedExecRole,
         imdb_url: imdb || null,
       },
-      captchaToken: await _tsAwaitToken('execSignup'),
+      captchaToken: await (_tsRender('ts-exec-signup', 'execSignup'), _tsAwaitToken('execSignup')),
     }
   });
   _tsReset('execSignup');
