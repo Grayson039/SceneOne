@@ -19,7 +19,7 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm install --save-dev eslint@9 @eslint/js htmlhint
+        run: npm install --save-dev eslint@9 @eslint/js@9 htmlhint
 
       - name: Lint HTML files
         run: npx htmlhint landing.html index.html admin.html reset-password.html --config .htmlhintrc || true
