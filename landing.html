@@ -5291,6 +5291,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ─── LISTING TOGGLE ───
+async function _ensureSubId() {
+  if (_currentSubId) return _currentSubId;
+  if (!_currentUser?.id) return null;
+  const { data } = await supabaseClient.from('submissions')
+    .select('id').eq('user_id', _currentUser.id).eq('status', 'complete')
+    .order('created_at', { ascending: false }).limit(1);
+  if (data?.[0]?.id) _currentSubId = data[0].id;
+  return _currentSubId;
+}
+
 function toggleListing(checkbox) {
   const label = document.getElementById('listing-status-label');
   const privateNotice = document.getElementById('listing-private');
@@ -5303,9 +5313,11 @@ function toggleListing(checkbox) {
     label.textContent = 'Private';
     privateNotice.style.display = 'block';
     liveSection.style.display = 'none';
-    if (_currentSubId) {
-      supabaseClient.from('submissions').update({ public_listing: false }).eq('id', _currentSubId).then(() => {});
-    }
+    _ensureSubId().then(id => {
+      if (id) supabaseClient.from('submissions').update({ public_listing: false }).eq('id', id).then(({error}) => {
+        if (error) console.warn('SceneOne: toggle-off failed', error);
+      });
+    });
   }
 }
 
@@ -5329,26 +5341,13 @@ function confirmWriterListing() {
   const liveSection = document.getElementById('listing-live');
   if (liveSection) liveSection.style.display = 'block';
 
-  // Write to Supabase — fallback: find most recent complete submission for this user
-  if (_currentSubId) {
-    supabaseClient.from('submissions').update({ public_listing: true }).eq('id', _currentSubId).then(({error}) => {
+  // Write to Supabase
+  _ensureSubId().then(id => {
+    if (id) supabaseClient.from('submissions').update({ public_listing: true }).eq('id', id).then(({error}) => {
       if (error) console.warn('SceneOne: listing update failed', error);
     });
-  } else if (_currentUser?.id) {
-    supabaseClient.from('submissions')
-      .select('id').eq('user_id', _currentUser.id).eq('status', 'complete')
-      .order('created_at', { ascending: false }).limit(1)
-      .then(({ data }) => {
-        if (data?.[0]?.id) {
-          _currentSubId = data[0].id;
-          supabaseClient.from('submissions').update({ public_listing: true }).eq('id', _currentSubId).then(({error}) => {
-            if (error) console.warn('SceneOne: listing update failed (fallback)', error);
-          });
-        } else {
-          console.warn('SceneOne: no submission found to make public');
-        }
-      });
-  }
+    else console.warn('SceneOne: no submission found to make public');
+  });
 
   showGoodLuck();
 }
