@@ -3124,12 +3124,12 @@ She grabs her jacket.</textarea>
         </div>
         <div id="listing-live" style="display:none;">
           <div class="listing-stats">
-            <div class="listing-stat"><div class="listing-stat-val">7</div><div class="listing-stat-lbl">Reader Views</div></div>
-            <div class="listing-stat"><div class="listing-stat-val">2</div><div class="listing-stat-lbl">Requests</div></div>
-            <div class="listing-stat"><div class="listing-stat-val">0</div><div class="listing-stat-lbl">Approved</div></div>
+            <div class="listing-stat"><div class="listing-stat-val" id="stat-views">0</div><div class="listing-stat-lbl">Reader Views</div></div>
+            <div class="listing-stat"><div class="listing-stat-val" id="stat-requests">0</div><div class="listing-stat-lbl">Requests</div></div>
+            <div class="listing-stat"><div class="listing-stat-val" id="stat-approved">0</div><div class="listing-stat-lbl">Approved</div></div>
           </div>
           <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--sub);line-height:1.65;">
-            <strong style="color:rgba(255,255,255,0.6);">2 pending requests.</strong> You have 72 hours to respond to each. No response = auto-decline.
+            <strong style="color:rgba(255,255,255,0.6);" id="pending-requests-label">0 pending requests.</strong> You have 72 hours to respond to each. No response = auto-decline.
             <button onclick="goTo('requests')" style="display:block;margin-top:8px;padding:7px 12px;border-radius:7px;border:1px solid rgba(62,237,231,0.25);background:rgba(62,237,231,0.07);color:var(--cyan);font-size:12px;font-weight:700;cursor:pointer;">Review Requests &rarr;</button>
           </div>
         </div>
@@ -3162,7 +3162,7 @@ She grabs her jacket.</textarea>
     <p class="req-sub">You have 72 hours to respond to each request. No response = auto-decline. Approving gives read-only access for 14 days — no rights transfer.</p>
 
     <!-- Request 1: Jordan Meyers / A24 -->
-    <div class="req-card" id="req-card-1">
+    <div class="req-card" id="req-card-1" style="display:none;">
       <div class="req-card-top">
         <div style="flex:1;min-width:0;">
           <div class="req-reader">
@@ -3192,7 +3192,7 @@ She grabs her jacket.</textarea>
     </div>
 
     <!-- Request 2: Sofia Reyes / Blumhouse -->
-    <div class="req-card" id="req-card-2">
+    <div class="req-card" id="req-card-2" style="display:none;">
       <div class="req-card-top">
         <div style="flex:1;min-width:0;">
           <div class="req-reader">
@@ -3222,7 +3222,7 @@ She grabs her jacket.</textarea>
     </div>
 
     <!-- Empty state -->
-    <div class="req-empty" id="req-empty">
+    <div class="req-empty show" id="req-empty">
       <div class="req-empty-icon">&#10003;</div>
       <div class="req-empty-title">You're all caught up.</div>
       <div class="req-empty-sub">No pending requests. When industry readers find your listing and request access, they'll appear here.</div>
@@ -3352,6 +3352,29 @@ function _onApiDone(data) {
 
 function _finalizeReport() {
   if (_reportData) populateReport(_reportData);
+
+  // Restore demo request cards only for sample runs; real users see empty state
+  const card1 = document.getElementById('req-card-1');
+  const card2 = document.getElementById('req-card-2');
+  const reqEmpty = document.getElementById('req-empty');
+  if (window._isSampleRun) {
+    _pendingCount = 2;
+    if (card1) card1.style.display = '';
+    if (card2) card2.style.display = '';
+    if (reqEmpty) reqEmpty.classList.remove('show');
+    const sv = document.getElementById('stat-views'); if (sv) sv.textContent = '7';
+    const sr = document.getElementById('stat-requests'); if (sr) sr.textContent = '2';
+    const pl = document.getElementById('pending-requests-label'); if (pl) pl.textContent = '2 pending requests.';
+  } else {
+    _pendingCount = 0;
+    if (card1) card1.style.display = 'none';
+    if (card2) card2.style.display = 'none';
+    if (reqEmpty) reqEmpty.classList.add('show');
+    const sv = document.getElementById('stat-views'); if (sv) sv.textContent = '0';
+    const sr = document.getElementById('stat-requests'); if (sr) sr.textContent = '0';
+    const pl = document.getElementById('pending-requests-label'); if (pl) pl.textContent = '0 pending requests.';
+  }
+
   setTimeout(() => {
     goTo('report');
     if (isFirstTime) {
@@ -5367,7 +5390,7 @@ function showGoodLuck() {
 }
 
 // ─── REQUEST REVIEW ───
-let _pendingCount = 2;
+let _pendingCount = 0;
 
 function approveRequest(id, name, company, email) {
   const card = document.getElementById('req-card-' + id);
