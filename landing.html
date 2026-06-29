@@ -5921,6 +5921,15 @@ async function _runAnalysis() {
     // Estimate page count (~1500 chars per formatted screenplay page)
     window._scriptPageCount = Math.max(1, Math.round(scriptText.trim().length / 1500));
 
+    // Unpublish any previous listings so the old submission doesn't stay live
+    if (_currentUser?.id) {
+      await supabaseClient.from('submissions')
+        .update({ public_listing: false })
+        .eq('user_id', _currentUser.id)
+        .eq('public_listing', true);
+    }
+    _currentSubId = null; // reset so _ensureSubId picks up the new submission after analysis
+
     // Call Supabase Edge Function
    const { data, error: fnError } = await supabaseClient.functions.invoke('grade-script', {
   body: { script_text: scriptText, title, user_email: _currentUser?.email || null, script_type: _scriptType, is_sample: !!window._isSampleRun }
