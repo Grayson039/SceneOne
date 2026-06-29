@@ -1185,7 +1185,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .exec-sidenav::-webkit-scrollbar{display:none;}
 .exec-sidenav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;cursor:pointer;transition:background .15s;margin-bottom:2px;}
 .exec-sidenav-item:hover{background:rgba(255,255,255,0.04);}
-.exec-sidenav-item.active{background:rgba(62,237,231,0.07);}
+.exec-sidenav-item.active{background:rgba(201,168,76,0.07);}
 .exec-sidenav-item svg{width:14px;height:14px;flex-shrink:0;}
 .exec-sidenav-label{font-size:12px;font-weight:600;color:var(--text);}
 .exec-sidenav-badge{margin-left:auto;font-size:10px;font-weight:800;color:#0F0F0F;background:var(--cyan);padding:2px 6px;border-radius:10px;}
@@ -1196,7 +1196,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .exec-dash-banner::after{content:'';position:absolute;top:-60px;right:-40px;width:320px;height:320px;background:radial-gradient(circle,rgba(62,237,231,0.07) 0%,transparent 70%);pointer-events:none;}
 .exec-banner-greeting{font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:rgba(62,237,231,0.6);margin-bottom:8px;}
 .exec-banner-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:#fff;margin-bottom:16px;line-height:1.2;}
-.exec-banner-name span{color:var(--cyan);}
+.exec-banner-name span{color:var(--gold);}
 .exec-banner-pills{display:flex;gap:10px;flex-wrap:wrap;}
 .exec-pill{display:flex;align-items:center;gap:7px;padding:7px 14px;border-radius:100px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);font-size:11px;font-weight:700;color:var(--text);}
 .exec-pill-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
@@ -1219,8 +1219,8 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .exec-featured-meta{font-size:11px;color:var(--sub);margin-bottom:10px;}
 .exec-featured-logline{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.65;margin-bottom:16px;font-style:italic;border-left:2px solid rgba(62,237,231,0.25);padding-left:10px;}
 .exec-featured-actions{display:flex;gap:8px;}
-.exec-req-btn{padding:9px 20px;border-radius:100px;border:none;background:var(--cyan);color:#08080a;font-weight:800;font-size:12px;cursor:pointer;transition:all .2s;}
-.exec-req-btn:hover{background:#5cf5ee;transform:translateY(-1px);}
+.exec-req-btn{padding:9px 20px;border-radius:100px;border:none;background:var(--gold);color:#08080a;font-weight:800;font-size:12px;cursor:pointer;transition:all .2s;}
+.exec-req-btn:hover{background:#d4b86a;transform:translateY(-1px);}
 .exec-ghost-btn{padding:9px 16px;border-radius:100px;border:1px solid var(--border2);background:transparent;color:var(--sub);font-weight:700;font-size:12px;cursor:pointer;transition:all .15s;}
 .exec-ghost-btn:hover{color:var(--text);}
 /* ── New scripts ── */
@@ -2369,10 +2369,10 @@ body.embedded .pricing-modal-btn{display:none !important;}
     <!-- Sidebar nav -->
     <aside class="exec-sidenav">
       <div class="exec-sidenav-item active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         <div class="exec-sidenav-label">Dashboard</div>
       </div>
-      <div class="exec-sidenav-item" onclick="goTo('exec-profile')">
+      <div class="exec-sidenav-item" onclick="goTo('dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="var(--sub)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <div class="exec-sidenav-label">Browse Scripts</div>
       </div>
@@ -2396,19 +2396,15 @@ body.embedded .pricing-modal-btn{display:none !important;}
       <!-- ── Cinematic banner ── -->
       <div class="exec-dash-banner">
         <div class="exec-banner-greeting">Welcome back</div>
-        <div class="exec-banner-name">Good to see you, <span>M. Chen.</span></div>
+        <div class="exec-banner-name">Good to see you, <span id="exec-banner-firstname">there.</span></div>
         <div class="exec-banner-pills">
           <div class="exec-pill">
-            <div class="exec-pill-dot" style="background:var(--cyan);box-shadow:0 0 6px var(--cyan);"></div>
-            <span>24 scripts available</span>
-          </div>
-          <div class="exec-pill">
             <div class="exec-pill-dot" style="background:var(--gold);box-shadow:0 0 6px var(--gold);"></div>
-            <span>3 new since your last visit</span>
+            <span id="exec-pill-scripts">Loading…</span>
           </div>
           <div class="exec-pill">
             <div class="exec-pill-dot" style="background:var(--amber);box-shadow:0 0 6px var(--amber);"></div>
-            <span>2 requests pending</span>
+            <span id="exec-pill-requests">— requests pending</span>
           </div>
         </div>
       </div>
@@ -2426,7 +2422,7 @@ body.embedded .pricing-modal-btn{display:none !important;}
               <div class="exec-score-ring">
                 <svg width="76" height="76" viewBox="0 0 76 76">
                   <circle cx="38" cy="38" r="30" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
-                  <circle cx="38" cy="38" r="30" fill="none" stroke="var(--cyan)" stroke-width="8" stroke-dasharray="165 23" stroke-linecap="round"/>
+                  <circle cx="38" cy="38" r="30" fill="none" stroke="var(--gold)" stroke-width="8" stroke-dasharray="165 23" stroke-linecap="round"/>
                 </svg>
                 <div class="exec-score-ring-val">88<div class="exec-score-ring-lbl">score</div></div>
               </div>
@@ -3621,6 +3617,7 @@ function goTo(id){
     loadScriptHistory();
   }
   if (id === 'dashboard') loadDashboard();
+  if (id === 'exec-profile') loadExecProfile();
   if (id === 'report') syncRepBarHeight();
   if (id === 'welcome') setTimeout(_tsRenderWriterForms, 150);
   // exec Turnstile widgets render on submit, not on screen load (avoids focus-steal on mobile)
@@ -4319,6 +4316,28 @@ function showExecComingSoon(label) {
   toast.textContent = label + ' — coming soon';
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 2500);
+}
+
+async function loadExecProfile() {
+  if (!_currentUser) return;
+  // Set first name from metadata or email
+  const meta = _currentUser.user_metadata;
+  const firstName = (meta?.full_name || meta?.name || _currentUser.email || '').split(/[\s@]/)[0];
+  const el = document.getElementById('exec-banner-firstname');
+  if (el) el.textContent = firstName ? firstName + '.' : 'there.';
+
+  // Get total publicly listed scripts
+  const { count: scriptCount } = await supabaseClient
+    .from('submissions')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'complete')
+    .eq('public_listing', true);
+  const pillScripts = document.getElementById('exec-pill-scripts');
+  if (pillScripts) pillScripts.textContent = (scriptCount || 0) + ' scripts available';
+
+  // Get exec's pending request count (placeholder — read_requests table not yet built)
+  const pillReqs = document.getElementById('exec-pill-requests');
+  if (pillReqs) pillReqs.textContent = '0 requests pending';
 }
 
 async function loadDashboard() {
@@ -5310,9 +5329,25 @@ function confirmWriterListing() {
   const liveSection = document.getElementById('listing-live');
   if (liveSection) liveSection.style.display = 'block';
 
-  // Write to Supabase
+  // Write to Supabase — fallback: find most recent complete submission for this user
   if (_currentSubId) {
-    supabaseClient.from('submissions').update({ public_listing: true }).eq('id', _currentSubId).then(() => {});
+    supabaseClient.from('submissions').update({ public_listing: true }).eq('id', _currentSubId).then(({error}) => {
+      if (error) console.warn('SceneOne: listing update failed', error);
+    });
+  } else if (_currentUser?.id) {
+    supabaseClient.from('submissions')
+      .select('id').eq('user_id', _currentUser.id).eq('status', 'complete')
+      .order('created_at', { ascending: false }).limit(1)
+      .then(({ data }) => {
+        if (data?.[0]?.id) {
+          _currentSubId = data[0].id;
+          supabaseClient.from('submissions').update({ public_listing: true }).eq('id', _currentSubId).then(({error}) => {
+            if (error) console.warn('SceneOne: listing update failed (fallback)', error);
+          });
+        } else {
+          console.warn('SceneOne: no submission found to make public');
+        }
+      });
   }
 
   showGoodLuck();
