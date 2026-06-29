@@ -2815,7 +2815,7 @@ body.embedded .pricing-modal-btn{display:none !important;}
             <div class="overall-score-left">
               <div class="overall-score-label">Overall Craft Score</div>
               <div class="overall-score-interp">Strong foundation. Structure and dialogue carry this draft. Pacing needs the most attention before submission.</div>
-              <div class="overall-score-badge">Near Submission Ready</div>
+              <div class="overall-score-badge" id="overall-score-badge">Near Submission Ready</div>
             </div>
             <div class="overall-score-num">78</div>
           </div>
@@ -3124,9 +3124,9 @@ She grabs her jacket.</textarea>
         </div>
         <div id="listing-live" style="display:none;">
           <div class="listing-stats">
-            <div class="listing-stat"><div class="listing-stat-val">7</div><div class="listing-stat-lbl">Reader Views</div></div>
-            <div class="listing-stat"><div class="listing-stat-val">2</div><div class="listing-stat-lbl">Requests</div></div>
-            <div class="listing-stat"><div class="listing-stat-val">0</div><div class="listing-stat-lbl">Approved</div></div>
+            <div class="listing-stat"><div class="listing-stat-val" id="stat-views">0</div><div class="listing-stat-lbl">Reader Views</div></div>
+            <div class="listing-stat"><div class="listing-stat-val" id="stat-requests">0</div><div class="listing-stat-lbl">Requests</div></div>
+            <div class="listing-stat"><div class="listing-stat-val" id="stat-approved">0</div><div class="listing-stat-lbl">Approved</div></div>
           </div>
           <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--sub);line-height:1.65;">
             <strong style="color:rgba(255,255,255,0.6);">2 pending requests.</strong> You have 72 hours to respond to each. No response = auto-decline.
@@ -3475,6 +3475,12 @@ function populateReport(d) {
   document.querySelectorAll('.overall-score-num').forEach(el => el.textContent = d.overall_score);
   const interp = document.querySelector('.overall-score-interp');
   if (interp && d.score_interpretation) interp.textContent = d.score_interpretation;
+  const badge = document.getElementById('overall-score-badge');
+  if (badge && d.overall_score != null) {
+    const s = d.overall_score;
+    const label = s >= 85 ? 'Submission Ready' : s >= 75 ? 'Strong Draft' : s >= 65 ? 'Developing Draft' : s >= 50 ? 'Early Draft' : 'Needs Work';
+    badge.textContent = label;
+  }
 
   // Celebration card stats
   const celStats = document.querySelectorAll('.ob-cel-stat-val');
@@ -3568,6 +3574,18 @@ function populateReport(d) {
       // Fix suggestion
       const fixEl = card.querySelector('.fix2 p');
       if (fixEl && cat.fix) fixEl.textContent = cat.fix;
+
+      // Fix It inline editor — clear sample content, update label
+      const edEl = card.querySelector('.inline-ed');
+      if (edEl) {
+        const edEye = edEl.querySelector('.ed-eye');
+        if (edEye) edEye.textContent = 'Editing — ' + (cat.page_ref || dim.charAt(0).toUpperCase() + dim.slice(1));
+        const edTa = edEl.querySelector('.ed-ta');
+        if (edTa) edTa.value = cat.fix ? '// ' + cat.fix + '\n\n' : '';
+      }
+      // Fix It button page label
+      const fixBtn = card.querySelector('.fixit-btn span');
+      if (fixBtn && cat.page_ref) fixBtn.textContent = 'inline editor · ' + cat.page_ref;
 
       // Page reference badges
       card.querySelectorAll('.note2-page').forEach(el => {
@@ -5301,7 +5319,7 @@ async function _ensureSubId() {
   return _currentSubId;
 }
 
-function toggleListing(checkbox) {
+async function toggleListing(checkbox) {
   const label = document.getElementById('listing-status-label');
   const privateNotice = document.getElementById('listing-private');
   const liveSection = document.getElementById('listing-live');
@@ -5311,13 +5329,19 @@ function toggleListing(checkbox) {
     document.getElementById('mkt-tos-writer').classList.add('show');
   } else {
     label.textContent = 'Private';
-    privateNotice.style.display = 'block';
-    liveSection.style.display = 'none';
-    _ensureSubId().then(id => {
-      if (id) supabaseClient.from('submissions').update({ public_listing: false }).eq('id', id).then(({error}) => {
-        if (error) console.warn('SceneOne: toggle-off failed', error);
-      });
-    });
+    if (privateNotice) privateNotice.style.display = 'block';
+    if (liveSection) liveSection.style.display = 'none';
+    const id = await _ensureSubId();
+    console.log('SceneOne: toggle-off sub id =', id);
+    if (id) {
+      const { error } = await supabaseClient.from('submissions').update({ public_listing: false }).eq('id', id);
+      if (error) {
+        console.error('SceneOne: toggle-off failed', error);
+        if (label) label.textContent = 'Error — try again';
+      }
+    } else {
+      console.warn('SceneOne: no submission ID found to toggle off');
+    }
   }
 }
 
@@ -5327,7 +5351,7 @@ function checkWriterMktReady() {
   if (btn) btn.classList.toggle('ready', checked);
 }
 
-function confirmWriterListing() {
+async function confirmWriterListing() {
   const checked = document.getElementById('writer-mkt-check')?.checked;
   if (!checked) return;
   document.getElementById('mkt-tos-writer').classList.remove('show');
@@ -5342,12 +5366,18 @@ function confirmWriterListing() {
   if (liveSection) liveSection.style.display = 'block';
 
   // Write to Supabase
-  _ensureSubId().then(id => {
-    if (id) supabaseClient.from('submissions').update({ public_listing: true }).eq('id', id).then(({error}) => {
-      if (error) console.warn('SceneOne: listing update failed', error);
-    });
-    else console.warn('SceneOne: no submission found to make public');
-  });
+  const id = await _ensureSubId();
+  console.log('SceneOne: confirmWriterListing sub id =', id);
+  if (id) {
+    const { error } = await supabaseClient.from('submissions').update({ public_listing: true }).eq('id', id);
+    if (error) {
+      console.error('SceneOne: listing update failed', error);
+      const lbl = document.getElementById('listing-status-label');
+      if (lbl) lbl.textContent = 'Error — try again';
+    }
+  } else {
+    console.warn('SceneOne: no submission found to make public');
+  }
 
   showGoodLuck();
 }
