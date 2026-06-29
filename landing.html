@@ -2148,33 +2148,33 @@ body.embedded .pricing-modal-btn{display:none !important;}
 
       <div class="filter-group">
         <div class="filter-group-label">Minimum Score</div>
-        <input type="range" class="filter-range" min="50" max="95" value="70" oninput="document.getElementById('score-range-val').textContent=this.value">
-        <div class="filter-range-labels"><span>50</span><span id="score-range-val">70</span><span>95</span></div>
+        <input type="range" id="filter-score-range" class="filter-range" min="50" max="95" value="50" oninput="document.getElementById('score-range-val').textContent=this.value;loadDashboard()">
+        <div class="filter-range-labels"><span>50</span><span id="score-range-val">50</span><span>95</span></div>
       </div>
 
       <div class="filter-group">
         <div class="filter-group-label">Genre</div>
-        <div class="filter-option"><input type="checkbox" checked><label>Thriller / Drama</label></div>
-        <div class="filter-option"><input type="checkbox" checked><label>Horror</label></div>
-        <div class="filter-option"><input type="checkbox" checked><label>Comedy</label></div>
-        <div class="filter-option"><input type="checkbox" checked><label>Sci-Fi</label></div>
-        <div class="filter-option"><input type="checkbox" checked><label>Action</label></div>
-        <div class="filter-option"><input type="checkbox" checked><label>Drama</label></div>
+        <div class="filter-option"><input type="checkbox" class="filter-genre-cb" data-genre="thriller" checked onchange="loadDashboard()"><label>Thriller / Drama</label></div>
+        <div class="filter-option"><input type="checkbox" class="filter-genre-cb" data-genre="horror" checked onchange="loadDashboard()"><label>Horror</label></div>
+        <div class="filter-option"><input type="checkbox" class="filter-genre-cb" data-genre="comedy" checked onchange="loadDashboard()"><label>Comedy</label></div>
+        <div class="filter-option"><input type="checkbox" class="filter-genre-cb" data-genre="sci-fi" checked onchange="loadDashboard()"><label>Sci-Fi</label></div>
+        <div class="filter-option"><input type="checkbox" class="filter-genre-cb" data-genre="action" checked onchange="loadDashboard()"><label>Action</label></div>
+        <div class="filter-option"><input type="checkbox" class="filter-genre-cb" data-genre="drama" checked onchange="loadDashboard()"><label>Drama</label></div>
       </div>
 
       <div class="filter-group">
         <div class="filter-group-label">Story DNA — Comp Title</div>
-        <input type="text" class="filter-search" placeholder="e.g. Whiplash, Get Out...">
+        <input type="text" id="filter-comp-search" class="filter-search" placeholder="e.g. Whiplash, Get Out..." oninput="debounceDashFilter()">
       </div>
 
       <div class="filter-group">
         <div class="filter-group-label">Format</div>
-        <div class="filter-option"><input type="checkbox" checked><label>Feature Film</label></div>
-        <div class="filter-option"><input type="checkbox" checked><label>TV Pilot</label></div>
-        <div class="filter-option"><input type="checkbox"><label>Short Film</label></div>
+        <div class="filter-option"><input type="checkbox" class="filter-format-cb" data-format="feature" checked onchange="loadDashboard()"><label>Feature Film</label></div>
+        <div class="filter-option"><input type="checkbox" class="filter-format-cb" data-format="pilot" checked onchange="loadDashboard()"><label>TV Pilot</label></div>
+        <div class="filter-option"><input type="checkbox" class="filter-format-cb" data-format="short" checked onchange="loadDashboard()"><label>Short Film</label></div>
       </div>
 
-      <button class="filter-clear">Clear All Filters</button>
+      <button class="filter-clear" onclick="clearDashFilters()">Clear All Filters</button>
     </aside>
 
     <!-- Feed -->
@@ -3129,8 +3129,8 @@ She grabs her jacket.</textarea>
             <div class="listing-stat"><div class="listing-stat-val" id="stat-approved">0</div><div class="listing-stat-lbl">Approved</div></div>
           </div>
           <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--sub);line-height:1.65;">
-            <strong style="color:rgba(255,255,255,0.6);" id="pending-requests-label">0 pending requests.</strong> You have 72 hours to respond to each. No response = auto-decline.
-            <button onclick="goTo('requests')" style="display:block;margin-top:8px;padding:7px 12px;border-radius:7px;border:1px solid rgba(62,237,231,0.25);background:rgba(62,237,231,0.07);color:var(--cyan);font-size:12px;font-weight:700;cursor:pointer;">Review Requests &rarr;</button>
+            <strong style="color:rgba(255,255,255,0.6);">Pending Requests</strong>
+            <div id="pending-requests-list" style="margin-top:10px;"></div>
           </div>
         </div>
       </div>
@@ -3350,6 +3350,24 @@ function _onApiDone(data) {
   if (_loaderDone) _finalizeReport();
 }
 
+async function _restoreListingState() {
+  const id = await _ensureSubId();
+  if (!id) return;
+  const { data } = await supabaseClient.from('submissions').select('public_listing').eq('id', id).single();
+  if (data?.public_listing) {
+    const toggle = document.getElementById('listing-toggle-input');
+    if (toggle) toggle.checked = true;
+    const label = document.getElementById('listing-status-label');
+    if (label) label.textContent = 'Live';
+    const privateNotice = document.getElementById('listing-private');
+    if (privateNotice) privateNotice.style.display = 'none';
+    const liveSection = document.getElementById('listing-live');
+    if (liveSection) liveSection.style.display = 'block';
+    loadListingStats(id);
+    loadRequestCards(id);
+  }
+}
+
 function _finalizeReport() {
   if (_reportData) populateReport(_reportData);
 
@@ -3377,6 +3395,7 @@ function _finalizeReport() {
 
   setTimeout(() => {
     goTo('report');
+    _restoreListingState();
     if (isFirstTime) {
       isFirstTime = false;
       setTimeout(() => {
@@ -4363,11 +4382,37 @@ async function loadExecProfile() {
   if (pillReqs) pillReqs.textContent = '0 requests pending';
 }
 
+let _dashFilterTimer = null;
+function debounceDashFilter() {
+  clearTimeout(_dashFilterTimer);
+  _dashFilterTimer = setTimeout(loadDashboard, 350);
+}
+
+function clearDashFilters() {
+  const scoreRange = document.getElementById('filter-score-range');
+  if (scoreRange) { scoreRange.value = 50; document.getElementById('score-range-val').textContent = '50'; }
+  document.querySelectorAll('.filter-genre-cb, .filter-format-cb').forEach(cb => cb.checked = true);
+  const compSearch = document.getElementById('filter-comp-search');
+  if (compSearch) compSearch.value = '';
+  loadDashboard();
+}
+
 async function loadDashboard() {
   const feed = document.getElementById('dash-feed-list');
   const meta = document.getElementById('feed-meta');
   if (!feed) return;
   feed.innerHTML = '<div style="padding:48px;text-align:center;color:var(--sub);font-size:13px;">Loading scripts…</div>';
+
+  // Read filter state
+  const minScore = parseInt(document.getElementById('filter-score-range')?.value || '50');
+  const genreCbs = [...document.querySelectorAll('.filter-genre-cb')];
+  const checkedGenres = genreCbs.filter(cb => cb.checked).map(cb => cb.dataset.genre);
+  const allGenres = checkedGenres.length === genreCbs.length;
+  const compSearch = (document.getElementById('filter-comp-search')?.value || '').trim().toLowerCase();
+  const formatCbs = [...document.querySelectorAll('.filter-format-cb')];
+  const checkedFormats = formatCbs.filter(cb => cb.checked).map(cb => cb.dataset.format);
+  const allFormats = checkedFormats.length === formatCbs.length;
+
   try {
     let q = supabaseClient
       .from('submissions')
@@ -4388,9 +4433,39 @@ async function loadDashboard() {
       </div>`;
       return;
     }
+
+    // Apply client-side filters
     let rows = data.filter(r => r.result?.overall_score);
+    rows = rows.filter(r => (r.result.overall_score || 0) >= minScore);
+    if (!allGenres && checkedGenres.length > 0) {
+      rows = rows.filter(r => {
+        const genre = (r.result.exec?.genre || r.result.genre || '').toLowerCase();
+        return checkedGenres.some(g => {
+          if (g === 'thriller') return genre.includes('thriller') || genre.includes('drama');
+          if (g === 'drama') return genre.includes('drama');
+          return genre.includes(g);
+        });
+      });
+    }
+    if (!allFormats && checkedFormats.length > 0) {
+      rows = rows.filter(r => {
+        const pages = r.result.page_count || 0;
+        const type = (r.result.script_type || '').toLowerCase();
+        return checkedFormats.some(f => {
+          if (f === 'short') return type.includes('short') || (pages > 0 && pages < 35);
+          if (f === 'pilot') return type.includes('pilot') || type.includes('tv');
+          if (f === 'feature') return type.includes('feature') || (!type.includes('short') && !type.includes('pilot') && (pages === 0 || pages >= 35));
+          return true;
+        });
+      });
+    }
+    if (compSearch) {
+      rows = rows.filter(r => (r.result.story_dna || []).some(d => (d.film || '').toLowerCase().includes(compSearch)));
+    }
+
     if (_dashSort === 'score') rows.sort((a,b) => (b.result.overall_score||0) - (a.result.overall_score||0));
-    if (meta) meta.textContent = `${rows.length} script${rows.length!==1?'s':''} available · Sorted by ${_dashSort}`;
+    const filterNote = minScore > 50 || !allGenres || !allFormats || compSearch ? ' · Filtered' : '';
+    if (meta) meta.textContent = `${rows.length} script${rows.length!==1?'s':''} available · Sorted by ${_dashSort}${filterNote}`;
     feed.innerHTML = rows.map(row => {
       const r = row.result || {};
       const score = r.overall_score || '—';
@@ -4427,11 +4502,78 @@ async function loadDashboard() {
 
 async function requestScriptAccess(id, title) {
   if (!_currentUser) { goTo('exec-signup'); return; }
-  const { data: profile } = await supabaseClient.from('profiles').select('role,verified').eq('id',_currentUser.id).single();
+  const { data: profile } = await supabaseClient.from('profiles').select('role,verified,display_name').eq('id',_currentUser.id).single();
   if (!profile || profile.role !== 'exec' || !profile.verified) { goTo('exec-signup'); return; }
-  // Log the request (Phase 3: notify writer via Resend)
   const btn = event?.target;
-  if (btn) { btn.textContent = '✓ Requested'; btn.disabled = true; btn.style.background='rgba(76,175,125,0.2)'; btn.style.color='var(--green)'; btn.style.borderColor='rgba(76,175,125,0.3)'; }
+  if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
+  try {
+    const { error } = await supabaseClient.from('read_requests').insert({
+      submission_id: id,
+      exec_user_id: _currentUser.id,
+      exec_name: profile.display_name || _currentUser.email,
+      exec_email: _currentUser.email,
+      status: 'pending',
+    });
+    if (error) throw error;
+    if (btn) { btn.textContent = '✓ Requested'; btn.style.background='rgba(76,175,125,0.2)'; btn.style.color='var(--green)'; btn.style.borderColor='rgba(76,175,125,0.3)'; }
+  } catch(e) {
+    console.warn('SceneOne: request insert failed', e);
+    if (btn) { btn.textContent = 'Request Access →'; btn.disabled = false; }
+  }
+}
+
+async function loadListingStats(subId) {
+  if (!subId) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('read_requests')
+      .select('status')
+      .eq('submission_id', subId);
+    if (error) throw error;
+    const total = data?.length || 0;
+    const approved = data?.filter(r => r.status === 'approved').length || 0;
+    const el = { views: document.getElementById('stat-views'), reqs: document.getElementById('stat-requests'), approved: document.getElementById('stat-approved') };
+    if (el.views) el.views.textContent = total; // requests proxy as views for now
+    if (el.reqs) el.reqs.textContent = total;
+    if (el.approved) el.approved.textContent = approved;
+  } catch(e) {
+    console.warn('SceneOne: loadListingStats failed', e);
+  }
+}
+
+async function handleRequestAction(requestId, action) {
+  try {
+    await supabaseClient.from('read_requests').update({ status: action }).eq('id', requestId);
+    const subId = await _ensureSubId();
+    loadRequestCards(subId);
+    loadListingStats(subId);
+  } catch(e) {
+    console.warn('SceneOne: request action failed', e);
+  }
+}
+
+async function loadRequestCards(subId) {
+  const container = document.getElementById('pending-requests-list');
+  if (!container || !subId) return;
+  const { data } = await supabaseClient
+    .from('read_requests')
+    .select('id, exec_name, exec_email, status, created_at')
+    .eq('submission_id', subId)
+    .order('created_at', { ascending: false })
+    .limit(10);
+  if (!data?.length) { container.innerHTML = '<div style="font-size:12px;color:var(--sub);text-align:center;padding:16px;">No requests yet.</div>'; return; }
+  container.innerHTML = data.map(r => {
+    const date = new Date(r.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    const statusColor = r.status==='approved'?'var(--green)':r.status==='declined'?'var(--amber)':'var(--cyan)';
+    const actions = r.status==='pending'
+      ? `<button onclick="handleRequestAction('${r.id}','approved')" style="padding:5px 12px;border-radius:6px;border:none;background:rgba(76,175,125,0.15);color:var(--green);font-size:11px;font-weight:700;cursor:pointer;">Approve</button>
+         <button onclick="handleRequestAction('${r.id}','declined')" style="padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--sub);font-size:11px;font-weight:700;cursor:pointer;">Decline</button>`
+      : `<span style="font-size:11px;font-weight:700;color:${statusColor}">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span>`;
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;gap:10px;">
+      <div><div style="font-size:12px;font-weight:700;color:#fff;">${esc(r.exec_name)}</div><div style="font-size:11px;color:var(--sub);">${esc(r.exec_email)} · ${date}</div></div>
+      <div style="display:flex;gap:6px;">${actions}</div>
+    </div>`;
+  }).join('');
 }
 
 // ─── EXEC ONBOARDING ───
@@ -5365,12 +5507,21 @@ function confirmWriterListing() {
   if (liveSection) liveSection.style.display = 'block';
 
   // Write to Supabase
-  _ensureSubId().then(id => {
-    if (id) supabaseClient.from('submissions').update({ public_listing: true }).eq('id', id).then(({error}) => {
-      if (error) console.warn('SceneOne: listing update failed', error);
-    });
-    else console.warn('SceneOne: no submission found to make public');
-  });
+  const id = await _ensureSubId();
+  console.log('SceneOne: confirmWriterListing sub id =', id);
+  if (id) {
+    const { error } = await supabaseClient.from('submissions').update({ public_listing: true }).eq('id', id);
+    if (error) {
+      console.error('SceneOne: listing update failed', error);
+      const lbl = document.getElementById('listing-status-label');
+      if (lbl) lbl.textContent = 'Error — try again';
+    } else {
+      loadListingStats(id);
+      loadRequestCards(id);
+    }
+  } else {
+    console.warn('SceneOne: no submission found to make public');
+  }
 
   showGoodLuck();
 }
@@ -5577,6 +5728,31 @@ function setFile(f) {
 
   document.getElementById('analyze-btn').classList.add('ready');
   checkAnalyzeReady();
+
+  // Duplicate guard: read file, hash it, warn if matches previous upload
+  if (_currentUser?.id) {
+    const reader = new FileReader();
+    reader.onload = async e => {
+      const text = e.target?.result || '';
+      const hash = await _hashText(text);
+      if (!hash) return;
+      const prevHash = localStorage.getItem('so_script_hash_' + _currentUser.id);
+      const prevSubId = localStorage.getItem('so_script_sub_' + _currentUser.id);
+      if (hash === prevHash && prevSubId) {
+        // Show non-blocking yellow warning
+        let warn = document.getElementById('dup-upload-warn');
+        if (!warn) {
+          warn = document.createElement('div');
+          warn.id = 'dup-upload-warn';
+          warn.style.cssText = 'margin-top:10px;padding:10px 14px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.35);border-radius:8px;font-size:12px;color:#DDB85A;display:flex;align-items:center;justify-content:space-between;gap:10px;';
+          warn.innerHTML = `<span>⚠ This looks like a script you've already analyzed. <button onclick="loadHistoryReport('${prevSubId}');document.getElementById('dup-upload-warn')?.remove()" style="background:none;border:none;color:var(--gold);font-weight:700;font-size:12px;cursor:pointer;text-decoration:underline;">Load previous report →</button></span><button onclick="this.closest('#dup-upload-warn').remove()" style="background:none;border:none;color:var(--sub);cursor:pointer;font-size:16px;line-height:1;">×</button>`;
+          const analyzeBtn = document.getElementById('analyze-btn');
+          if (analyzeBtn) analyzeBtn.after(warn);
+        }
+      }
+    };
+    reader.readAsText(f);
+  }
 }
 
 function confirmTitle() {
@@ -5885,6 +6061,13 @@ function startProcessing() {
   _runAnalysis();
 }
 
+async function _hashText(text) {
+  try {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  } catch(_e) { return null; }
+}
+
 async function _runAnalysis() {
   try {
     if (!SUPABASE_URL || SUPABASE_URL === 'YOUR_SUPABASE_URL') {
@@ -5909,6 +6092,26 @@ async function _runAnalysis() {
     if (!scriptText || scriptText.trim().length < 200) {
       showUploadError('We couldn\'t read your file. Make sure it\'s a PDF — Word docs and Final Draft files need to be exported as PDF first.');
       return;
+    }
+
+    // Duplicate upload guard — check if this exact script was already analyzed
+    if (!window._isSampleRun && _currentUser?.id) {
+      const scriptHash = await _hashText(scriptText);
+      if (scriptHash) {
+        const uid = _currentUser.id;
+        const storedKey = 'so_script_hash_' + uid;
+        const storedSubKey = 'so_script_sub_' + uid;
+        const prevHash = localStorage.getItem(storedKey);
+        const prevSubId = localStorage.getItem(storedSubKey);
+        if (prevHash === scriptHash && prevSubId) {
+          // Banner already shows — just note; proceed unless user backs out from upload
+          window._pendingScriptHash = scriptHash;
+          window._pendingScriptSubId = prevSubId;
+          // Show non-blocking banner in upload UI (may be hidden behind processing screen)
+          // We store these so _onApiDone can skip re-save if already saved
+        }
+        window._currentScriptHash = scriptHash;
+      }
     }
 
     // Estimate page count (~1500 chars per formatted screenplay page)
@@ -5940,6 +6143,17 @@ async function _runAnalysis() {
       _currentSubId = data.submission_id;
     } else if (!data.cached) {
       _saveSubmission(title, data);
+    }
+
+    // Store hash so next upload of the same script shows a warning
+    if (window._currentScriptHash && _currentUser?.id) {
+      const uid = _currentUser.id;
+      localStorage.setItem('so_script_hash_' + uid, window._currentScriptHash);
+      // Sub ID may not be set yet (async save), store after a tick
+      setTimeout(() => {
+        if (_currentSubId) localStorage.setItem('so_script_sub_' + uid, _currentSubId);
+      }, 2000);
+      window._currentScriptHash = null;
     }
 
   } catch (err) {
