@@ -5499,7 +5499,7 @@ function checkWriterMktReady() {
   if (btn) btn.classList.toggle('ready', checked);
 }
 
-function confirmWriterListing() {
+async function confirmWriterListing() {
   const checked = document.getElementById('writer-mkt-check')?.checked;
   if (!checked) return;
   document.getElementById('mkt-tos-writer').classList.remove('show');
