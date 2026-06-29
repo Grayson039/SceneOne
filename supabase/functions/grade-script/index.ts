@@ -88,7 +88,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { script_text, title, is_sample, script_b64 } = body;
+    const { script_text, title, is_sample, script_b64, script_type } = body;
 
     // ── Input validation ────────────────────────────────────────────────────
 
@@ -220,11 +220,19 @@ serve(async (req) => {
     if (!apiKey) throw new Error('ANTHROPIC_API_KEY not set');
 
     const scriptTruncated = script_text.slice(0, 80000);
+    const estimatedPages = Math.max(1, Math.round(script_text.trim().length / 1500));
+    const isShortFilm = script_type === 'short';
+
+    const scriptTypeContext = isShortFilm
+      ? `This is a SHORT FILM script (~${estimatedPages} pages, target 5–40 pages). Evaluate using compressed short film structure: a single compelling premise, fast setup, one clear turning point, and a resonant ending. Do NOT penalize for lacking sub-plots, B stories, or the full 15-beat Save the Cat structure — short films operate on a 3-act compression. Budget tier should reflect short film production ($5K–$500K range). Page references must stay within pp.1–${estimatedPages}.`
+      : `This is a FEATURE FILM script (~${estimatedPages} pages, target 90–120 pages). Evaluate against the full Save the Cat 15-beat structure. Page references must stay within pp.1–${estimatedPages}.`;
 
     const systemPrompt = `You are SceneOne, a professional script coverage AI grounded in Blake Snyder's "Save the Cat!" methodology — the 15-beat structure used across studio development. Analyze the screenplay and return ONLY valid JSON — no markdown, no commentary, just the JSON object.
 
+${scriptTypeContext}
+
 Evaluate five dimensions:
-- structure: Grade against Save the Cat's 15 beats — Opening Image, Theme Stated, Set-Up, Catalyst, Debate, Break into Two, B Story, Fun and Games, Midpoint, Bad Guys Close In, All Is Lost, Dark Night of the Soul, Break into Three, Finale, Final Image. Are the load-bearing beats present, and do they land at the right proportional moments (e.g. Catalyst ~10%, Midpoint ~50%, Break into Three ~75%)?
+- structure: ${isShortFilm ? 'Grade against compressed short film structure — fast setup, single turning point, resonant ending. A tight 3-act short is structurally sound.' : "Grade against Save the Cat's 15 beats — Opening Image, Theme Stated, Set-Up, Catalyst, Debate, Break into Two, B Story, Fun and Games, Midpoint, Bad Guys Close In, All Is Lost, Dark Night of the Soul, Break into Three, Finale, Final Image. Are the load-bearing beats present, and do they land at the right proportional moments (e.g. Catalyst ~10%, Midpoint ~50%, Break into Three ~75%)?"}
 - conflict: Is opposition strong enough? Does antagonism compound rather than repeat?
 - dialogue: Does it carry subtext? Does each character have a distinct voice?
 - pacing: Does momentum hold? Are scenes doing double duty or stalling?
@@ -232,7 +240,9 @@ Evaluate five dimensions:
 
 For each dimension, score 0–100. Be honest — 60s are common for drafts. Reserve 85+ for exceptional work.
 
-Also provide a brief development-executive assessment, grounded in the actual script: its genre/subgenre, a rough production budget tier, the number of distinct named speaking characters, and a Recommend / Consider / Pass verdict with a one-line rationale an industry reader could act on.
+Also provide a brief development-executive assessment, grounded in the actual script: its genre/subgenre, a rough production budget tier appropriate for a ${isShortFilm ? 'short film' : 'feature film'}, the number of distinct named speaking characters, and a Recommend / Consider / Pass verdict with a one-line rationale an industry reader could act on.
+
+CRITICAL PAGE REFERENCE RULE: This script is approximately ${estimatedPages} pages. ALL page_ref values MUST reference pages within pp.1–${estimatedPages}. Never reference a page number higher than ${estimatedPages}.
 
 Return this exact JSON structure:
 {
@@ -317,11 +327,13 @@ Return this exact JSON structure:
 CRITICAL: All content must be grounded in the actual screenplay provided. Quote real lines. Reference real scenes. Do not invent plot points.`;
 
     const userPrompt = `Title: ${title || 'Untitled Script'}
+Script Type: ${isShortFilm ? 'Short Film' : 'Feature Film'}
+Estimated Pages: ${estimatedPages}
 
 SCREENPLAY:
 ${scriptTruncated}
 
-Analyze this screenplay and return the JSON coverage report.`;
+Analyze this screenplay and return the JSON coverage report. Remember: all page_ref values must be within pp.1–${estimatedPages}.`;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',

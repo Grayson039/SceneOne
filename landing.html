@@ -5911,9 +5911,13 @@ async function _runAnalysis() {
     if (data?.error) throw new Error(data.error);
 
     _onApiDone(data);
-    // Don't re-save / re-count an identical re-upload served from cache —
-    // the submission already exists from the first analysis of this draft.
-    if (!data.cached) _saveSubmission(title, data);
+    // Edge function saves server-side and returns submission_id — use it directly.
+    // Only fall back to client-side save if the edge function didn't return one.
+    if (data.submission_id) {
+      _currentSubId = data.submission_id;
+    } else if (!data.cached) {
+      _saveSubmission(title, data);
+    }
 
   } catch (err) {
     console.error('SceneOne analysis error:', err);
