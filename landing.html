@@ -4377,9 +4377,16 @@ async function loadExecProfile() {
   const pillScripts = document.getElementById('exec-pill-scripts');
   if (pillScripts) pillScripts.textContent = (scriptCount || 0) + ' scripts available';
 
-  // Get exec's pending request count (placeholder — read_requests table not yet built)
+  // Get exec's pending request count
   const pillReqs = document.getElementById('exec-pill-requests');
-  if (pillReqs) pillReqs.textContent = '0 requests pending';
+  if (pillReqs) {
+    const { count: reqCount } = await supabaseClient
+      .from('read_requests')
+      .select('id', { count: 'exact', head: true })
+      .eq('exec_user_id', _currentUser.id)
+      .eq('status', 'pending');
+    pillReqs.textContent = (reqCount || 0) + ' requests pending';
+  }
 }
 
 let _dashFilterTimer = null;
