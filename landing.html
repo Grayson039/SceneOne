@@ -2740,20 +2740,20 @@ body.embedded .pricing-modal-btn{display:none !important;}
         <div class="top-stat">
           <div class="top-stat-label">Overall Score</div>
           <div class="top-stat-val" style="background:linear-gradient(135deg,var(--cyan),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">79</div>
-          <div class="top-stat-sub">Building Momentum</div>
-          <div class="top-stat-badge badge-info">↑ Strong dialogue</div>
+          <div class="top-stat-sub" id="overall-score-interp-sub">Building Momentum</div>
+          <div class="top-stat-badge badge-info" id="overall-score-badge">↑ Strong dialogue</div>
         </div>
         <div class="top-stat">
           <div class="top-stat-label">Top Strength</div>
-          <div class="top-stat-val" style="color:var(--green);font-size:24px;margin-top:4px;">Dialogue</div>
-          <div class="top-stat-sub">Score 91 · p.62 standout</div>
-          <div class="top-stat-badge badge-up">↑ High confidence</div>
+          <div class="top-stat-val" id="top-strength-val" style="color:var(--green);font-size:24px;margin-top:4px;">Dialogue</div>
+          <div class="top-stat-sub" id="top-strength-sub">Score 91 · p.62 standout</div>
+          <div class="top-stat-badge badge-up" id="top-strength-badge">↑ High confidence</div>
         </div>
         <div class="top-stat">
           <div class="top-stat-label">Biggest Flag</div>
-          <div class="top-stat-val" style="color:var(--amber);font-size:24px;margin-top:4px;">Pacing</div>
+          <div class="top-stat-val" id="flag-dim-val" style="color:var(--amber);font-size:24px;margin-top:4px;">Pacing</div>
           <div class="top-stat-sub" id="pacing-flag-sub">Score 68 · pp.34–51</div>
-          <div class="top-stat-badge badge-flag" id="pacing-flag-badge">⚠ 3 redundant scenes</div>
+          <div class="top-stat-badge badge-flag" id="pacing-flag-badge">⚠ Needs attention</div>
         </div>
         <div class="top-stat">
           <div class="top-stat-label">Script Stats</div>
@@ -3667,9 +3667,54 @@ function populateReport(d) {
     });
   }
 
-  // Top stats row
+  // Top stats row — overall score
   const topStatVals = document.querySelectorAll('.top-stat-val');
   if (topStatVals[0] && d.overall_score) topStatVals[0].textContent = d.overall_score;
+
+  // Overall score subtitle + badge
+  const interpSub = document.getElementById('overall-score-interp-sub');
+  if (interpSub && d.score_interpretation) interpSub.textContent = d.score_interpretation;
+
+  // Top Strength — highest scoring dimension
+  if (d.scores && d.categories) {
+    const dims = ['structure','conflict','dialogue','pacing','visual'];
+    const sorted = dims.slice().sort((a,b) => (d.scores[b]||0) - (d.scores[a]||0));
+    const best = sorted[0];
+    const worst = sorted[sorted.length - 1];
+
+    const strengthVal = document.getElementById('top-strength-val');
+    const strengthSub = document.getElementById('top-strength-sub');
+    const strengthBadge = document.getElementById('top-strength-badge');
+    if (strengthVal) strengthVal.textContent = best.charAt(0).toUpperCase() + best.slice(1);
+    if (strengthSub) {
+      const bScore = d.scores[best] || '';
+      const bRef = d.categories[best]?.page_ref || '';
+      strengthSub.textContent = bScore ? ('Score ' + bScore + (bRef ? ' · ' + bRef : '')) : (bRef || '');
+    }
+    if (strengthBadge) {
+      const conf = d.categories[best]?.confidence || 'high';
+      strengthBadge.textContent = '↑ ' + conf.charAt(0).toUpperCase() + conf.slice(1) + ' confidence';
+    }
+
+    // Biggest Flag — lowest scoring dimension
+    const flagVal = document.getElementById('flag-dim-val');
+    const flagSub = document.getElementById('pacing-flag-sub');
+    const flagBadge = document.getElementById('pacing-flag-badge');
+    if (flagVal) flagVal.textContent = worst.charAt(0).toUpperCase() + worst.slice(1);
+    if (flagSub) {
+      const wScore = d.scores[worst] || '';
+      const wRef = d.categories[worst]?.page_ref || '';
+      flagSub.textContent = wScore ? ('Score ' + wScore + (wRef ? ' · ' + wRef : '')) : (wRef || '');
+    }
+    if (flagBadge) {
+      const flag = d.categories[worst]?.flag || '';
+      flagBadge.textContent = flag ? '⚠ ' + flag.split('.')[0].slice(0, 40) : '⚠ Needs attention';
+    }
+
+    // Overall badge — name the best dimension
+    const overallBadge = document.getElementById('overall-score-badge');
+    if (overallBadge) overallBadge.textContent = '↑ Strong ' + best;
+  }
 }
 
 // ─── NAV ───
