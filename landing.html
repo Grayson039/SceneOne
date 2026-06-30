@@ -2889,10 +2889,10 @@ SARAH
 (quietly)
 They took the evidence. Fine. I'll become the evidence.</textarea>
               <div class="ed-actions">
-                <button class="re-btn" onclick="reanalyze('ed-structure','fl-structure')">Re-Analyze This Scene</button>
+                <button class="re-btn" onclick="reanalyze('ed-structure','fl-structure')">Copy Edited Scene</button>
                 <button class="cn-btn" onclick="toggleEd('ed-structure')">Cancel</button>
               </div>
-              <div class="re-flash" id="fl-structure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg>Structure score updated: 82 → 87. Revision logged.</div>
+              <div class="re-flash" id="fl-structure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg>Scene copied — paste it into your script.</div>
             </div>
           </div>
         </div>
@@ -2929,10 +2929,10 @@ MARCUS
 (into phone)
 Move the timeline up. We don't need her anymore.</textarea>
               <div class="ed-actions">
-                <button class="re-btn" onclick="reanalyze('ed-conflict','fl-conflict')">Re-Analyze This Scene</button>
+                <button class="re-btn" onclick="reanalyze('ed-conflict','fl-conflict')">Copy Edited Scene</button>
                 <button class="cn-btn" onclick="toggleEd('ed-conflict')">Cancel</button>
               </div>
-              <div class="re-flash" id="fl-conflict"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg>Conflict score updated: 71 → 79. Revision logged.</div>
+              <div class="re-flash" id="fl-conflict"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg>Scene copied — paste it into your script.</div>
             </div>
           </div>
         </div>
@@ -2987,10 +2987,10 @@ She opens the folder. Closes it. Her phone buzzes. She doesn't answer.
 
 She grabs her jacket.</textarea>
               <div class="ed-actions">
-                <button class="re-btn" onclick="reanalyze('ed-pacing','fl-pacing')">Re-Analyze This Scene</button>
+                <button class="re-btn" onclick="reanalyze('ed-pacing','fl-pacing')">Copy Edited Scene</button>
                 <button class="cn-btn" onclick="toggleEd('ed-pacing')">Cancel</button>
               </div>
-              <div class="re-flash" id="fl-pacing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg>Pacing score updated: 68 → 76. Revision logged.</div>
+              <div class="re-flash" id="fl-pacing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg>Scene copied — paste it into your script.</div>
             </div>
           </div>
         </div>
@@ -3612,9 +3612,22 @@ function populateReport(d) {
         const edEye = edEl.querySelector('.ed-eye');
         const dimLabel = dim.charAt(0).toUpperCase() + dim.slice(1);
         if (edEye) edEye.textContent = 'Editing — ' + dimLabel + (cat.page_ref ? ' · ' + cat.page_ref : '');
-        // Clear hardcoded demo content so writer starts with a blank canvas
+        // Clear hardcoded demo content; restore any saved edit from localStorage
         const edTa = edEl.querySelector('.ed-ta');
-        if (edTa && !edTa.dataset.userEdited) edTa.value = '';
+        if (edTa && !edTa.dataset.userEdited) {
+          const savedKey = 'so_edit_' + (_currentUser?.id || 'anon') + '_' + dim;
+          const saved = localStorage.getItem(savedKey);
+          edTa.value = saved || '';
+          if (saved) edTa.dataset.userEdited = '1';
+          if (!edTa.dataset.listenerAttached) {
+            edTa.dataset.listenerAttached = '1';
+            edTa.addEventListener('input', () => {
+              edTa.dataset.userEdited = '1';
+              const k = 'so_edit_' + (_currentUser?.id || 'anon') + '_' + dim;
+              localStorage.setItem(k, edTa.value);
+            });
+          }
+        }
       }
       // Fix It button label
       const fixBtn = card.querySelector('.fixit-btn span');
@@ -4093,10 +4106,18 @@ function toggleEd(id){
   }
 }
 function reanalyze(edId,flId){
+  const ta=document.querySelector(`#${edId} .ed-ta`);
   const btn=document.querySelector(`#${edId} .re-btn`);
-  if (!btn) return;
-  btn.textContent='Coming soon…'; btn.style.opacity='.6';
-  setTimeout(()=>{ btn.textContent='Re-Analyze This Scene'; btn.style.opacity='1'; },1800);
+  const fl=document.getElementById(flId);
+  if (!ta||!btn) return;
+  const text=ta.value.trim();
+  if (!text) return;
+  navigator.clipboard.writeText(text).catch(()=>{});
+  const orig=btn.textContent;
+  btn.textContent='Copied to clipboard ✓';
+  btn.style.opacity='.7';
+  setTimeout(()=>{ btn.textContent=orig; btn.style.opacity='1'; },2000);
+  if (fl) { fl.classList.add('show'); setTimeout(()=>fl.classList.remove('show'),3000); }
 }
 
 function scrollTo2(id){
@@ -5490,32 +5511,48 @@ async function confirmWriterListing() {
   document.getElementById('mkt-tos-writer').classList.remove('show');
 
   const toggle = document.getElementById('listing-toggle-input');
-  if (toggle) toggle.checked = true;
   const label = document.getElementById('listing-status-label');
-  if (label) label.textContent = 'Live';
   const privateNotice = document.getElementById('listing-private');
-  if (privateNotice) privateNotice.style.display = 'none';
   const liveSection = document.getElementById('listing-live');
-  if (liveSection) liveSection.style.display = 'block';
 
-  // Write to Supabase
+  // Write to Supabase FIRST — only update UI on success
   const id = await _ensureSubId();
   console.log('SceneOne: confirmWriterListing sub id =', id);
-  if (id) {
-    const { error } = await supabaseClient.from('submissions').update({ public_listing: true }).eq('id', id);
-    if (error) {
-      console.error('SceneOne: listing update failed', error);
-      const lbl = document.getElementById('listing-status-label');
-      if (lbl) lbl.textContent = 'Error — try again';
-    } else {
-      loadListingStats(id);
-      loadRequestCards(id);
-    }
-  } else {
+
+  if (!id) {
     console.warn('SceneOne: no submission found to make public');
+    _showListingToast('No submission found — reload the page and try again.', true);
+    return;
   }
 
+  const { error } = await supabaseClient.from('submissions').update({ public_listing: true }).eq('id', id);
+  if (error) {
+    console.error('SceneOne: listing update failed', error);
+    _showListingToast('Update failed: ' + error.message, true);
+    return;
+  }
+
+  // Success — update UI
+  if (toggle) toggle.checked = true;
+  if (label) label.textContent = 'Live';
+  if (privateNotice) privateNotice.style.display = 'none';
+  if (liveSection) liveSection.style.display = 'block';
+  loadListingStats(id);
+  loadRequestCards(id);
   showGoodLuck();
+}
+
+function _showListingToast(msg, isError) {
+  const existing = document.getElementById('listing-status-toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.id = 'listing-status-toast';
+  const color = isError ? 'rgba(255,80,80,0.4)' : 'rgba(62,237,231,0.3)';
+  const textColor = isError ? 'rgba(255,120,120,0.95)' : 'var(--cyan)';
+  toast.style.cssText = `position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1A1A1A;border:1px solid ${color};border-radius:10px;padding:12px 20px;font-size:12px;font-weight:700;color:${textColor};z-index:9999;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.5);`;
+  toast.textContent = (isError ? '⚠ ' : '✓ ') + msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 5000);
 }
 
 function showGoodLuck() {
