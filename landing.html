@@ -3,40 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<!--
-  SECURITY HEADERS — two layers:
-  1. CSP meta tag below: enforced by the browser for script/style/connect/font/img.
-     Does NOT cover frame-ancestors, HSTS, or X-Frame-Options (those need HTTP headers).
-  2. Cloudflare Transform Rules (add these if DNS is orange-cloud proxied):
-     Header: Content-Security-Policy  → same value as the meta tag below
-     Header: Strict-Transport-Security → max-age=300; includeSubDomains
-             (raise to 31536000 after confirming no HTTP breakage)
-     Header: X-Frame-Options → DENY
-     Header: X-Content-Type-Options → nosniff
-     Header: Referrer-Policy → strict-origin-when-cross-origin
--->
-<meta http-equiv="Content-Security-Policy" content="
-  default-src 'self';
-  script-src  'self' 'unsafe-inline'
-              https://cdn.jsdelivr.net
-              https://cdnjs.cloudflare.com
-              https://challenges.cloudflare.com
-              https://js.stripe.com;
-  style-src   'self' 'unsafe-inline'
-              https://fonts.googleapis.com;
-  font-src    'self'
-              https://fonts.gstatic.com;
-  connect-src 'self'
-              https://*.supabase.co
-              https://api.anthropic.com
-              https://challenges.cloudflare.com;
-  frame-src   https://challenges.cloudflare.com
-              https://js.stripe.com;
-  img-src     'self' data: blob:;
-  worker-src  blob:;
-  object-src  'none';
-  base-uri    'self';
-">
+
 <title>SceneOne — AI Screenplay Coverage</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
