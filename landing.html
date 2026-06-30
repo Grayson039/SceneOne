@@ -581,11 +581,23 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .ed-eye{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:7px;}
 .ed-ta{width:100%;min-height:90px;background:var(--graphite);border:1px solid var(--border);border-radius:7px;padding:10px;color:var(--text);font-family:'Courier Prime',monospace;font-size:12px;line-height:1.6;resize:vertical;outline:none;transition:border-color .2s;}
 .ed-ta:focus{border-color:rgba(62,237,231,0.32);}
-.ed-actions{display:flex;gap:7px;margin-top:8px;}
+.ed-actions{display:flex;gap:7px;margin-top:8px;align-items:center;}
 .re-btn{flex:1;padding:8px;border-radius:7px;border:none;background:var(--cyan);color:#0F0F0F;font-size:12px;font-weight:800;cursor:pointer;transition:all .15s;}
 .re-btn:hover{background:#5ff5ef;}
+.re-btn:disabled{opacity:.5;cursor:not-allowed;}
+.cp-btn{padding:8px 13px;border-radius:7px;border:1px solid rgba(62,237,231,0.25);background:transparent;color:var(--cyan);font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.cp-btn:hover{background:rgba(62,237,231,0.08);}
 .cn-btn{padding:8px 13px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--sub);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
 .cn-btn:hover{color:var(--text);}
+.re-feedback{display:none;margin-top:10px;padding:12px 14px;border-radius:9px;border:1px solid rgba(62,237,231,0.2);background:rgba(62,237,231,0.04);}
+.re-feedback.show{display:block;}
+.re-feedback.improved{border-color:rgba(76,175,125,0.3);background:rgba(76,175,125,0.06);}
+.re-feedback.needs-work{border-color:rgba(245,158,11,0.3);background:rgba(245,158,11,0.04);}
+.re-fb-verdict{font-size:11px;font-weight:800;letter-spacing:.5px;margin-bottom:6px;}
+.re-feedback.improved .re-fb-verdict{color:var(--green);}
+.re-feedback.needs-work .re-fb-verdict{color:var(--amber,#f59e0b);}
+.re-fb-text{font-size:12px;color:rgba(236,236,236,0.8);line-height:1.6;margin-bottom:6px;}
+.re-fb-next{font-size:11px;color:var(--sub);line-height:1.5;font-style:italic;}
 .creative-choice-btn{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800;letter-spacing:.5px;color:var(--gold);background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.22);border-radius:5px;padding:5px 10px;cursor:pointer;transition:all .15s;margin-top:4px;margin-left:6px;}
 .creative-choice-btn:hover{background:rgba(201,168,76,0.15);}
 .creative-choice-btn.chosen{color:#0F0F0F;background:var(--gold);border-color:var(--gold);}
@@ -2889,10 +2901,11 @@ SARAH
 (quietly)
 They took the evidence. Fine. I'll become the evidence.</textarea>
               <div class="ed-actions">
-                <button class="re-btn" onclick="reanalyze('ed-structure','fl-structure')">Copy Edited Scene</button>
+                <button class="re-btn" onclick="reanalyze('ed-structure','structure')">Get AI Feedback</button>
+                <button class="cp-btn" onclick="copyScene('ed-structure')">Copy</button>
                 <button class="cn-btn" onclick="toggleEd('ed-structure')">Cancel</button>
               </div>
-              <div class="re-flash" id="fl-structure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg>Scene copied — paste it into your script.</div>
+              <div class="re-feedback" id="rf-structure"></div>
             </div>
           </div>
         </div>
@@ -2929,10 +2942,11 @@ MARCUS
 (into phone)
 Move the timeline up. We don't need her anymore.</textarea>
               <div class="ed-actions">
-                <button class="re-btn" onclick="reanalyze('ed-conflict','fl-conflict')">Copy Edited Scene</button>
+                <button class="re-btn" onclick="reanalyze('ed-conflict','conflict')">Get AI Feedback</button>
+                <button class="cp-btn" onclick="copyScene('ed-conflict')">Copy</button>
                 <button class="cn-btn" onclick="toggleEd('ed-conflict')">Cancel</button>
               </div>
-              <div class="re-flash" id="fl-conflict"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg>Scene copied — paste it into your script.</div>
+              <div class="re-feedback" id="rf-conflict"></div>
             </div>
           </div>
         </div>
@@ -2987,10 +3001,11 @@ She opens the folder. Closes it. Her phone buzzes. She doesn't answer.
 
 She grabs her jacket.</textarea>
               <div class="ed-actions">
-                <button class="re-btn" onclick="reanalyze('ed-pacing','fl-pacing')">Copy Edited Scene</button>
+                <button class="re-btn" onclick="reanalyze('ed-pacing','pacing')">Get AI Feedback</button>
+                <button class="cp-btn" onclick="copyScene('ed-pacing')">Copy</button>
                 <button class="cn-btn" onclick="toggleEd('ed-pacing')">Cancel</button>
               </div>
-              <div class="re-flash" id="fl-pacing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg>Scene copied — paste it into your script.</div>
+              <div class="re-feedback" id="rf-pacing"></div>
             </div>
           </div>
         </div>
@@ -3604,7 +3619,7 @@ function populateReport(d) {
         confEl.textContent = cat.confidence.charAt(0).toUpperCase() + cat.confidence.slice(1);
       }
 
-      // Fix It inline editor — update button label, header, and clear hardcoded demo content
+      // Fix It inline editor — update button label, header, store context, restore saved edits
       const edId = 'ed-' + dim;
       const edEl = document.getElementById(edId);
       if (edEl) {
@@ -3612,6 +3627,9 @@ function populateReport(d) {
         const edEye = edEl.querySelector('.ed-eye');
         const dimLabel = dim.charAt(0).toUpperCase() + dim.slice(1);
         if (edEye) edEye.textContent = 'Editing — ' + dimLabel + (cat.page_ref ? ' · ' + cat.page_ref : '');
+        // Store original flag/fix so reanalyze() can pass them to the edge function
+        if (cat.flag) edEl.dataset.flag = cat.flag;
+        if (cat.fix) edEl.dataset.fix = cat.fix;
         // Clear hardcoded demo content; restore any saved edit from localStorage
         const edTa = edEl.querySelector('.ed-ta');
         if (edTa && !edTa.dataset.userEdited) {
@@ -4105,19 +4123,60 @@ function toggleEd(id){
     }
   }
 }
-function reanalyze(edId,flId){
-  const ta=document.querySelector(`#${edId} .ed-ta`);
-  const btn=document.querySelector(`#${edId} .re-btn`);
-  const fl=document.getElementById(flId);
-  if (!ta||!btn) return;
-  const text=ta.value.trim();
-  if (!text) return;
-  navigator.clipboard.writeText(text).catch(()=>{});
-  const orig=btn.textContent;
-  btn.textContent='Copied to clipboard ✓';
-  btn.style.opacity='.7';
-  setTimeout(()=>{ btn.textContent=orig; btn.style.opacity='1'; },2000);
-  if (fl) { fl.classList.add('show'); setTimeout(()=>fl.classList.remove('show'),3000); }
+async function reanalyze(edId, dimension) {
+  const edEl = document.getElementById(edId);
+  const ta = edEl?.querySelector('.ed-ta');
+  const btn = edEl?.querySelector('.re-btn');
+  const fb = document.getElementById('rf-' + dimension);
+  if (!ta || !btn || !edEl) return;
+
+  const text = ta.value.trim();
+  if (!text) {
+    if (fb) { fb.className = 're-feedback needs-work show'; fb.innerHTML = '<div class="re-fb-verdict">⚠ Nothing to analyze</div><div class="re-fb-text">Write your revised scene in the editor first.</div>'; }
+    return;
+  }
+
+  const origLabel = btn.textContent;
+  btn.textContent = 'Analyzing…';
+  btn.disabled = true;
+  if (fb) { fb.className = 're-feedback'; fb.innerHTML = ''; }
+
+  try {
+    const { data, error } = await supabaseClient.functions.invoke('grade-scene', {
+      body: {
+        scene_text: text,
+        dimension: dimension,
+        original_flag: edEl.dataset.flag || '',
+        original_fix: edEl.dataset.fix || '',
+      }
+    });
+
+    if (error || data?.error) throw new Error((error?.message || data?.error) || 'Unknown error');
+
+    if (fb) {
+      const cls = data.improved ? 'improved' : 'needs-work';
+      const verdict = data.improved ? '✓ Improved' : '↻ Keep Revising';
+      fb.className = 're-feedback ' + cls + ' show';
+      fb.innerHTML = `<div class="re-fb-verdict">${verdict}</div><div class="re-fb-text">${data.assessment || ''}</div>${data.next_step ? '<div class="re-fb-next">Next: ' + data.next_step + '</div>' : ''}`;
+    }
+  } catch (err) {
+    console.error('SceneOne reanalyze error:', err);
+    if (fb) { fb.className = 're-feedback needs-work show'; fb.innerHTML = '<div class="re-fb-verdict">⚠ Error</div><div class="re-fb-text">' + (err.message || 'Could not get feedback. Try again.') + '</div>'; }
+  } finally {
+    btn.textContent = origLabel;
+    btn.disabled = false;
+  }
+}
+
+function copyScene(edId) {
+  const ta = document.querySelector('#' + edId + ' .ed-ta');
+  const btn = document.querySelector('#' + edId + ' .cp-btn');
+  if (!ta || !ta.value.trim()) return;
+  navigator.clipboard.writeText(ta.value.trim()).catch(() => {});
+  if (btn) {
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+  }
 }
 
 function scrollTo2(id){
