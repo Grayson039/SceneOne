@@ -3622,6 +3622,22 @@ function populateReport(d) {
         confEl.className = 'conf-badge cb-' + cat.confidence.slice(0,3);
         confEl.textContent = cat.confidence.charAt(0).toUpperCase() + cat.confidence.slice(1);
       }
+
+      // Fix It inline editor — update button label, header, and clear hardcoded demo content
+      const edId = 'ed-' + dim;
+      const edEl = document.getElementById(edId);
+      if (edEl) {
+        // Header label
+        const edEye = edEl.querySelector('.ed-eye');
+        const dimLabel = dim.charAt(0).toUpperCase() + dim.slice(1);
+        if (edEye) edEye.textContent = 'Editing — ' + dimLabel + (cat.page_ref ? ' · ' + cat.page_ref : '');
+        // Clear hardcoded demo content so writer starts with a blank canvas
+        const edTa = edEl.querySelector('.ed-ta');
+        if (edTa && !edTa.dataset.userEdited) edTa.value = '';
+      }
+      // Fix It button label
+      const fixBtn = card.querySelector('.fixit-btn span');
+      if (fixBtn) fixBtn.textContent = cat.page_ref ? 'inline editor · ' + cat.page_ref : 'inline editor';
     });
   }
 
