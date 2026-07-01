@@ -3267,7 +3267,7 @@ const supabaseClient = (() => {
 
 // ─── KEEP-WARM PING — prevent edge function cold starts ───
 (function keepWarm() {
-  const ping = () => fetch(EDGE_FN_URL, { method: 'GET' }).catch(() => {});
+  const ping = () => fetch(EDGE_FN_URL, { method: 'POST', body: JSON.stringify({keepWarm:true}), headers:{'Content-Type':'application/json'} }).catch(() => {});
   ping();
   setInterval(ping, 4 * 60 * 1000);
 })();
@@ -6291,7 +6291,7 @@ async function _runAnalysis() {
     // Only fall back to client-side save if the edge function didn't return one.
     if (data.submission_id) {
       _currentSubId = data.submission_id;
-    } else if (!data.cached) {
+    } else {
       _saveSubmission(title, data);
     }
 
