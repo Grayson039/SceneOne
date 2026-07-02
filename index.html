@@ -178,9 +178,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offse
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(76,175,125,0.5);}70%{box-shadow:0 0 0 7px rgba(76,175,125,0);}100%{box-shadow:0 0 0 0 rgba(76,175,125,0);}}
 /* ── Live demo embed ──────────────────────────────────────────── */
 .demo-frame{width:100%;max-width:1000px;margin:0 auto;border-radius:16px;overflow:hidden;border:1px solid var(--border2);background:var(--card);box-shadow:0 30px 80px rgba(0,0,0,0.5);}
-.demo-bar{display:flex;align-items:center;gap:7px;padding:11px 14px;background:#141414;border-bottom:1px solid var(--border);}
-.demo-dot{width:11px;height:11px;border-radius:50%;}
-.demo-url{margin-left:10px;font-size:11px;color:var(--sub);font-family:'Courier Prime',monospace;}
+.demo-bar{display:flex;align-items:center;padding:11px 14px;background:#141414;border-bottom:1px solid var(--border);}
+.demo-url{font-size:11px;color:var(--sub);font-family:'Courier Prime',monospace;}
 .demo-frame iframe{width:100%;height:680px;border:0;display:block;background:#0F0F0F;}
 .demo-toggle{display:inline-flex;gap:4px;padding:4px;border-radius:100px;background:var(--card);border:1px solid var(--border);margin-bottom:22px;}
 .demo-tab{padding:9px 20px;border-radius:100px;border:none;background:transparent;color:var(--sub);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;letter-spacing:.3px;}
@@ -252,12 +251,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offse
   </div>
   <div class="demo-frame">
     <div class="demo-bar" aria-hidden="true">
-      <span class="demo-dot" style="background:#ff5f57"></span>
-      <span class="demo-dot" style="background:#febc2e"></span>
-      <span class="demo-dot" style="background:#28c840"></span>
       <span class="demo-url" id="demo-url">sceneone.net</span>
     </div>
-    <iframe src="landing.html" id="demo-iframe" title="SceneOne live product demo" loading="lazy"></iframe>
+    <iframe src="landing.html" id="demo-iframe" title="SceneOne live product demo"></iframe>
   </div>
   <p style="font-size:12px;color:var(--sub);text-align:center;margin-top:14px;">Best experienced full-screen &mdash; <a href="landing.html" target="_blank" rel="noopener" style="color:var(--cyan);text-decoration:none;">open the live app in a new tab &rarr;</a></p>
 </section>
