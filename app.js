@@ -56,10 +56,21 @@ if (supabaseClient) {
   });
 }
 
-// pdf.js worker setup
-if (typeof pdfjsLib !== 'undefined') {
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const _PDFJS_URL        = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+const _PDFJS_WORKER_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+function _loadPdfJs() {
+  if (typeof pdfjsLib !== 'undefined') return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = _PDFJS_URL;
+    s.onload = () => {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = _PDFJS_WORKER_URL;
+      resolve();
+    };
+    s.onerror = () => reject(new Error('Failed to load pdf.js'));
+    document.head.appendChild(s);
+  });
 }
 
 // ─── PDF / FILE TEXT EXTRACTION ───
@@ -67,6 +78,7 @@ async function extractScriptText(file) {
   const ext = file.name.split('.').pop().toLowerCase();
 
   if (ext === 'pdf') {
+    await _loadPdfJs();
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     let text = '';
