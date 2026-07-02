@@ -480,6 +480,52 @@ function populateReport(d) {
     const overallBadge = document.getElementById('overall-score-badge');
     if (overallBadge) overallBadge.textContent = '↑ Strong ' + best;
   }
+
+  // ── Script Highlights (writer profile feed) ──────────────────────────────
+  // Populate 4 items from real analysis: top strength, STC beat, dialogue, worst flag
+  if (d.categories && d.scores) {
+    const dimLabel = { structure:'Structure', conflict:'Conflict', dialogue:'Dialogue', pacing:'Pacing', visual:'Visual' };
+    const scored = Object.entries(d.scores).filter(([,v]) => typeof v === 'number').sort((a,b) => b[1]-a[1]);
+    const bestDim  = scored[0]?.[0];
+    const worstDim = scored[scored.length-1]?.[0];
+    const dlgCat   = d.categories.dialogue;
+    const bestCat  = bestDim ? d.categories[bestDim] : null;
+    const worstCat = worstDim ? d.categories[worstDim] : null;
+
+    const _hl = (titleId, descId, pageId, title, desc, page) => {
+      const t = document.getElementById(titleId); if (t) t.textContent = title || '—';
+      const d2 = document.getElementById(descId);  if (d2) d2.textContent = desc || '';
+      const p = document.getElementById(pageId);  if (p) p.textContent = page || '';
+    };
+
+    // 1. Best dimension strength
+    _hl('hl1-title', 'hl1-desc', 'hl1-page',
+      (dimLabel[bestDim] || '') + ' — strength',
+      bestCat?.strength?.split('.')[0] || '',
+      (bestCat?.page_ref ? bestCat.page_ref + ' · ' : '') + (dimLabel[bestDim] || '') + ' ✅'
+    );
+
+    // 2. Save the Cat strongest beat
+    const stcBeat = d.save_the_cat?.strongest_beat || '';
+    const stcRef  = stcBeat.match(/pp?\.\s*[\d–\-]+/i)?.[0] || '';
+    const stcName = stcBeat.split(/\s[—–-]\s/)[0]?.trim().slice(0, 40) || 'Strong beat';
+    const stcDesc = stcBeat.split(/\s[—–-]\s/).slice(1).join(' — ').slice(0, 80) || stcBeat.slice(0, 80);
+    _hl('hl2-title', 'hl2-desc', 'hl2-page', stcName, stcDesc, (stcRef ? stcRef + ' · ' : '') + 'Structure ✅');
+
+    // 3. Dialogue strength
+    _hl('hl3-title', 'hl3-desc', 'hl3-page',
+      'Dialogue — ' + (dlgCat?.confidence || 'note'),
+      dlgCat?.strength?.split('.')[0] || '',
+      (dlgCat?.page_ref ? dlgCat.page_ref + ' · ' : '') + 'Dialogue ✅'
+    );
+
+    // 4. Worst dimension flag
+    _hl('hl4-title', 'hl4-desc', 'hl4-page',
+      (dimLabel[worstDim] || '') + ' gap flagged',
+      worstCat?.flag?.split('.')[0] || '',
+      (worstCat?.page_ref ? worstCat.page_ref + ' · ' : '') + (dimLabel[worstDim] || '') + ' ⚠'
+    );
+  }
 }
 
 // ─── NAV ───
