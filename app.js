@@ -2063,17 +2063,8 @@ async function showForgotPassword(emailId = 'login-email', statusId = 'forgot-st
 }
 
 // ─── STRIPE CHECKOUT ───
-// Hosted Payment Links — used ONLY as a fallback if the create-checkout edge
-// function isn't reachable yet (e.g. not deployed). The primary path below ties
-// the purchase to the signed-in account so the webhook can fulfil it.
-const PAYMENT_LINKS = {
-  writer: 'https://buy.stripe.com/14AfZh5vW4mKh1ueqm00000',
-  pro:    'https://buy.stripe.com/3cIeVd5vW6uS4eIfuq00001',
-};
-
 async function startCheckout(plan) {
   try {
-    // Must be signed in, otherwise the payment can't be linked to an account.
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) {
       alert('Create an account or sign in first — that way your upgrade is linked to your account automatically.');
@@ -2081,18 +2072,15 @@ async function startCheckout(plan) {
       return;
     }
 
-    // Ask the backend to open a Checkout Session stamped with our user id.
     const { data, error } = await supabaseClient.functions.invoke('create-checkout', {
       body: { plan },
     });
     if (error || !data?.url) throw new Error(error?.message || 'no checkout url');
 
-    window.location.href = data.url; // hand off to Stripe's hosted checkout
+    window.location.href = data.url;
   } catch (e) {
-    console.warn('SceneOne: create-checkout unavailable, falling back to payment link —', e?.message);
-    if (PAYMENT_LINKS[plan]) {
-      window.open(PAYMENT_LINKS[plan], '_blank');
-    } else {
+    console.warn('SceneOne: create-checkout failed —', e?.message);
+    {
       alert('Checkout is temporarily unavailable. Please try again shortly.');
     }
   }
