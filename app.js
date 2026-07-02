@@ -154,26 +154,10 @@ async function _restoreListingState() {
 function _finalizeReport() {
   if (_reportData) populateReport(_reportData);
 
-  // Restore demo request cards only for sample runs; real users see empty state
-  const card1 = document.getElementById('req-card-1');
-  const card2 = document.getElementById('req-card-2');
-  const reqEmpty = document.getElementById('req-empty');
   if (window._isSampleRun) {
-    _pendingCount = 2;
-    if (card1) card1.style.display = '';
-    if (card2) card2.style.display = '';
-    if (reqEmpty) reqEmpty.classList.remove('show');
     const sv = document.getElementById('stat-views'); if (sv) sv.textContent = '7';
     const sr = document.getElementById('stat-requests'); if (sr) sr.textContent = '2';
     const pl = document.getElementById('pending-requests-label'); if (pl) pl.textContent = '2 pending requests.';
-  } else {
-    _pendingCount = 0;
-    if (card1) card1.style.display = 'none';
-    if (card2) card2.style.display = 'none';
-    if (reqEmpty) reqEmpty.classList.add('show');
-    const sv = document.getElementById('stat-views'); if (sv) sv.textContent = '0';
-    const sr = document.getElementById('stat-requests'); if (sr) sr.textContent = '0';
-    const pl = document.getElementById('pending-requests-label'); if (pl) pl.textContent = '0 pending requests.';
   }
 
   setTimeout(() => {
@@ -570,7 +554,8 @@ function goTo(id){
     }
     loadScriptHistory();
   }
-  if (id === 'dashboard') loadDashboard();
+  if (id === 'dashboard') { loadDashboard(); _startDashRealtime(); } else { _stopDashRealtime(); }
+  if (id === 'requests') loadRequestsScreen();
   if (id === 'exec-profile') loadExecProfile();
   if (id === 'report') syncRepBarHeight();
   if (id === 'welcome') setTimeout(_tsRenderWriterForms, 150);
@@ -2531,65 +2516,85 @@ function showGoodLuck() {
   }, 3200);
 }
 
-// ─── REQUEST REVIEW ───
-let _pendingCount = 0;
-
-function approveRequest(id, name, company, email) {
-  const card = document.getElementById('req-card-' + id);
-  const actions = document.getElementById('req-actions-' + id);
-  if (!card || !actions) return;
-
-  card.classList.add('approved');
-
-  const expiry = new Date();
-  expiry.setDate(expiry.getDate() + 14);
-  const expiryStr = expiry.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-
-  actions.innerHTML = `
-    <div class="req-approved-state">
-      <div class="req-approved-icon">&#10003;</div>
-      <div>
-        <div class="req-approved-title">Approved &mdash; 14-Day Access Granted</div>
-        <div class="req-approved-detail">${esc(name)} at ${esc(company)} can now read your script. Access expires ${esc(expiryStr)}.</div>
-        <div class="req-approved-contact">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          ${esc(email)}
-        </div>
-      </div>
-    </div>`;
-
-  _pendingCount--;
-  _updateRequestsHeader();
-}
-
-function declineRequest(id) {
-  const card = document.getElementById('req-card-' + id);
-  const actions = document.getElementById('req-actions-' + id);
-  if (!card || !actions) return;
-
-  card.classList.add('declined');
-  actions.innerHTML = `
-    <div class="req-declined-state">
-      <span style="font-size:16px;">&#8722;</span>
-      <span>Request declined. The reader has been notified. No further action needed.</span>
-    </div>`;
-
-  _pendingCount--;
-  _updateRequestsHeader();
-}
-
-function _updateRequestsHeader() {
+// ─── REQUESTS INBOX (writer — all scripts) ───
+async function loadRequestsScreen() {
+  const inbox = document.getElementById('requests-inbox');
   const heading = document.getElementById('req-heading');
-  const empty = document.getElementById('req-empty');
-  const policy = document.getElementById('req-policy');
+  if (!inbox || !_currentUser) return;
+  inbox.innerHTML = '<div style="padding:40px;text-align:center;color:var(--sub);font-size:13px;">Loading…</div>';
 
-  if (_pendingCount <= 0) {
-    if (heading) heading.textContent = 'All Requests Handled';
-    if (empty) empty.classList.add('show');
-    if (policy) policy.style.display = 'none';
-  } else {
-    if (heading) heading.textContent = _pendingCount + ' Pending Request' + (_pendingCount === 1 ? '' : 's');
+  try {
+    const { data, error } = await supabaseClient
+      .from('read_requests')
+      .select('id, exec_name, exec_email, status, created_at, submission_id, submissions(title)')
+      .order('created_at', { ascending: false })
+      .limit(50);
+    if (error) throw error;
+
+    const pending = (data || []).filter(r => r.status === 'pending');
+    if (heading) heading.textContent = pending.length ? `${pending.length} Pending Request${pending.length === 1 ? '' : 's'}` : 'Reader Requests';
+
+    if (!data?.length) {
+      inbox.innerHTML = `<div style="padding:60px 24px;text-align:center;">
+        <div style="font-size:32px;margin-bottom:16px;">&#10003;</div>
+        <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:8px;">You're all caught up.</div>
+        <div style="font-size:13px;color:var(--sub);line-height:1.7;">No requests yet. When industry readers find your listing and request access, they'll appear here.</div>
+      </div>`;
+      return;
+    }
+
+    inbox.innerHTML = data.map(r => {
+      const date = new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const initials = (r.exec_name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+      const scriptTitle = r.submissions?.title || '—';
+      const statusColor = r.status === 'approved' ? 'var(--green)' : r.status === 'declined' ? 'var(--sub)' : 'var(--cyan)';
+      const actions = r.status === 'pending'
+        ? `<div style="display:flex;gap:8px;margin-top:14px;">
+             <button data-req-id="${esc(r.id)}" data-req-action="approved" class="req-inbox-action req-approve" style="flex:1;padding:10px;border-radius:8px;border:none;background:rgba(76,175,125,0.15);color:var(--green);font-size:12px;font-weight:700;cursor:pointer;">Approve — 14-Day Access</button>
+             <button data-req-id="${esc(r.id)}" data-req-action="declined" class="req-inbox-action req-decline" style="padding:10px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--sub);font-size:12px;font-weight:700;cursor:pointer;">Decline</button>
+           </div>`
+        : `<div style="margin-top:10px;font-size:11px;font-weight:700;color:${statusColor}">${r.status.charAt(0).toUpperCase() + r.status.slice(1)}</div>`;
+      return `<div class="req-card" style="margin-bottom:12px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+          <div class="req-avatar" style="flex-shrink:0;width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#053154,#0a4a7a);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">${esc(initials)}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;font-weight:700;color:#fff;">${esc(r.exec_name)}</div>
+            <div style="font-size:11px;color:var(--sub);margin-top:2px;">${esc(r.exec_email)}</div>
+            <div style="font-size:11px;color:var(--sub);margin-top:4px;">Re: <span style="color:var(--cyan);">${esc(scriptTitle)}</span> · ${date}</div>
+            ${actions}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    inbox.addEventListener('click', async e => {
+      const btn = e.target.closest('.req-inbox-action');
+      if (!btn) return;
+      btn.disabled = true;
+      btn.textContent = btn.dataset.reqAction === 'approved' ? 'Approving…' : 'Declining…';
+      await handleRequestAction(btn.dataset.reqId, btn.dataset.reqAction);
+      loadRequestsScreen();
+    });
+
+  } catch(e) {
+    console.warn('SceneOne: loadRequestsScreen failed', e);
+    inbox.innerHTML = '<div style="padding:40px;text-align:center;color:var(--sub);font-size:13px;">Could not load requests. Try refreshing.</div>';
   }
+}
+
+// ─── REALTIME — exec discovery dashboard ───
+let _realtimeSub = null;
+
+function _startDashRealtime() {
+  if (_realtimeSub) return;
+  _realtimeSub = supabaseClient
+    .channel('discovery-listings')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'submissions' }, () => loadDashboard())
+    .subscribe();
+}
+
+function _stopDashRealtime() {
+  if (_realtimeSub) { supabaseClient.removeChannel(_realtimeSub); _realtimeSub = null; }
 }
 
 // ─── READER MARKETPLACE ───

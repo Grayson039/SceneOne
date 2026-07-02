@@ -1788,88 +1788,15 @@ She grabs her jacket.</textarea>
   <nav class="top-nav">
     <div class="nav-brand">Scene<span>One</span></div>
     <div class="nav-actions">
-      <button class="nav-btn" onclick="goTo('report')">&#8592; Back to Report</button>
+      <button class="nav-btn" onclick="goTo('upload')">&#8592; My Scripts</button>
     </div>
   </nav>
 
   <div class="req-wrap">
-
-    <div class="req-eyebrow">Discovery Dashboard &mdash; My Listing</div>
-    <h2 class="req-heading" id="req-heading">2 Pending Requests</h2>
-    <p class="req-sub">You have 72 hours to respond to each request. No response = auto-decline. Approving gives read-only access for 14 days — no rights transfer.</p>
-
-    <!-- Request 1: Jordan Meyers / A24 -->
-    <div class="req-card" id="req-card-1" style="display:none;">
-      <div class="req-card-top">
-        <div style="flex:1;min-width:0;">
-          <div class="req-reader">
-            <div class="req-avatar" style="background:linear-gradient(135deg,#053154,#0a4a7a);color:var(--cyan);">JM</div>
-            <div>
-              <div class="req-name">Jordan Meyers</div>
-              <div class="req-role">Development Executive &mdash; A24</div>
-            </div>
-          </div>
-          <div class="req-badges">
-            <span class="req-badge rb-green">&#10003; IMDbPro Verified</span>
-            <span class="req-badge rb-green">&#10003; Company Email</span>
-            <span class="req-badge rb-green">&#10003; LinkedIn</span>
-          </div>
-          <div class="req-note">"The logline caught my eye &mdash; we're actively developing projects in this space. Would love to read the full draft."</div>
-        </div>
-        <div class="req-meta">
-          <div class="req-meta-label">Requested</div>
-          <div class="req-meta-date">June 7, 2026</div>
-          <div class="req-timer rt-urgent">51 hrs left</div>
-        </div>
-      </div>
-      <div class="req-actions" id="req-actions-1">
-        <button class="req-approve" onclick="approveRequest(1,'Jordan Meyers','A24','jmeyers@a24films.com')">Approve &mdash; 14-Day Access</button>
-        <button class="req-decline" onclick="declineRequest(1)">Decline</button>
-      </div>
-    </div>
-
-    <!-- Request 2: Sofia Reyes / Blumhouse -->
-    <div class="req-card" id="req-card-2" style="display:none;">
-      <div class="req-card-top">
-        <div style="flex:1;min-width:0;">
-          <div class="req-reader">
-            <div class="req-avatar" style="background:linear-gradient(135deg,#2a1a05,#5a3a10);color:var(--amber);">SR</div>
-            <div>
-              <div class="req-name">Sofia Reyes</div>
-              <div class="req-role">Creative Executive &mdash; Blumhouse Productions</div>
-            </div>
-          </div>
-          <div class="req-badges">
-            <span class="req-badge rb-green">&#10003; IMDbPro Verified</span>
-            <span class="req-badge rb-green">&#10003; Company Email</span>
-            <span class="req-badge rb-amber">&#9679; LinkedIn Pending</span>
-          </div>
-          <div class="req-note">"Strong concept and DNA comps. Blumhouse is always looking for contained, high-tension features. Happy to give feedback either way."</div>
-        </div>
-        <div class="req-meta">
-          <div class="req-meta-label">Requested</div>
-          <div class="req-meta-date">June 8, 2026</div>
-          <div class="req-timer rt-ok">68 hrs left</div>
-        </div>
-      </div>
-      <div class="req-actions" id="req-actions-2">
-        <button class="req-approve" onclick="approveRequest(2,'Sofia Reyes','Blumhouse Productions','sreyes@blumhouse.com')">Approve &mdash; 14-Day Access</button>
-        <button class="req-decline" onclick="declineRequest(2)">Decline</button>
-      </div>
-    </div>
-
-    <!-- Empty state -->
-    <div class="req-empty show" id="req-empty">
-      <div class="req-empty-icon">&#10003;</div>
-      <div class="req-empty-title">You're all caught up.</div>
-      <div class="req-empty-sub">No pending requests. When industry readers find your listing and request access, they'll appear here.</div>
-      <button class="resub-btn" onclick="goTo('report')">Back to Report</button>
-    </div>
-
-    <div class="req-policy" id="req-policy">
-      <strong>Approval grants read-only access for 14 days.</strong> The reader receives your full script. No rights transfer. Access expires automatically. You can revoke early from your Writer Profile.
-    </div>
-
+    <div class="req-eyebrow">Discovery Dashboard</div>
+    <h2 class="req-heading" id="req-heading">Reader Requests</h2>
+    <p class="req-sub">Approving gives read-only access for 14 days — no rights transfer. No response within 72 hours = auto-decline.</p>
+    <div id="requests-inbox"></div>
   </div>
 </div>
 
