@@ -130,12 +130,32 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 3
 </div>
 
 <script>
-const SUPABASE_URL = 'https://zzsjgaijrngxkaqakplm.supabase.co';
+const SUPABASE_URL  = 'https://zzsjgaijrngxkaqakplm.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_yuptAX-fJGnyTuDgReScEg_bqg7qPEx';
-const ADMIN_EMAIL = 'willgrayson039@gmail.com';
+const ADMIN_FN_URL  = SUPABASE_URL + '/functions/v1/admin-panel';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let _adminUser = null;
+
+// ── Admin API — all data ops go through the edge function ──────────
+// The edge function verifies the JWT server-side and confirms admin
+// email before touching any data. Client-side email checks alone are
+// not a security boundary.
+async function _adminApi(body) {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session?.access_token) throw new Error('Not authenticated');
+  const res = await fetch(ADMIN_FN_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + session.access_token,
+    },
+    body: JSON.stringify(body),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || 'Admin API error');
+  return json;
+}
 
 // ── Auth ──────────────────────────────────────────────────────────
 async function adminSignIn() {
@@ -148,7 +168,10 @@ async function adminSignIn() {
   btn.textContent = 'Signing in…'; btn.disabled = true;
   const { data, error } = await sb.auth.signInWithPassword({ email, password });
   if (error || !data.user) { showErr(error?.message || 'Sign in failed.'); btn.textContent = 'Sign In →'; btn.disabled = false; return; }
-  if (data.user.email !== ADMIN_EMAIL) {
+  // Note: server also enforces admin check — this is just UX feedback
+  try {
+    await _adminApi({ action: 'load' });
+  } catch(e) {
     await sb.auth.signOut();
     showErr('This account does not have admin access.');
     btn.textContent = 'Sign In →'; btn.disabled = false;
@@ -179,20 +202,19 @@ async function adminSignOut() {
 // ── Check existing session on load ─────────────────────────────────
 (async () => {
   const { data: { session } } = await sb.auth.getSession();
-  if (session?.user?.email === ADMIN_EMAIL) {
-    enterAdmin(session.user);
+  if (session?.user) {
+    try {
+      await _adminApi({ action: 'load' });
+      enterAdmin(session.user);
+    } catch(_) {
+      // Not admin — stay on auth gate
+    }
   }
 })();
 
 // ── Data ──────────────────────────────────────────────────────────
 async function loadAll() {
-  const [profilesRes, submissionsRes] = await Promise.all([
-    sb.from('profiles').select('id, role, display_name, company, title, imdb_url, verified, created_at').order('created_at', { ascending: false }),
-    sb.from('submissions').select('id, public_listing, user_email', { count: 'exact', head: false }).eq('status','complete')
-  ]);
-
-  const profiles = profilesRes.data || [];
-  const submissions = submissionsRes.data || [];
+  const { profiles = [], submissions = [] } = await _adminApi({ action: 'load' });
 
   const execs = profiles.filter(p => p.role === 'exec');
   const pending = execs.filter(p => !p.verified);
@@ -246,17 +268,15 @@ function renderExecList(containerId, execs, isVerified) {
 async function setVerified(id, value, btn) {
   btn.disabled = true;
   btn.textContent = value ? 'Approving…' : 'Revoking…';
-  const { error } = await sb.from('profiles').update({ verified: value }).eq('id', id);
-  if (error) {
+  try {
+    await _adminApi({ action: 'set_verified', id, value });
+    await loadAll();
+    switchTab(value ? 'verified' : 'pending');
+  } catch(e) {
     btn.textContent = 'Error — try again';
     btn.disabled = false;
-    console.error(error);
-    return;
+    console.error(e);
   }
-  // Reload to reflect new state
-  await loadAll();
-  // Switch to correct tab to show result
-  switchTab(value ? 'verified' : 'pending');
 }
 
 // ── Tabs ──────────────────────────────────────────────────────────
