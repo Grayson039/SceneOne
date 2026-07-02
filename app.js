@@ -16,6 +16,7 @@ function esc(str) {
 const SUPABASE_URL      = 'https://zzsjgaijrngxkaqakplm.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_yuptAX-fJGnyTuDgReScEg_bqg7qPEx';
 const EDGE_FN_URL       = SUPABASE_URL + '/functions/v1/grade-script';
+const NOTIFY_FN_URL     = SUPABASE_URL + '/functions/v1/notify';
 const supabaseClient = (() => {
   try {
     if (!window.supabase) throw new Error('supabase-js did not load');
@@ -1470,19 +1471,32 @@ async function requestScriptAccess(id, title, btn) {
   if (!profile || profile.role !== 'exec' || !profile.verified) { goTo('exec-signup'); return; }
   if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
   try {
-    const { error } = await supabaseClient.from('read_requests').insert({
+    const { data: inserted, error } = await supabaseClient.from('read_requests').insert({
       submission_id: id,
       exec_user_id: _currentUser.id,
       exec_name: profile.display_name || _currentUser.email,
       exec_email: _currentUser.email,
       status: 'pending',
-    });
+    }).select('id').single();
     if (error) throw error;
     if (btn) { btn.textContent = '✓ Requested'; btn.style.background='rgba(76,175,125,0.2)'; btn.style.color='var(--green)'; btn.style.borderColor='rgba(76,175,125,0.3)'; }
+    // Fire-and-forget — email writer
+    if (inserted?.id) _notify('request_received', inserted.id);
   } catch(e) {
     console.warn('SceneOne: request insert failed', e);
     if (btn) { btn.textContent = 'Request Access →'; btn.disabled = false; }
   }
+}
+
+function _notify(action, requestId) {
+  supabaseClient.auth.getSession().then(({ data: { session } }) => {
+    if (!session?.access_token) return;
+    fetch(NOTIFY_FN_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ action, request_id: requestId }),
+    }).catch(() => {});
+  });
 }
 
 async function loadListingStats(subId) {
@@ -1513,6 +1527,7 @@ async function handleRequestAction(requestId, action) {
       update.expires_at = exp.toISOString();
     }
     await supabaseClient.from('read_requests').update(update).eq('id', requestId);
+    _notify('request_resolved', requestId);
     const subId = await _ensureSubId();
     loadRequestCards(subId);
     loadListingStats(subId);
@@ -2059,17 +2074,8 @@ async function showForgotPassword(emailId = 'login-email', statusId = 'forgot-st
 }
 
 // ─── STRIPE CHECKOUT ───
-// Hosted Payment Links — used ONLY as a fallback if the create-checkout edge
-// function isn't reachable yet (e.g. not deployed). The primary path below ties
-// the purchase to the signed-in account so the webhook can fulfil it.
-const PAYMENT_LINKS = {
-  writer: 'https://buy.stripe.com/14AfZh5vW4mKh1ueqm00000',
-  pro:    'https://buy.stripe.com/3cIeVd5vW6uS4eIfuq00001',
-};
-
 async function startCheckout(plan) {
   try {
-    // Must be signed in, otherwise the payment can't be linked to an account.
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) {
       alert('Create an account or sign in first — that way your upgrade is linked to your account automatically.');
@@ -2077,18 +2083,15 @@ async function startCheckout(plan) {
       return;
     }
 
-    // Ask the backend to open a Checkout Session stamped with our user id.
     const { data, error } = await supabaseClient.functions.invoke('create-checkout', {
       body: { plan },
     });
     if (error || !data?.url) throw new Error(error?.message || 'no checkout url');
 
-    window.location.href = data.url; // hand off to Stripe's hosted checkout
+    window.location.href = data.url;
   } catch (e) {
-    console.warn('SceneOne: create-checkout unavailable, falling back to payment link —', e?.message);
-    if (PAYMENT_LINKS[plan]) {
-      window.open(PAYMENT_LINKS[plan], '_blank');
-    } else {
+    console.warn('SceneOne: create-checkout failed —', e?.message);
+    {
       alert('Checkout is temporarily unavailable. Please try again shortly.');
     }
   }
