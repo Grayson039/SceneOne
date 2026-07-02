@@ -65,7 +65,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   background:radial-gradient(ellipse 65% 50% at 50% 35%,rgba(62,237,231,0.12) 0%,transparent 65%),var(--bg);}
 .welcome-wrap{width:100%;max-width:460px;text-align:center;}
 .welcome-eyebrow{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:16px;}
-.welcome-logo{font-family:'Playfair Display',serif;font-size:clamp(40px,8vw,72px);font-weight:900;color:#fff;margin:0 0 8px;letter-spacing:-1px;}
+.welcome-logo{font-family:'Playfair Display',serif;font-size:clamp(40px,8vw,72px);font-weight:900;color:#fff;margin-bottom:8px;letter-spacing:-1px;}
 .welcome-logo span{color:var(--cyan);}
 .welcome-sub{font-size:14px;color:var(--sub);line-height:1.75;margin-bottom:32px;max-width:360px;margin-left:auto;margin-right:auto;}
 
@@ -671,7 +671,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .tos-footer-links{display:flex;gap:16px;align-items:center;}
 .tos-footer-link{font-size:10px;font-weight:600;color:var(--sub);text-decoration:none;cursor:pointer;transition:color .15s;letter-spacing:.5px;}
 .tos-footer-link:hover{color:var(--cyan);}
-.tos-footer-disclaimer{font-size:10px;color:var(--sub);letter-spacing:.3px;}
+.tos-footer-disclaimer{font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:.3px;}
 
 /* TOS Modal */
 .tos-modal-overlay{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;}
@@ -1348,10 +1348,9 @@ html.embedded::-webkit-scrollbar{width:0;height:0;display:none;}
 body.embedded .upload-back{display:none !important;}
 /* Reverse emphasis: make "Try with Sample Script" the primary CTA in the demo */
 body.embedded .analyze-btn{background:transparent !important;color:var(--cyan) !important;border:1px solid rgba(62,237,231,0.4) !important;box-shadow:none !important;opacity:1 !important;}
-body.embedded .sample-btn{background:var(--cyan) !important;color:#08080a !important;border:none !important;font-weight:800 !important;position:relative;overflow:visible;}
-body.embedded .sample-btn::after{content:'';position:absolute;inset:0;border-radius:inherit;background:var(--cyan);opacity:.45;animation:sampleNudge 2.2s ease-in-out infinite;pointer-events:none;}
+body.embedded .sample-btn{background:var(--cyan) !important;color:#08080a !important;border:none !important;font-weight:800 !important;animation:sampleNudge 2.2s ease-in-out infinite;}
 body.embedded .pricing-modal-btn{display:none !important;}
-@keyframes sampleNudge{0%,100%{transform:scale(1);opacity:.45;}50%{transform:scale(1.35);opacity:0;}}
+@keyframes sampleNudge{0%,100%{box-shadow:0 0 0 0 rgba(62,237,231,0.45);}50%{box-shadow:0 0 0 9px rgba(62,237,231,0);}}
 .pricing-modal-btn{display:inline-block;margin-top:16px;padding:12px 24px;background:var(--cyan);color:#000;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.3s ease;}
 .pricing-modal-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(62,237,231,0.3);}
 .pricing-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);display:none;justify-content:center;align-items:center;z-index:9999;backdrop-filter:blur(4px);}
@@ -1379,7 +1378,8 @@ body.embedded .pricing-modal-btn{display:none !important;}
 .pricing-modal-btn{display:block;width:fit-content;margin:24px auto 0;padding:10px 20px;background:var(--cyan);color:#000;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px;}
 .pricing-modal-btn:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(62,237,231,0.3);}
 </style>
-<!-- pdf.js loaded on demand when user selects a PDF (see _loadPdfJs) -->
+<!-- pdf.js for client-side PDF text extraction -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <!-- Supabase JS client -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad" async defer></script>
@@ -1389,9 +1389,9 @@ body.embedded .pricing-modal-btn{display:none !important;}
 
 <!-- ══════════════════════ SCREEN 0: WELCOME / SIGN UP ══════════════════════ -->
 <div class="screen" id="screen-welcome">
-  <main class="welcome-wrap">
+  <div class="welcome-wrap">
     <div class="welcome-eyebrow">AI Screenplay Coverage</div>
-    <h1 class="welcome-logo">Scene<span>One</span></h1>
+    <div class="welcome-logo">Scene<span>One</span></div>
     <div class="welcome-sub">Studio-grade script feedback for every writer.<br>Free. No gatekeeping. Built for the ones who need it most.</div>
 
     <!-- Auth mode toggle -->
@@ -1580,7 +1580,7 @@ body.embedded .pricing-modal-btn{display:none !important;}
       </div>
     </div>
 
-  </main>
+  </div>
 </div>
 
 <!-- ══════════════════════ SCREEN 1: LANDING ══════════════════════ -->
@@ -3291,30 +3291,17 @@ if (supabaseClient) {
   });
 }
 
-// ─── PDF / FILE TEXT EXTRACTION ───
-const PDFJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
-let _pdfJsReady = null;
-function _loadPdfJs() {
-  if (_pdfJsReady) return _pdfJsReady;
-  _pdfJsReady = new Promise((resolve, reject) => {
-    if (typeof pdfjsLib !== 'undefined') { resolve(); return; }
-    const s = document.createElement('script');
-    s.src = PDFJS_CDN + 'pdf.min.js';
-    s.onload = () => {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_CDN + 'pdf.worker.min.js';
-      resolve();
-    };
-    s.onerror = reject;
-    document.head.appendChild(s);
-  });
-  return _pdfJsReady;
+// pdf.js worker setup
+if (typeof pdfjsLib !== 'undefined') {
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 }
 
+// ─── PDF / FILE TEXT EXTRACTION ───
 async function extractScriptText(file) {
   const ext = file.name.split('.').pop().toLowerCase();
 
   if (ext === 'pdf') {
-    await _loadPdfJs();
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     let text = '';
