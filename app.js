@@ -16,6 +16,7 @@ function esc(str) {
 const SUPABASE_URL      = 'https://zzsjgaijrngxkaqakplm.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_yuptAX-fJGnyTuDgReScEg_bqg7qPEx';
 const EDGE_FN_URL       = SUPABASE_URL + '/functions/v1/grade-script';
+const NOTIFY_FN_URL     = SUPABASE_URL + '/functions/v1/notify';
 const supabaseClient = (() => {
   try {
     if (!window.supabase) throw new Error('supabase-js did not load');
@@ -1470,19 +1471,32 @@ async function requestScriptAccess(id, title, btn) {
   if (!profile || profile.role !== 'exec' || !profile.verified) { goTo('exec-signup'); return; }
   if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
   try {
-    const { error } = await supabaseClient.from('read_requests').insert({
+    const { data: inserted, error } = await supabaseClient.from('read_requests').insert({
       submission_id: id,
       exec_user_id: _currentUser.id,
       exec_name: profile.display_name || _currentUser.email,
       exec_email: _currentUser.email,
       status: 'pending',
-    });
+    }).select('id').single();
     if (error) throw error;
     if (btn) { btn.textContent = '✓ Requested'; btn.style.background='rgba(76,175,125,0.2)'; btn.style.color='var(--green)'; btn.style.borderColor='rgba(76,175,125,0.3)'; }
+    // Fire-and-forget — email writer
+    if (inserted?.id) _notify('request_received', inserted.id);
   } catch(e) {
     console.warn('SceneOne: request insert failed', e);
     if (btn) { btn.textContent = 'Request Access →'; btn.disabled = false; }
   }
+}
+
+function _notify(action, requestId) {
+  supabaseClient.auth.getSession().then(({ data: { session } }) => {
+    if (!session?.access_token) return;
+    fetch(NOTIFY_FN_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ action, request_id: requestId }),
+    }).catch(() => {});
+  });
 }
 
 async function loadListingStats(subId) {
@@ -1507,6 +1521,8 @@ async function loadListingStats(subId) {
 async function handleRequestAction(requestId, action) {
   try {
     await supabaseClient.from('read_requests').update({ status: action }).eq('id', requestId);
+    // Fire-and-forget — email exec with outcome
+    _notify('request_resolved', requestId);
     const subId = await _ensureSubId();
     loadRequestCards(subId);
     loadListingStats(subId);
