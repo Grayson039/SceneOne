@@ -26,12 +26,15 @@ const supabaseClient = (() => {
   }
 })();
 
-// ─── KEEP-WARM PING — prevent edge function cold starts ───
-(function keepWarm() {
+// ─── KEEP-WARM PING — prevent edge function cold starts (writers only) ───
+// Started after auth confirms user is logged in, not for every visitor.
+let _keepWarmInterval = null;
+function _startKeepWarm() {
+  if (_keepWarmInterval) return;
   const ping = () => fetch(EDGE_FN_URL, { method: 'POST', body: JSON.stringify({keepWarm:true}), headers:{'Content-Type':'application/json'} }).catch(() => {});
   ping();
-  setInterval(ping, 4 * 60 * 1000);
-})();
+  _keepWarmInterval = setInterval(ping, 4 * 60 * 1000);
+}
 
 // ─── SESSION PERSISTENCE — restore auth on every page load ───
 (async () => {
@@ -47,6 +50,7 @@ const supabaseClient = (() => {
       if (!_PERSISTENT_SCREENS.has(lastScreen)) lastScreen = 'upload';
       goTo(lastScreen);
       if (lastScreen === 'upload') loadScriptHistory();
+      _startKeepWarm();
     }
   } catch (e) {
     console.warn('SceneOne: session restore failed', e);
@@ -60,6 +64,7 @@ if (supabaseClient) {
 }
 
 const _PDFJS_URL        = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+const _PDFJS_SRI        = 'sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e';
 const _PDFJS_WORKER_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 function _loadPdfJs() {
@@ -67,6 +72,8 @@ function _loadPdfJs() {
   return new Promise((resolve, reject) => {
     const s = document.createElement('script');
     s.src = _PDFJS_URL;
+    s.integrity = _PDFJS_SRI;
+    s.crossOrigin = 'anonymous';
     s.onload = () => {
       pdfjsLib.GlobalWorkerOptions.workerSrc = _PDFJS_WORKER_URL;
       resolve();
@@ -1034,11 +1041,11 @@ async function reanalyze(edId, dimension) {
       const cls = data.improved ? 'improved' : 'needs-work';
       const verdict = data.improved ? '✓ Improved' : '↻ Keep Revising';
       fb.className = 're-feedback ' + cls + ' show';
-      fb.innerHTML = `<div class="re-fb-verdict">${verdict}</div><div class="re-fb-text">${data.assessment || ''}</div>${data.next_step ? '<div class="re-fb-next">Next: ' + data.next_step + '</div>' : ''}`;
+      fb.innerHTML = `<div class="re-fb-verdict">${esc(verdict)}</div><div class="re-fb-text">${esc(data.assessment || '')}</div>${data.next_step ? '<div class="re-fb-next">Next: ' + esc(data.next_step) + '</div>' : ''}`;
     }
   } catch (err) {
     console.error('SceneOne reanalyze error:', err);
-    if (fb) { fb.className = 're-feedback needs-work show'; fb.innerHTML = '<div class="re-fb-verdict">⚠ Error</div><div class="re-fb-text">' + (err.message || 'Could not get feedback. Try again.') + '</div>'; }
+    if (fb) { fb.className = 're-feedback needs-work show'; fb.innerHTML = '<div class="re-fb-verdict">⚠ Error</div><div class="re-fb-text">' + esc(err.message || 'Could not get feedback. Try again.') + '</div>'; }
   } finally {
     btn.textContent = origLabel;
     btn.disabled = false;
