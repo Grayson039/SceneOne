@@ -1446,8 +1446,7 @@ async function loadDashboard() {
       ).join('');
       const scoreColor = score>=75?'var(--green)':score>=60?'var(--cyan)':'var(--amber)';
       const listed = new Date(row.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
-      const safeTitle = (row.title||'').replace(/'/g,"\\'");
-      return `<div class="script-card">
+      return `<div class="script-card" data-id="${esc(row.id)}" data-title="${esc(row.title||'')}">
         <div class="script-card-top">
           <div><div class="script-card-title">${esc(row.title||'UNTITLED').toUpperCase()}</div>
           <div class="script-card-genre">SceneOne Verified · Listed ${listed}</div></div>
@@ -1458,10 +1457,21 @@ async function loadDashboard() {
         <div class="script-card-score-bars">${bars}</div>
         <div class="script-card-footer">
           <div class="script-card-stats"><div class="script-stat">SceneOne verified ✓</div></div>
-          <button class="request-access-btn" onclick="requestScriptAccess('${row.id}','${safeTitle}')">Request Access →</button>
+          <button class="request-access-btn">Request Access →</button>
         </div>
       </div>`;
     }).join('');
+
+    // Increment view counts fire-and-forget for all visible cards
+    rows.forEach(row => supabaseClient.rpc('increment_view_count', { p_id: row.id }).catch(() => {}));
+
+    // Event delegation for request-access buttons (avoids inline onclick + title injection)
+    feed.addEventListener('click', e => {
+      const btn = e.target.closest('.request-access-btn');
+      if (!btn) return;
+      const card = btn.closest('.script-card');
+      if (card) requestScriptAccess(card.dataset.id, card.dataset.title, btn);
+    }, { once: true });
   } catch(e) {
     console.warn('SceneOne: dashboard load failed', e);
     if (meta) meta.textContent = 'Could not load scripts';
@@ -1469,11 +1479,10 @@ async function loadDashboard() {
   }
 }
 
-async function requestScriptAccess(id, title) {
+async function requestScriptAccess(id, title, btn) {
   if (!_currentUser) { goTo('exec-signup'); return; }
   const { data: profile } = await supabaseClient.from('profiles').select('role,verified,display_name').eq('id',_currentUser.id).single();
   if (!profile || profile.role !== 'exec' || !profile.verified) { goTo('exec-signup'); return; }
-  const btn = event?.target;
   if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
   try {
     const { error } = await supabaseClient.from('read_requests').insert({
@@ -1494,15 +1503,15 @@ async function requestScriptAccess(id, title) {
 async function loadListingStats(subId) {
   if (!subId) return;
   try {
-    const { data, error } = await supabaseClient
-      .from('read_requests')
-      .select('status')
-      .eq('submission_id', subId);
-    if (error) throw error;
-    const total = data?.length || 0;
-    const approved = data?.filter(r => r.status === 'approved').length || 0;
+    const [reqRes, subRes] = await Promise.all([
+      supabaseClient.from('read_requests').select('status').eq('submission_id', subId),
+      supabaseClient.from('submissions').select('view_count').eq('id', subId).single(),
+    ]);
+    if (reqRes.error) throw reqRes.error;
+    const total = reqRes.data?.length || 0;
+    const approved = reqRes.data?.filter(r => r.status === 'approved').length || 0;
     const el = { views: document.getElementById('stat-views'), reqs: document.getElementById('stat-requests'), approved: document.getElementById('stat-approved') };
-    if (el.views) el.views.textContent = total; // requests proxy as views for now
+    if (el.views) el.views.textContent = subRes.data?.view_count ?? 0;
     if (el.reqs) el.reqs.textContent = total;
     if (el.approved) el.approved.textContent = approved;
   } catch(e) {
@@ -1535,14 +1544,18 @@ async function loadRequestCards(subId) {
     const date = new Date(r.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
     const statusColor = r.status==='approved'?'var(--green)':r.status==='declined'?'var(--amber)':'var(--cyan)';
     const actions = r.status==='pending'
-      ? `<button onclick="handleRequestAction('${r.id}','approved')" style="padding:5px 12px;border-radius:6px;border:none;background:rgba(76,175,125,0.15);color:var(--green);font-size:11px;font-weight:700;cursor:pointer;">Approve</button>
-         <button onclick="handleRequestAction('${r.id}','declined')" style="padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--sub);font-size:11px;font-weight:700;cursor:pointer;">Decline</button>`
+      ? `<button data-req-id="${esc(r.id)}" data-req-action="approved" class="req-action-btn" style="padding:5px 12px;border-radius:6px;border:none;background:rgba(76,175,125,0.15);color:var(--green);font-size:11px;font-weight:700;cursor:pointer;">Approve</button>
+         <button data-req-id="${esc(r.id)}" data-req-action="declined" class="req-action-btn" style="padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--sub);font-size:11px;font-weight:700;cursor:pointer;">Decline</button>`
       : `<span style="font-size:11px;font-weight:700;color:${statusColor}">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span>`;
     return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;gap:10px;">
       <div><div style="font-size:12px;font-weight:700;color:#fff;">${esc(r.exec_name)}</div><div style="font-size:11px;color:var(--sub);">${esc(r.exec_email)} · ${date}</div></div>
       <div style="display:flex;gap:6px;">${actions}</div>
     </div>`;
   }).join('');
+  container.addEventListener('click', e => {
+    const btn = e.target.closest('.req-action-btn');
+    if (btn) handleRequestAction(btn.dataset.reqId, btn.dataset.reqAction);
+  }, { once: true });
 }
 
 // ─── EXEC ONBOARDING ───
@@ -1853,7 +1866,7 @@ async function loadScriptHistory() {
       const bestLabel = best ? best[0].charAt(0).toUpperCase() + best[0].slice(1) : '';
       const bestVal = best ? best[1] : '—';
 
-      return `<div class="history-card" onclick="loadHistoryReport('${row.id}')">
+      return `<div class="history-card" data-id="${esc(row.id)}" style="cursor:pointer">
         <div class="history-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
@@ -1876,6 +1889,11 @@ async function loadScriptHistory() {
         <div class="history-arrow">›</div>
       </div>`;
     }).join('');
+
+    list.addEventListener('click', e => {
+      const card = e.target.closest('.history-card');
+      if (card) loadHistoryReport(card.dataset.id);
+    }, { once: true });
 
   } catch (e) {
     console.warn('SceneOne: history load failed', e);
