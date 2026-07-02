@@ -4569,8 +4569,8 @@ async function loadDashboard() {
     }
 
     // Apply client-side filters
-    let rows = data.filter(r => r.result?.overall_score);
-    rows = rows.filter(r => (r.result.overall_score || 0) >= minScore);
+    let rows = data.filter(r => r.result?.overall_score != null);
+    rows = rows.filter(r => (r.result.overall_score ?? 0) >= minScore);
     if (!allGenres && checkedGenres.length > 0) {
       rows = rows.filter(r => {
         const genre = (r.result.exec?.genre || r.result.genre || '').toLowerCase();
