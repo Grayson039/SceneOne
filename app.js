@@ -1520,8 +1520,13 @@ async function loadListingStats(subId) {
 
 async function handleRequestAction(requestId, action) {
   try {
-    await supabaseClient.from('read_requests').update({ status: action }).eq('id', requestId);
-    // Fire-and-forget — email exec with outcome
+    const update = { status: action };
+    if (action === 'approved') {
+      const exp = new Date();
+      exp.setDate(exp.getDate() + 14);
+      update.expires_at = exp.toISOString();
+    }
+    await supabaseClient.from('read_requests').update(update).eq('id', requestId);
     _notify('request_resolved', requestId);
     const subId = await _ensureSubId();
     loadRequestCards(subId);
@@ -1536,21 +1541,27 @@ async function loadRequestCards(subId) {
   if (!container || !subId) return;
   const { data } = await supabaseClient
     .from('read_requests')
-    .select('id, exec_name, exec_email, status, created_at')
+    .select('id, exec_name, exec_email, status, created_at, expires_at')
     .eq('submission_id', subId)
     .order('created_at', { ascending: false })
     .limit(10);
   if (!data?.length) { container.innerHTML = '<div style="font-size:12px;color:var(--sub);text-align:center;padding:16px;">No requests yet.</div>'; return; }
+  const now = Date.now();
   container.innerHTML = data.map(r => {
     const date = new Date(r.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
-    const statusColor = r.status==='approved'?'var(--green)':r.status==='declined'?'var(--amber)':'var(--cyan)';
+    const expired = r.status === 'approved' && r.expires_at && new Date(r.expires_at).getTime() < now;
+    const expiryLabel = r.status === 'approved' && r.expires_at
+      ? (expired ? ' · Expired' : ' · Access until ' + new Date(r.expires_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}))
+      : '';
+    const statusColor = expired ? 'var(--sub)' : r.status==='approved'?'var(--green)':r.status==='declined'?'var(--amber)':'var(--cyan)';
+    const statusLabel = expired ? 'Expired' : r.status.charAt(0).toUpperCase()+r.status.slice(1);
     const actions = r.status==='pending'
       ? `<button data-req-id="${esc(r.id)}" data-req-action="approved" class="req-action-btn" style="padding:5px 12px;border-radius:6px;border:none;background:rgba(76,175,125,0.15);color:var(--green);font-size:11px;font-weight:700;cursor:pointer;">Approve</button>
          <button data-req-id="${esc(r.id)}" data-req-action="declined" class="req-action-btn" style="padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--sub);font-size:11px;font-weight:700;cursor:pointer;">Decline</button>`
-      : `<span style="font-size:11px;font-weight:700;color:${statusColor}">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span>`;
+      : `<span style="font-size:11px;font-weight:700;color:${statusColor}">${statusLabel}${expiryLabel}</span>`;
     return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;gap:10px;">
       <div><div style="font-size:12px;font-weight:700;color:#fff;">${esc(r.exec_name)}</div><div style="font-size:11px;color:var(--sub);">${esc(r.exec_email)} · ${date}</div></div>
-      <div style="display:flex;gap:6px;">${actions}</div>
+      <div style="display:flex;gap:6px;align-items:center;">${actions}</div>
     </div>`;
   }).join('');
   container.addEventListener('click', e => {
@@ -2530,7 +2541,7 @@ async function loadRequestsScreen() {
   try {
     const { data, error } = await supabaseClient
       .from('read_requests')
-      .select('id, exec_name, exec_email, status, created_at, submission_id, submissions(title)')
+      .select('id, exec_name, exec_email, status, created_at, expires_at, submission_id, submissions(title)')
       .order('created_at', { ascending: false })
       .limit(50);
     if (error) throw error;
@@ -2551,13 +2562,18 @@ async function loadRequestsScreen() {
       const date = new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       const initials = (r.exec_name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
       const scriptTitle = r.submissions?.title || '—';
-      const statusColor = r.status === 'approved' ? 'var(--green)' : r.status === 'declined' ? 'var(--sub)' : 'var(--cyan)';
+      const expired = r.status === 'approved' && r.expires_at && new Date(r.expires_at).getTime() < Date.now();
+      const statusColor = expired ? 'var(--sub)' : r.status === 'approved' ? 'var(--green)' : r.status === 'declined' ? 'var(--sub)' : 'var(--cyan)';
+      const statusLabel = expired ? 'Expired'
+        : r.status === 'approved' && r.expires_at
+          ? `Approved · Access until ${new Date(r.expires_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}`
+          : r.status.charAt(0).toUpperCase() + r.status.slice(1);
       const actions = r.status === 'pending'
         ? `<div style="display:flex;gap:8px;margin-top:14px;">
              <button data-req-id="${esc(r.id)}" data-req-action="approved" class="req-inbox-action req-approve" style="flex:1;padding:10px;border-radius:8px;border:none;background:rgba(76,175,125,0.15);color:var(--green);font-size:12px;font-weight:700;cursor:pointer;">Approve — 14-Day Access</button>
              <button data-req-id="${esc(r.id)}" data-req-action="declined" class="req-inbox-action req-decline" style="padding:10px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--sub);font-size:12px;font-weight:700;cursor:pointer;">Decline</button>
            </div>`
-        : `<div style="margin-top:10px;font-size:11px;font-weight:700;color:${statusColor}">${r.status.charAt(0).toUpperCase() + r.status.slice(1)}</div>`;
+        : `<div style="margin-top:10px;font-size:11px;font-weight:700;color:${statusColor}">${statusLabel}</div>`;
       return `<div class="req-card" style="margin-bottom:12px;">
         <div style="display:flex;align-items:flex-start;gap:12px;">
           <div class="req-avatar" style="flex-shrink:0;width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#053154,#0a4a7a);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">${esc(initials)}</div>
