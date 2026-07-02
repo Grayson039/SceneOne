@@ -41,9 +41,12 @@ const supabaseClient = (() => {
       _currentUser = session.user;
       userName = session.user.user_metadata?.full_name?.split(' ')[0]
                  || session.user.email.split('@')[0];
-      // Already authenticated — skip auth screens
-      goTo('upload');
-      loadScriptHistory();
+      // Restore last screen so browser refresh doesn't kick users back to upload
+      let lastScreen = 'upload';
+      try { lastScreen = sessionStorage.getItem('so_last_screen') || 'upload'; } catch(_){}
+      if (!_PERSISTENT_SCREENS.has(lastScreen)) lastScreen = 'upload';
+      goTo(lastScreen);
+      if (lastScreen === 'upload') loadScriptHistory();
     }
   } catch (e) {
     console.warn('SceneOne: session restore failed', e);
@@ -541,10 +544,16 @@ function populateReport(d) {
 }
 
 // ─── NAV ───
+// Screens worth restoring after a browser refresh (excludes transient auth/onboarding screens)
+const _PERSISTENT_SCREENS = new Set(['upload','report','dashboard','exec-profile','writer-profile','requests']);
+
 function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-'+id).classList.add('active');
   window.scrollTo(0,0);
+  if (_PERSISTENT_SCREENS.has(id)) {
+    try { sessionStorage.setItem('so_last_screen', id); } catch(_){}
+  }
   if (id === 'upload') {
     const btn = document.getElementById('analyze-btn');
     if (btn) {
@@ -1274,6 +1283,7 @@ window.addEventListener('load',()=>{
 async function handleSignOut() {
   await supabaseClient.auth.signOut();
   _currentUser = null;
+  try { sessionStorage.removeItem('so_last_screen'); } catch(_){}
   goTo('landing');
 }
 
