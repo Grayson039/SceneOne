@@ -4569,8 +4569,8 @@ async function loadDashboard() {
     }
 
     // Apply client-side filters
-    let rows = data.filter(r => r.result?.overall_score);
-    rows = rows.filter(r => (r.result.overall_score || 0) >= minScore);
+    let rows = data.filter(r => r.result?.overall_score != null);
+    rows = rows.filter(r => (r.result.overall_score ?? 0) >= minScore);
     if (!allGenres && checkedGenres.length > 0) {
       rows = rows.filter(r => {
         const genre = (r.result.exec?.genre || r.result.genre || '').toLowerCase();
@@ -5861,8 +5861,10 @@ function setFile(f) {
   }, 600);
 
   // Update crawl and report title
-  document.getElementById('crawl-title').textContent = cleaned.toUpperCase();
-  document.getElementById('rep-title').textContent = cleaned.toUpperCase() + ' — Draft 1';
+  const crawlEl = document.getElementById('crawl-title');
+  if (crawlEl) crawlEl.textContent = cleaned.toUpperCase();
+  const repTitleEl = document.getElementById('rep-title');
+  if (repTitleEl) repTitleEl.textContent = cleaned.toUpperCase() + ' — Draft 1';
 
   document.getElementById('analyze-btn').classList.add('ready');
   checkAnalyzeReady();
@@ -6128,8 +6130,10 @@ She drives fast.`;
 
 function useSample() {
   const title = 'THE LAST HOUR';
-  document.getElementById('crawl-title').textContent = title;
-  document.getElementById('rep-title').textContent = title + ' — Sample Draft';
+  const crawlTitleEl = document.getElementById('crawl-title');
+  if (crawlTitleEl) crawlTitleEl.textContent = title;
+  const repSampleEl = document.getElementById('rep-title');
+  if (repSampleEl) repSampleEl.textContent = title + ' — Sample Draft';
   document.getElementById('file-row').classList.add('show');
   document.getElementById('file-nm').textContent = 'the-last-hour-draft1.pdf';
   document.getElementById('file-sz').textContent = 'Sample script · 94 pages';
