@@ -11,7 +11,7 @@
 :root{
   --bg:#0F0F0F;--card:#1A1A1A;--card2:#222222;--navy:#053154;
   --cyan:#3EEDE7;--gold:#C9A84C;--amber:#E8923A;--green:#4CAF7D;
-  --text:#E5E5E5;--sub:#A6A6B2;--border:rgba(255,255,255,0.07);
+  --text:#E5E5E5;--sub:#888888;--border:rgba(255,255,255,0.07);
   --border2:rgba(255,255,255,0.12);
 }
 html{scroll-behavior:smooth;}
@@ -55,15 +55,14 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
 .ps-card-label.solution{color:var(--green);}
 .ps-card-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:10px;line-height:1.2;}
 .ps-card-body{font-size:13px;color:var(--sub);line-height:1.75;}
-.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:40px;}
+.feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
 .feature-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;transition:border-color .2s;}
 .feature-card:hover{border-color:rgba(62,237,231,0.2);}
 .feature-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:18px;}
-.fi-cyan{background:rgba(62,237,231,0.08);border:1px solid rgba(62,237,231,0.15);color:var(--cyan);}
-.fi-gold{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.15);color:var(--gold);}
-.fi-green{background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.15);color:var(--green);}
-.fi-amber{background:rgba(232,146,58,0.08);border:1px solid rgba(232,146,58,0.15);color:var(--amber);}
-.feature-icon svg{width:21px;height:21px;display:block;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.fi-cyan{background:rgba(62,237,231,0.08);border:1px solid rgba(62,237,231,0.15);}
+.fi-gold{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.15);}
+.fi-green{background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.15);}
+.fi-amber{background:rgba(232,146,58,0.08);border:1px solid rgba(232,146,58,0.15);}
 .feature-card h3{font-size:13px;font-weight:800;color:#fff;margin-bottom:6px;}
 .feature-card p{font-size:12px;color:var(--sub);line-height:1.65;}
 .decision-list{display:flex;flex-direction:column;gap:16px;}
@@ -74,66 +73,10 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
 .decision-badge{display:inline-block;font-size:8px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-top:8px;}
 .badge-high{color:#0F0F0F;background:var(--cyan);}
 .badge-highest{color:#0F0F0F;background:var(--gold);}
-.screens-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:40px;}
-.screen-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
-.screen-card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.screen-card-name{font-size:11px;font-weight:800;color:#fff;}
-.screen-card-tag{font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:4px;padding:2px 7px;}
-.screen-card-body{padding:16px 18px;}
-.screen-card-body p{font-size:12px;color:var(--sub);line-height:1.7;}
-.legal-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px;}
-.legal-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
-.legal-card h3{font-size:12px;font-weight:800;color:#fff;margin-bottom:6px;}
-.legal-card p{font-size:11px;color:var(--sub);line-height:1.65;}
-.legal-disclaimer{background:rgba(232,146,58,0.06);border:1px solid rgba(232,146,58,0.2);border-radius:10px;padding:14px 16px;font-size:11px;color:rgba(232,146,58,0.8);line-height:1.65;margin-top:16px;}
-.marketplace-split{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px;}
-.mkt-side{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;}
-.mkt-side-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
-.mkt-side-label.writer{color:var(--cyan);}
-.mkt-side-label.reader{color:var(--amber);}
-.mkt-side h3{font-size:16px;font-weight:800;color:#fff;margin-bottom:10px;}
-.mkt-side ul{padding-left:16px;}
-.mkt-side ul li{font-size:12px;color:var(--sub);line-height:1.75;margin-bottom:4px;}
-.cinematic-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
-.cinematic-card{border-radius:14px;padding:24px;text-align:center;position:relative;overflow:hidden;}
-.cc-goodluck{background:#000;border:1px solid rgba(255,255,255,0.08);}
-.cc-hunting{background:#0a0805;border:1px solid rgba(232,146,58,0.2);}
-.cc-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;margin-bottom:6px;}
-.cc-goodluck .cc-title{color:#fff;}
-.cc-hunting .cc-title{color:var(--amber);}
-.cc-sub{font-size:11px;}
-.cc-goodluck .cc-sub{color:rgba(255,255,255,0.4);}
-.cc-hunting .cc-sub{color:rgba(232,146,58,0.5);font-family:'Courier Prime',monospace;letter-spacing:2px;text-transform:uppercase;}
-.cc-trigger{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;}
-.cc-goodluck .cc-trigger{color:var(--cyan);}
-.cc-hunting .cc-trigger{color:var(--amber);}
-.loader-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
-.loader-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center;}
-.loader-icon{font-size:28px;margin-bottom:10px;}
-.loader-name{font-size:12px;font-weight:800;color:#fff;margin-bottom:4px;}
-.loader-phrase{font-size:10px;color:var(--gold);font-style:italic;margin-bottom:6px;}
-.loader-status{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
-.ls-built{color:var(--green);}
-.ls-planned{color:var(--sub);}
-.phase-list{display:flex;flex-direction:column;gap:12px;}
-.phase-item{display:flex;gap:16px;align-items:flex-start;padding:16px 20px;background:var(--card);border:1px solid var(--border);border-radius:12px;}
-.phase-num{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--cyan);flex-shrink:0;width:32px;line-height:1;}
-.phase-num.done{color:var(--green);}
-.phase-num.planned{color:var(--sub);}
-.phase-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:3px;}
-.phase-body{font-size:12px;color:var(--sub);line-height:1.65;}
 .tech-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
 .tech-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
 .tech-name{font-size:12px;font-weight:800;color:#fff;margin-bottom:3px;}
 .tech-role{font-size:10px;color:var(--sub);}
-.funding-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
-.funding-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
-.funding-priority{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
-.fp-1{color:var(--cyan);}
-.fp-2{color:var(--gold);}
-.fp-3{color:var(--sub);}
-.funding-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:6px;}
-.funding-body{font-size:11px;color:var(--sub);line-height:1.65;}
 .cs-footer{border-top:1px solid var(--border);padding:40px;text-align:center;max-width:1100px;margin:0 auto;}
 .cs-footer-brand{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:6px;}
 .cs-footer-brand span{color:var(--cyan);}
@@ -145,7 +88,7 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
   nav{padding:12px 20px;}
   section{padding:60px 20px;}
   .hero{padding:60px 20px;}
-  .ps-grid,.feature-grid,.screens-grid,.legal-grid,.marketplace-split,.cinematic-row,.loader-grid,.tech-grid,.funding-grid{grid-template-columns:1fr;}
+  .ps-grid,.feature-grid,.tech-grid{grid-template-columns:1fr;}
   .hero-stats{gap:20px;}
   .feature-grid{grid-template-columns:1fr 1fr;}
   .tech-grid{grid-template-columns:repeat(2,1fr);}
@@ -163,434 +106,156 @@ section{padding:80px 40px;max-width:1100px;margin:0 auto;}
 .reveal-d7{transition-delay:.49s;}
 .reveal-d8{transition-delay:.56s;}
 .reveal-d9{transition-delay:.63s;}
-/* ── Accessibility: skip link ─────────────────────────────────── */
-.skip-link{position:absolute;left:-999px;top:0;z-index:1000;background:var(--cyan);color:#0F0F0F;padding:10px 16px;border-radius:0 0 8px 0;font-size:13px;font-weight:800;text-decoration:none;}
-.skip-link:focus{left:0;}
-a:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:4px;}
-/* ── Role / tools meta bar ────────────────────────────────────── */
-.meta-bar{display:flex;flex-wrap:wrap;gap:28px;justify-content:center;margin-top:40px;padding-top:32px;border-top:1px solid var(--border);}
-.meta-item{text-align:center;}
-.meta-k{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:5px;}
-.meta-v{font-size:12px;font-weight:700;color:var(--text);}
-/* ── Live status pill ─────────────────────────────────────────── */
-.status-pill{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:100px;background:rgba(76,175,125,0.1);border:1px solid rgba(76,175,125,0.3);color:var(--green);font-size:11px;font-weight:700;margin-bottom:20px;letter-spacing:.5px;}
-.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(76,175,125,0.5);}70%{box-shadow:0 0 0 7px rgba(76,175,125,0);}100%{box-shadow:0 0 0 0 rgba(76,175,125,0);}}
-/* ── Respect reduced-motion preference ────────────────────────── */
-@media (prefers-reduced-motion: reduce){
-  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
-  html{scroll-behavior:auto;}
-  .reveal{opacity:1 !important;transform:none !important;}
-}
 </style>
 </head>
 <body>
 
-<a class="skip-link" href="#problem">Skip to content</a>
-
 <!-- NAV -->
-<nav aria-label="Primary">
-  <a class="nav-brand" href="https://willgraysondesign.com" aria-label="Will Grayson — portfolio home">WG<span>.</span></a>
+<nav>
+  <a class="nav-brand" href="https://willgraysondesign.com">WG<span>.</span></a>
   <div class="nav-links">
     <a class="nav-link" href="#problem">Problem</a>
-    <a class="nav-link" href="#features">Features</a>
-    <a class="nav-link" href="#marketplace">Marketplace</a>
+    <a class="nav-link" href="#insights">Insights</a>
     <a class="nav-link" href="#decisions">Decisions</a>
-    <a class="nav-link" href="#legal">Legal</a>
-    <a class="nav-link" href="#roadmap">Roadmap</a>
+    <a class="nav-link" href="#iterations">Iterations</a>
+    <a class="nav-link" href="#product">Product</a>
   </div>
-  <a class="nav-cta" href="landing.html" target="_blank" rel="noopener">Try It Live &rarr;</a>
+  <a class="nav-cta" href="landing.html" target="_blank" rel="noopener">Try SceneOne &rarr;</a>
 </nav>
 
 <!-- HERO -->
 <div class="hero">
-  <div class="status-pill"><span class="status-dot" aria-hidden="true"></span> Live in production at sceneone.net</div>
-  <div class="hero-eyebrow">Case Study &middot; AI Product Design</div>
+  <div class="hero-eyebrow">Case Study &middot; AI Product Design &middot; Live at sceneone.net</div>
   <h1 class="hero-title">Scene<span>One</span></h1>
   <div class="hero-mission">&ldquo;Democratizing Hollywood, one script at a time.&rdquo;</div>
-  <p class="hero-sub">An AI-powered screenplay feedback tool that gives every writer the same studio-grade coverage Hollywood charges $100 for &mdash; free, in minutes. Not a mockup: a shipped product with real Claude-powered analysis, accounts, payments, and a two-sided marketplace &mdash; live and running today.</p>
+  <p class="hero-sub">An AI-powered screenplay feedback tool that gives every writer the same studio-grade coverage Hollywood charges $100 for &mdash; free, in minutes, graded against the same framework the industry uses. Live at sceneone.net.</p>
   <div class="hero-ctas">
-    <a class="btn-primary" href="landing.html" target="_blank" rel="noopener">Try It Live &rarr;</a>
+    <a class="btn-primary" href="landing.html" target="_blank" rel="noopener">Try SceneOne &rarr;</a>
     <a class="btn-secondary" href="#problem">Read the Case Study &darr;</a>
   </div>
   <div class="hero-stats">
-    <div class="hero-stat"><div class="hero-stat-val" data-val="13">13</div><div class="hero-stat-lbl">Screens Shipped</div></div>
-    <div class="hero-stat"><div class="hero-stat-val" data-val="5">5</div><div class="hero-stat-lbl">Craft Dimensions</div></div>
+    <div class="hero-stat"><div class="hero-stat-val" data-val="9">9</div><div class="hero-stat-lbl">Screens Built</div></div>
     <div class="hero-stat"><div class="hero-stat-val" data-val="4">4</div><div class="hero-stat-lbl">Cinematic Loaders</div></div>
+    <div class="hero-stat"><div class="hero-stat-val" data-val="5">5</div><div class="hero-stat-lbl">Craft Dimensions</div></div>
     <div class="hero-stat"><div class="hero-stat-val" data-val="2">2</div><div class="hero-stat-lbl">Sided Marketplace</div></div>
     <div class="hero-stat"><div class="hero-stat-val" data-val="0" data-prefix="$">$0</div><div class="hero-stat-lbl">To Start</div></div>
   </div>
-  <div class="meta-bar">
-    <div class="meta-item"><div class="meta-k">Role</div><div class="meta-v">Solo &mdash; Design + Build</div></div>
-    <div class="meta-item"><div class="meta-k">Timeline</div><div class="meta-v">2026 &middot; Ongoing</div></div>
-    <div class="meta-item"><div class="meta-k">Design</div><div class="meta-v">Figma</div></div>
-    <div class="meta-item"><div class="meta-k">Build</div><div class="meta-v">JS &middot; Supabase &middot; Claude</div></div>
-    <div class="meta-item"><div class="meta-k">Platform</div><div class="meta-v">Responsive Web</div></div>
-  </div>
 </div>
-
-<!-- TWO-SIDED PLATFORM -->
-<section id="two-sided">
-  <div class="section-eyebrow">Two Sides, One Platform</div>
-  <div class="section-title">Built for writers &mdash; and the industry readers who discover them.</div>
-  <p class="section-sub">SceneOne isn&rsquo;t only a grading tool. It&rsquo;s a two-sided marketplace: writers get free, studio-grade coverage, and <strong style="color:var(--text)">verified industry readers</strong> get a curated pipeline of scripts that have already cleared a quality bar. The demo above shows the writer side &mdash; here&rsquo;s the other half.</p>
-  <div class="ps-grid">
-    <div class="ps-card" style="border-left:3px solid var(--cyan);">
-      <div class="ps-card-label" style="color:var(--cyan);">Writer Side</div>
-      <div class="ps-card-title">Get graded. Get discovered.</div>
-      <div class="ps-card-body">Upload a script, get an evidence-based coverage report in minutes, then opt in to list your logline + Story DNA on the Discovery Dashboard &mdash; where <em>you</em> approve exactly who gets access, and for how long. Your script never leaves your control.</div>
-    </div>
-    <div class="ps-card" style="border-left:3px solid var(--amber);">
-      <div class="ps-card-label" style="color:var(--amber);">Industry Reader / Exec Side</div>
-      <div class="ps-card-title">Read scripts that are ready.</div>
-      <div class="ps-card-body">Verified execs, producers, and managers browse pre-vetted scripts, filter by score / genre / comps, and flip any report into <strong style="color:var(--text)">Exec Mode</strong> &mdash; a development assessment with genre, budget tier, comp titles, a Save-the-Cat beat read, and a <strong style="color:var(--text)">Recommend / Consider / Pass</strong> verdict. They request access; the writer approves.</div>
-    </div>
-  </div>
-</section>
-
-<!-- MISSION -->
-<section id="mission">
-  <div class="section-eyebrow">The Why</div>
-  <div class="section-title">This one&rsquo;s personal.</div>
-  <div class="mission-block">
-    <div class="mission-quote">&ldquo;The truth about some people is that they are filmmakers who haven&rsquo;t made their films yet.&rdquo;</div>
-    <div class="mission-attr">&mdash; Kevin Smith</div>
-  </div>
-  <p class="section-sub">I grew up in Los Angeles going to the movies every chance I got. Applied to film school. Got a $2,000 scholarship that wasn&rsquo;t close to enough. The GI Bill was locked behind a contract I signed at 17 without guidance. FAFSA fell through. The formal path closed. I never stopped watching. Never stopped writing. So I built something instead.</p>
-  <p class="section-sub" style="margin-bottom:0;">SceneOne is the tool I needed. It&rsquo;s also the tool every writer who couldn&rsquo;t afford the $100/read gatekeeping needs. We grade craft. Not taste. Never taste.</p>
-</section>
 
 <!-- PROBLEM -->
 <section id="problem">
   <div class="section-eyebrow">The Problem</div>
-  <div class="section-title">Hollywood filters talent by proximity to money.</div>
-  <p class="section-sub">Professional script feedback (coverage) costs $30&ndash;$100 per read. The writers who most need it are exactly the ones least likely to afford it. They submit blind, get rejected without explanation, and have no way to understand what went wrong or how to improve.</p>
+  <div class="section-title">Democratizing Hollywood, one script at a time.</div>
+  <p class="section-sub">Professional script coverage costs $30&ndash;$100 per read, graded against Save the Cat &mdash; the 20-year industry-standard framework development executives actually use. The writers who most need that feedback are exactly the ones who can&rsquo;t afford it. They submit blind, get rejected without explanation, and never learn why.</p>
   <div class="ps-grid">
     <div class="ps-card">
       <div class="ps-card-label problem">The Problem</div>
       <div class="ps-card-title">$100 to find out if your script is ready.</div>
-      <div class="ps-card-body">Hollywood script readers evaluate structure, dialogue, pacing, conflict, and visual storytelling. Then they send notes. Writers with money get those notes. Writers without money submit blind and wonder why they keep getting rejected.</div>
+      <div class="ps-card-body">Hollywood readers evaluate structure, dialogue, pacing, conflict, and visual storytelling, then send notes. Writers with money get those notes. Writers without money just wonder why they keep getting rejected.</div>
     </div>
     <div class="ps-card">
       <div class="ps-card-label solution">The Solution</div>
       <div class="ps-card-title">The same feedback. Free. In minutes.</div>
-      <div class="ps-card-body">SceneOne gives every writer structured, evidence-based script feedback graded against Save the Cat &mdash; the same methodology Hollywood development executives have used for 20+ years. Page-specific. No jargon. Fix It right inside the app.</div>
+      <div class="ps-card-body">SceneOne grades every script against Save the Cat &mdash; page-specific, jargon-free, with a Fix It loop that closes right inside the app.</div>
     </div>
   </div>
 </section>
 
-<!-- FEATURES -->
-<section id="features">
-  <div class="section-eyebrow">The Product</div>
-  <div class="section-title">Every decision designed for writers, not around them.</div>
-  <p class="section-sub">SceneOne is built around the emotional reality of being a writer &mdash; vulnerable, invested, and deserving of feedback that respects both their craft and their creative authority.</p>
-  <div class="feature-grid">
-    <div class="feature-card">
-      <div class="feature-icon fi-cyan"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/><circle cx="7.5" cy="14.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="14.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="16.5" cy="14.5" r="1.1" fill="currentColor" stroke="none"/></svg></div>
-      <h3>Save the Cat Framework</h3>
-      <p>Every script graded against Blake Snyder&rsquo;s methodology &mdash; the blueprint that Whiplash, Get Out, and The Dark Knight all follow. Not making up rules. Checking yours against the industry&rsquo;s.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon fi-green"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="5"/><path d="M8.5 13l-2 8 5.5-3 5.5 3-2-8"/></svg></div>
-      <h3>Win Statement First</h3>
-      <p>Before a single score appears, SceneOne finds one specific thing your script does well &mdash; with a page reference. Not &ldquo;your writing is beautiful.&rdquo; Evidence. Always evidence.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon fi-gold"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 8.5-4-1-7-4-7-8.5V6l7-3z"/><path d="M9 11.5l2 2 4-4"/></svg></div>
-      <h3>Creative Choice &mdash; No Penalty</h3>
-      <p>Every note has a Creative Choice button. Tap it and SceneOne logs the decision, respects it permanently, and your score goes UP &mdash; not down. Breaking a rule on purpose is craft. SceneOne works for you.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon fi-cyan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L18.5 9.5a2.12 2.12 0 0 0-3-3L5 17v3z"/><path d="M13.5 6.5l4 4"/></svg></div>
-      <h3>Fix It Inline</h3>
-      <p>Every flagged note has a Fix It button. Opens a small editor for just that scene. Revise it, hit Re-Analyze, and your score updates in seconds. No re-uploading the whole script. The fix loop closes inside the app.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon fi-amber"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18"/><rect x="5.5" y="12" width="3" height="6" rx="0.5"/><rect x="10.5" y="6.5" width="3" height="11.5" rx="0.5"/><rect x="15.5" y="14" width="3" height="4" rx="0.5"/></svg></div>
-      <h3>Pacing Heatmap</h3>
-      <p>Every page of your script scored and color-coded. Deep orange = slow, momentum stalling. Bright cyan = strong, keep going. Hover any cell for what&rsquo;s happening on that page. Dead zones are impossible to ignore.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon fi-gold"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3c0 4.5 8 4.5 8 9s-8 4.5-8 9"/><path d="M16 3c0 4.5-8 4.5-8 9s8 4.5 8 9"/><path d="M9 7h6"/><path d="M9 17h6"/></svg></div>
-      <h3>Sample Logline + Story DNA</h3>
-      <p>SceneOne generates a pitch-ready logline and Story DNA comps (e.g. &ldquo;40% Whiplash &middot; 35% Black Swan&rdquo;) from your script. Both are editable &mdash; suggestions only, not verdicts. When someone asks what your movie is like, now you have an answer.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon fi-cyan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-4 3.5V16H4z"/><path d="M8 9.5h8"/><path d="M8 12.5h5"/></svg></div>
-      <h3>Plain English Notes</h3>
-      <p>No film school required. Every note is written the way a good mentor explains things &mdash; using lines from your script as examples, with page numbers, and a clear reason why it matters. Zero jargon by design.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon fi-green"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3 3 0 0 1 0 5.6"/><path d="M17 13.4a5.5 5.5 0 0 1 3.5 5.1"/></svg></div>
-      <h3>Co-Writer Credits</h3>
-      <p>Add up to 3 co-writers on upload with their emails. All collaborators are notified on upload, marketplace listing, and reader requests. Co-writers can create accounts to claim credit and access the full report.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon fi-amber"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12h6"/><path d="M9 15.5h4"/></svg></div>
-      <h3>Script Title Parsing</h3>
-      <p>SceneOne detects your script title from the first page on upload and confirms it with you before analysis starts. Always editable &mdash; your title, your control. No assumptions.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon fi-cyan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 13.5h6l-1 7.5L19 10.5h-6L13 3z"/></svg></div>
-      <h3>Instant Re-Uploads</h3>
-      <p>Every draft is fingerprinted on upload. Re-submit the same script and the report loads instantly from cache &mdash; no re-analysis, no second wait, no wasted compute. The expensive work happens once.</p>
-    </div>
+<!-- INSIGHTS -->
+<section id="insights">
+  <div class="section-eyebrow">The Insight</div>
+  <div class="section-title">Who this is actually built for.</div>
+  <div class="mission-block">
+    <div class="mission-quote">&ldquo;The truth about some people is that they are filmmakers who haven&rsquo;t made their films yet.&rdquo;</div>
+    <div class="mission-attr">&mdash; Kevin Smith</div>
   </div>
+  <p class="section-sub">I never made it through film school &mdash; the money didn&rsquo;t work out &mdash; but I never stopped writing. That line is why SceneOne exists: most of the people it serves aren&rsquo;t hobbyists, they&rsquo;re filmmakers stuck outside a door that costs $100 just to knock on. We grade craft. Not taste. Never taste.</p>
 </section>
 
-<!-- CINEMATIC MOMENTS -->
-<section id="cinematic">
-  <div class="section-eyebrow">The Personality</div>
-  <div class="section-title">Built by someone who loves film.</div>
-  <p class="section-sub">SceneOne doesn&rsquo;t just look cinematic &mdash; it speaks the language of film at every transition, every state, every moment of waiting. These are not decorations. They are the product&rsquo;s personality made tangible.</p>
-  <div class="loader-grid">
-    <div class="loader-card">
-      <div class="loader-icon">&#127902;</div>
-      <div class="loader-name">Film Countdown</div>
-      <div class="loader-phrase">&ldquo;Scene Set. Action.&rdquo;</div>
-      <div class="loader-status ls-built">Built &#10003;</div>
-    </div>
-    <div class="loader-card">
-      <div class="loader-icon">&#127916;</div>
-      <div class="loader-name">Clapperboard</div>
-      <div class="loader-phrase">&ldquo;Cut. Your script report is ready.&rdquo;</div>
-      <div class="loader-status ls-built">Built &#10003;</div>
-    </div>
-    <div class="loader-card">
-      <div class="loader-icon">&#9997;&#65039;</div>
-      <div class="loader-name">Screenplay Draft</div>
-      <div class="loader-phrase">&ldquo;The page is read. Your report is ready.&rdquo;</div>
-      <div class="loader-status ls-built">Built &#10003;</div>
-    </div>
-    <div class="loader-card">
-      <div class="loader-icon">&#127911;</div>
-      <div class="loader-name">Spotlight</div>
-      <div class="loader-phrase">&ldquo;Lights up. Your script report is ready.&rdquo;</div>
-      <div class="loader-status ls-built">Built &#10003;</div>
-    </div>
-    <div class="loader-card">
-      <div class="loader-icon">&#128096;</div>
-      <div class="loader-name">Ruby Slippers</div>
-      <div class="loader-phrase">&ldquo;There&rsquo;s no place like your next draft.&rdquo;</div>
-      <div class="loader-status ls-planned">Planned &middot; Phase 2</div>
-    </div>
-    <div class="loader-card">
-      <div class="loader-icon">&#128250;</div>
-      <div class="loader-name">HBO Static</div>
-      <div class="loader-phrase">&ldquo;It&rsquo;s not TV. It&rsquo;s your script report.&rdquo;</div>
-      <div class="loader-status ls-planned">Planned &middot; Phase 3</div>
-    </div>
-  </div>
-  <div class="cinematic-row">
-    <div class="cinematic-card cc-goodluck">
-      <div class="cc-trigger">Writer lists on Discovery Dashboard</div>
-      <div class="cc-title">Good Luck.</div>
-      <div class="cc-sub" style="color:rgba(255,255,255,0.35);font-style:italic;font-size:12px;">Black screen &middot; film grain &middot; spotlight beam &middot; Playfair Display &middot; 3.2 second hold</div>
-    </div>
-    <div class="cinematic-card cc-hunting">
-      <div class="cc-trigger">Exec enters Discovery Dashboard</div>
-      <div class="cc-title">Happy Hunting.</div>
-      <div class="cc-sub">AMBER SNAP &middot; SCANLINES &middot; RED ROOM &middot; 2.8 SECOND HOLD</div>
-    </div>
-  </div>
-  <p style="font-size:12px;color:var(--sub);text-align:center;">The Creative Choice button triggers a &ldquo;&#127916; Director&rsquo;s Cut&rdquo; flash center screen. The score burns away in film-grain fire and the higher score rises from the ash in cyan.</p>
-</section>
-
-<!-- MARKETPLACE -->
-<section id="marketplace">
-  <div class="section-eyebrow">The Marketplace &middot; Live Discovery Dashboard</div>
-  <div class="section-title">The two-sided marketplace no coverage tool has built.</div>
-  <p class="section-sub">Writers opt in to list their logline and Story DNA. Verified industry readers browse scripts that have already cleared a quality bar. Every script on the dashboard has been through SceneOne&rsquo;s analysis &mdash; no more wading through 10,000 unvetted submissions. The dashboard is wired to a live Supabase database with real listing data and access controls.</p>
-  <div class="marketplace-split">
-    <div class="mkt-side">
-      <div class="mkt-side-label writer">Writer Side</div>
-      <h3>You control everything.</h3>
-      <ul>
-        <li>Toggle your listing on/off at any time</li>
-        <li>Readers see logline + Story DNA only &mdash; never the script itself</li>
-        <li>Every access request requires your approval within 72 hours</li>
-        <li>No response = auto-decline. Your script stays private.</li>
-        <li>Approved access expires automatically after 14 days</li>
-        <li>Choose your contact method: SceneOne messaging or personal email</li>
-        <li>Timestamped IP certificate on every upload &mdash; proof of prior creation</li>
-      </ul>
-    </div>
-    <div class="mkt-side">
-      <div class="mkt-side-label reader">Reader Side &mdash; Verified Only</div>
-      <h3>Scripts that are ready to be read.</h3>
-      <ul>
-        <li>Manual credential verification &mdash; IMDbPro + company email + LinkedIn</li>
-        <li>Filter by genre, score threshold, Story DNA comps, format</li>
-        <li>Access a script grants zero rights &mdash; no options, no adaptations</li>
-        <li>14-day read window, auto-expires</li>
-        <li>Full activity log &mdash; every request, every approval, every expiry</li>
-        <li>Donut chart dashboard &mdash; scripts reviewed, active access, pending requests</li>
-        <li>Writers never see other writers&rsquo; scripts. Architectural wall, not just policy.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- SCREENS -->
-<section id="screens">
-  <div class="section-eyebrow">The Screens</div>
-  <div class="section-title">13 screens. One cohesive system.</div>
-  <div class="screens-grid">
-    <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Welcome / Sign Up</div><div class="screen-card-tag">Screen 0</div></div><div class="screen-card-body"><p>Create Account and Sign In tabs. Password strength meter with 4 live requirements. Form validation &mdash; button stays grey until all fields are valid. Age confirmation (18+) and content policy summary.</p></div></div>
-    <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Onboarding</div><div class="screen-card-tag">Screen 0b</div></div><div class="screen-card-body"><p>6-step walkthrough: Save the Cat grading framework, plain English feedback, Creative Choice (you have the final word), Fix It inline editor, Logline + Story DNA pitch tools, and processing time honesty.</p></div></div>
-    <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Upload</div><div class="screen-card-tag">Screen 2</div></div><div class="screen-card-body"><p>Drag &amp; drop. Title confirmation modal &mdash; detects from filename, always overridable. Co-writer fields with name + email (up to 3). TOS acknowledgement fires before analysis starts, not after. Sample script button for demos.</p></div></div>
-    <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Coverage Report</div><div class="screen-card-tag">Screen 4 &middot; Hero</div></div><div class="screen-card-body"><p>Full dashboard: stat row, pacing heatmap (orange &rarr; cyan), editable logline, editable Story DNA, 5 craft dimension cards with Fix It + Creative Choice, Revision Plan, My Listing toggle, Exec Mode toggle.</p></div></div>
-    <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Discovery Dashboard</div><div class="screen-card-tag">Screen 5 &middot; Reader Only</div></div><div class="screen-card-body"><p>Verified readers only. Filter sidebar &mdash; score threshold, genre, Story DNA comps, format. Script cards with logline, DNA tags, mini score bars. Request Access triggers reader TOS &rarr; Happy Hunting.</p></div></div>
-    <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Writer Profile</div><div class="screen-card-tag">Screen 6</div></div><div class="screen-card-body"><p>Avatar, member stats, script listing cards with status chips (Live / Private / Under Review / Approved / Expired), activity feed, pending request approvals with Approve/Decline inline.</p></div></div>
-    <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Exec Profile</div><div class="screen-card-tag">Screen 7</div></div><div class="screen-card-body"><p>Flux-inspired. Left sidebar nav with notification badges. Donut ring charts &mdash; scripts reviewed, active access, pending requests, avg score. Requested scripts list with status chips. Full activity feed.</p></div></div>
-    <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Exec Mode (Report)</div><div class="screen-card-tag">Toggle View</div></div><div class="screen-card-body"><p>9-stat development assessment grid: Genre, Budget Tier, Format, Craft Score, Primary Strength, Primary Flag, Named Characters, Comp Titles, Save the Cat Beat. Recommendation card. Browse Discovery Dashboard button.</p></div></div>
-    <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Pricing &amp; Plans</div><div class="screen-card-tag">Screen 8</div></div><div class="screen-card-body"><p>Free / Writer $12 / Pro $29 tiers with feature lists and &ldquo;coming soon&rdquo; tags. Stripe Payment Links wired into each CTA &mdash; checkout pre-fills email so the webhook matches the account.</p></div></div>
-    <div class="screen-card"><div class="screen-card-header"><div class="screen-card-name">Admin Verification</div><div class="screen-card-tag">Screen 9</div></div><div class="screen-card-body"><p>Internal dashboard to approve or revoke industry-reader accounts &mdash; reviews submitted credentials (IMDbPro, company email, LinkedIn) and flips the verified flag in Supabase. Gated to the platform owner.</p></div></div>
-  </div>
-</section>
-
-<!-- DESIGN DECISIONS -->
+<!-- DECISIONS -->
 <section id="decisions">
-  <div class="section-eyebrow">Design Decisions</div>
-  <div class="section-title">Every choice documented. Every reason recorded.</div>
+  <div class="section-eyebrow">The Decisions</div>
+  <div class="section-title">Every choice made for the writer, not around them.</div>
   <div class="decision-list">
     <div class="decision-card">
-      <div class="decision-num">Decision 01</div>
-      <div class="decision-title">Democratizing Hollywood as the Primary Mission Statement</div>
-      <div class="decision-body">The product had a strong tagline but the deeper mission was buried in body copy. Every surface of SceneOne now answers &ldquo;why does this exist?&rdquo; before &ldquo;what does it do?&rdquo; Mission-first, feature-second.</div>
-      <span class="decision-badge badge-high">High Priority</span>
-    </div>
-    <div class="decision-card">
-      <div class="decision-num">Decision 02</div>
+      <div class="decision-num">Decision</div>
       <div class="decision-title">Save the Cat as the Grading Framework</div>
-      <div class="decision-body">AI feedback without a documented methodology is just opinion. Save the Cat gives every score a traceable foundation &mdash; the same blueprint Hollywood uses. The grading model is explicitly instructed to evaluate structure against the 15 Save the Cat beats, and every report returns a beat-level read &mdash; strongest beat, weakest beat, with page references. Stated clearly in onboarding so writers know exactly what they&rsquo;re being evaluated against.</div>
+      <div class="decision-body">AI feedback without a documented methodology is just opinion. Save the Cat gives every score a traceable foundation &mdash; the same blueprint Hollywood uses &mdash; stated clearly in onboarding so writers know exactly what they&rsquo;re being judged against.</div>
       <span class="decision-badge badge-high">High Priority</span>
     </div>
     <div class="decision-card">
-      <div class="decision-num">Decision 03</div>
-      <div class="decision-title">Creative Choice Button &mdash; Score Goes UP, Not Down</div>
-      <div class="decision-body">Breaking a rule on purpose is craft. Breaking it without knowing is something to fix. Only the writer knows which one it is. When Creative Choice is tapped, the note is logged, locked, and removed from scoring &mdash; so the score rises. No coverage tool has ever done this. The score burns away in film-grain fire and the new higher number rises from the ash.</div>
-      <span class="decision-badge badge-highest">Highest Priority &middot; Case Study Lead</span>
+      <div class="decision-num">Decision</div>
+      <div class="decision-title">Creative Choice &mdash; Score Goes UP, Not Down</div>
+      <div class="decision-body">Breaking a rule on purpose is craft. Breaking it without knowing is something to fix. Only the writer knows which one it is. Tap Creative Choice and the note is logged, locked, and removed from scoring &mdash; so the score rises. No coverage tool has done this before.</div>
+      <span class="decision-badge badge-highest">Highest Priority</span>
     </div>
     <div class="decision-card">
-      <div class="decision-num">Decision 04</div>
-      <div class="decision-title">Plain English as a Design Principle for All Feedback Copy</div>
-      <div class="decision-body">If the notes are hard to understand, the tool fails its mission. Every note uses the writer&rsquo;s own script lines as examples, with page numbers, in plain conversational language. The test: could someone who never took a screenwriting class read this note and know exactly what to do?</div>
+      <div class="decision-num">Decision</div>
+      <div class="decision-title">Plain English, No Exceptions</div>
+      <div class="decision-body">If the notes are hard to understand, the tool fails its mission. Every note uses the writer&rsquo;s own lines as examples, with page numbers, in plain language. The test: could someone who never took a screenwriting class read this note and know exactly what to do?</div>
       <span class="decision-badge badge-high">High Priority</span>
-    </div>
-    <div class="decision-card">
-      <div class="decision-num">Decision 05</div>
-      <div class="decision-title">Logline Generator + Story DNA as Pitch Tools, Not Verdicts</div>
-      <div class="decision-body">Both are AI-generated suggestions, fully editable. SceneOne claims zero ownership of generated output. The framing: when someone asks what your movie is like, now you have an answer. Not a judgment &mdash; a head start.</div>
-      <span class="decision-badge badge-high">Medium Priority</span>
-    </div>
-    <div class="decision-card">
-      <div class="decision-num">Decision 06</div>
-      <div class="decision-title">Orange-to-Cyan Heatmap Color Scale</div>
-      <div class="decision-body">Three iterations: navy (invisible on dark background), amber (conflicts with existing UI), orange-cyan (correct). Orange reads as caution universally. Cyan is SceneOne&rsquo;s &ldquo;strong&rdquo; signal throughout the product. The color scale required understanding the whole design system, not just the heatmap.</div>
-      <span class="decision-badge badge-high">Medium Priority</span>
-    </div>
-    <div class="decision-card">
-      <div class="decision-num">Decision 07</div>
-      <div class="decision-title">Randomized Cinematic Loading Experiences &mdash; Virality Baked In</div>
-      <div class="decision-body">The loading screen is the one moment the writer is captive and waiting. Four randomized experiences: Film Countdown, Clapperboard, Screenplay Draft typewriter, and Spotlight noir. Writers upload again just to see which one they get. Virality is designed in, not bolted on.</div>
-      <span class="decision-badge badge-high">High Priority</span>
-    </div>
-    <div class="decision-card">
-      <div class="decision-num">Decision 08</div>
-      <div class="decision-title">Enforce the Business Logic on the Server, Not the Browser</div>
-      <div class="decision-body">Plan limits and pricing can&rsquo;t live in the frontend &mdash; anyone can bypass that. The grading function checks each caller&rsquo;s plan and monthly usage server-side before spending a cent on AI, and fingerprints every draft (SHA-256) so an identical re-upload returns from cache instantly &mdash; no second model call, no wasted compute. Correctness and cost control built into the backend, not bolted on after.</div>
-      <span class="decision-badge badge-high">High Priority &middot; Engineering</span>
     </div>
   </div>
 </section>
 
-<!-- LEGAL -->
-<section id="legal">
-  <div class="section-eyebrow">Legal Architecture</div>
-  <div class="section-title">Built to protect writers, readers, and the platform.</div>
-  <p class="section-sub">SceneOne&rsquo;s legal framework was designed alongside the product &mdash; not as an afterthought. Four documents cover every relationship on the platform.</p>
-  <div class="legal-grid">
-    <div class="legal-card"><h3>Terms of Service</h3><p>Age requirement (18+), AI disclosure, warranty of ownership, Creative Choice and verdict language disclaimers, no-AI-training clause, co-writer notification consent, limitation of liability, California law governs.</p></div>
-    <div class="legal-card"><h3>Privacy Policy</h3><p>Tiered retention: 7 days (Free), 30 days (Pro), 60 days (Pro Unlimited). Script files purge &mdash; reports stay forever and export as PDF. No data sales. No AI training on scripts. GDPR principles for international users.</p></div>
-    <div class="legal-card"><h3>Content Policy</h3><p>The &ldquo;legitimate studio&rdquo; test: could this be produced by a real studio? If yes, it&rsquo;s allowed. Four hard prohibited categories &mdash; content that requires real harm to exist. SceneOne supports provocative, dark, and challenging work.</p></div>
-    <div class="legal-card"><h3>Marketplace Rules</h3><p>Writer 72-hour response window, 14-day reader access expiry, timestamped IP certificates (Certificate of Prior Upload), reader credential verification, contact preference (platform vs. personal email), co-writer rights and notifications.</p></div>
-  </div>
-  <div class="legal-disclaimer">&#9888; Legal package is a working draft. To be reviewed by a qualified attorney before publishing. Contact legal@sceneone.net</div>
-</section>
-
-<!-- ROADMAP -->
-<section id="roadmap">
-  <div class="section-eyebrow">The Roadmap</div>
-  <div class="section-title">Three phases. One mission.</div>
-  <div class="phase-list">
-    <div class="phase-item">
-      <div class="phase-num done">1</div>
-      <div><div class="phase-title">The Live Product &mdash; Shipped</div><div class="phase-body">Live in production: a real Supabase database + accounts, Claude-powered grading against Save the Cat, server-side plan limits, Stripe subscriptions, SHA-256 fingerprint caching (identical re-uploads return instantly), and the Discovery Dashboard on real data. 10 screens, Fix It inline editor, Creative Choice score-burn, pacing heatmap, 3 cinematic loaders, admin verification, and the full legal architecture.</div></div>
+<!-- ITERATIONS -->
+<section id="iterations">
+  <div class="section-eyebrow">The Iterations</div>
+  <div class="section-title">A few real fights, not one clean pass.</div>
+  <div class="decision-list">
+    <div class="decision-card">
+      <div class="decision-num">Fight 01</div>
+      <div class="decision-title">Generic Feedback &rarr; Save the Cat as Real Guardrails</div>
+      <div class="decision-body">Early feedback read like it could&rsquo;ve been notes on any script. Rebuilding the grading prompt around Save the Cat structure as actual guidelines &mdash; not vague inspiration &mdash; sharpened the analysis immediately. Unexpected side effect: once the structure made gaps visible, I started noticing weak scenes in my own test scripts myself, not because the AI told me to but because the layout made the problems obvious. The tool didn&rsquo;t write better scenes for me. It helped me see my own script better.</div>
     </div>
-    <div class="phase-item">
-      <div class="phase-num" style="color:var(--gold)">2</div>
-      <div><div class="phase-title">Marketplace at Scale &mdash; Next</div><div class="phase-body">Co-writer email notifications (Resend), timestamped IP certificates, a streamlined reader-verification pipeline, the Pro Storyboard Breakdown feature, and the move to the sceneone.app domain with deeper mobile polish.</div></div>
+    <div class="decision-card">
+      <div class="decision-num">Fight 02</div>
+      <div class="decision-title">Hardcoded References &rarr; Real Page Citations</div>
+      <div class="decision-body">Some sections were pulling hardcoded data instead of referencing the actual script. Forced the prompt to cite real page numbers tied to the specific scenes it critiqued &mdash; no more evidence that wasn&rsquo;t actually evidence.</div>
     </div>
-    <div class="phase-item">
-      <div class="phase-num planned">3</div>
-      <div><div class="phase-title">In-App Script Writing &mdash; Vision</div><div class="phase-body">Full screenplay editor built around the feedback loop. Draft, analyze, and revise without ever leaving SceneOne. Like Celtx &mdash; but built around feedback from the start. The film school that never gatekept anyone.</div></div>
+    <div class="decision-card">
+      <div class="decision-num">Fight 03</div>
+      <div class="decision-title">A Sync Bug Between Writer and Exec Views</div>
+      <div class="decision-body">Writers could toggle &ldquo;list on discovery page&rdquo; on their side, but it didn&rsquo;t reflect on the exec dashboard. Took several passes to trace down and fix.</div>
     </div>
   </div>
+  <p class="section-sub" style="margin-top:24px;margin-bottom:0;">Each fight taught me something I now check by default: don&rsquo;t trust a model to infer structure, don&rsquo;t imply real-time sync until you&rsquo;ve verified both sides actually talk to each other, and generic output is usually a prompt problem &mdash; not a model limitation.</p>
 </section>
 
-<!-- TECH STACK -->
-<section id="tech">
-  <div class="section-eyebrow">Tech Stack</div>
-  <div class="section-title">Production-ready architecture from day one.</div>
+<!-- FINAL UI -->
+<section id="product">
+  <div class="section-eyebrow">The Final UI</div>
+  <div class="section-title">Nine screens. One cohesive system.</div>
+  <p class="section-sub">Upload &rarr; Coverage Report &rarr; optional Discovery Dashboard listing. A few things that make it feel built, not prototyped:</p>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon fi-amber">&#128506;</div>
+      <h3>Pacing Heatmap</h3>
+      <p>Every page scored and color-coded, orange to cyan. Hover any cell for what&rsquo;s happening on that page. Dead zones are impossible to ignore.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-cyan">&#128295;</div>
+      <h3>Fix It Inline</h3>
+      <p>Every flagged note opens a small scene editor. Revise, hit Re-Analyze, and the score updates in seconds &mdash; no re-uploading the whole script.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-gold">&#127916;</div>
+      <h3>Logline + Story DNA</h3>
+      <p>A pitch-ready logline and comp titles (e.g. &ldquo;40% Whiplash &middot; 35% Black Swan&rdquo;) generated from your script. Editable suggestions, never verdicts.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-green">&#128100;</div>
+      <h3>Co-Writer Credits</h3>
+      <p>Add up to 3 co-writers on upload. Every collaborator is notified on upload, listing, and reader requests.</p>
+    </div>
+  </div>
+  <p class="section-sub">A two-sided marketplace runs underneath it: writers opt in to list their logline and Story DNA, verified industry readers (IMDbPro + company email + LinkedIn) browse and request access, and get a 14-day read window. No response within 72 hours auto-declines &mdash; scripts stay private by default. Three randomized cinematic loading sequences &mdash; Star Wars crawl, film countdown, clapperboard &mdash; turn the one moment a writer is captive into the product&rsquo;s personality.</p>
+  <p class="section-sub">Production-hardened, not just demo-ready: server-side JWT enforcement on the admin panel, XSS-safe event delegation across the app, RLS-enforced 14-day access windows, and a live Supabase Realtime exec dashboard with zero polling.</p>
   <div class="tech-grid">
-    <div class="tech-card"><div class="tech-name">Vanilla JS + HTML</div><div class="tech-role">Frontend &middot; no framework</div></div>
-    <div class="tech-card"><div class="tech-name">Supabase Edge Functions</div><div class="tech-role">Backend &middot; Deno / TS</div></div>
-    <div class="tech-card"><div class="tech-name">Supabase</div><div class="tech-role">Postgres &middot; Auth &middot; RLS</div></div>
-    <div class="tech-card"><div class="tech-name">Claude Sonnet 4.6</div><div class="tech-role">AI Analysis</div></div>
-    <div class="tech-card"><div class="tech-name">pdf.js</div><div class="tech-role">Script Parsing</div></div>
-    <div class="tech-card"><div class="tech-name">Stripe</div><div class="tech-role">Subscriptions</div></div>
-    <div class="tech-card"><div class="tech-name">GitHub Pages</div><div class="tech-role">Hosting</div></div>
-    <div class="tech-card"><div class="tech-name">SHA-256 Cache</div><div class="tech-role">$0 re-uploads</div></div>
-  </div>
-</section>
-
-<!-- FUNDING -->
-<section id="funding">
-  <div class="section-eyebrow">Funding Strategy</div>
-  <div class="section-title">Five paths. No single point of failure.</div>
-  <p class="section-sub" style="margin-bottom:28px;">SceneOne doesn&rsquo;t depend on any one revenue source. The model is layered &mdash; free users build the community, B2B partnerships build credibility, and institutional adoption makes SceneOne the industry standard before any VC conversation happens.</p>
-  <div class="funding-grid" style="grid-template-columns:repeat(3,1fr);">
-    <div class="funding-card">
-      <div class="funding-priority fp-1">Path 1 &mdash; First</div>
-      <div class="funding-title">Screenplay Competition Licensing</div>
-      <div class="funding-body">The Nicholl, Austin Film Festival, BlueCat, Page Awards each receive 10,000+ submissions annually. SceneOne as their first-pass filter: $15&ndash;30K/year per competition. Writers want pre-screening before rejection. Competitions want to protect their readers. This pitch solves both sides.</div>
-    </div>
-    <div class="funding-card">
-      <div class="funding-priority fp-1">Path 2 &mdash; First</div>
-      <div class="funding-title">Film School Partnerships</div>
-      <div class="funding-body">USC, NYU, AFI, Chapman. SceneOne as a curriculum tool &mdash; students submit drafts, get coverage, bring notes to workshop. Faculty adoption creates institutional licensing ($5&ndash;20K/school/year) and makes SceneOne the industry standard before graduates enter the workforce.</div>
-    </div>
-    <div class="funding-card">
-      <div class="funding-priority fp-2">Path 3 &mdash; Parallel</div>
-      <div class="funding-title">Freemium SaaS</div>
-      <div class="funding-body">Free (1 script/month, 7-day retention) &middot; Pro $12/month (5 scripts, 30-day) &middot; Pro Unlimited $29/month. Break-even: ~250 paying users. Community scale is the proof of traction that unlocks every other conversation.</div>
-    </div>
-    <div class="funding-card">
-      <div class="funding-priority fp-2">Path 4 &mdash; Parallel</div>
-      <div class="funding-title">Literary Management Pre-Screening</div>
-      <div class="funding-body">Managers and agents are buried in unsolicited queries. A manager who requires &ldquo;SceneOne score above 75&rdquo; before reading creates a defensible filter without their assistant reading 200 bad loglines. Tool sale or partnership &mdash; not a subscription. Validates SceneOne as industry infrastructure.</div>
-    </div>
-    <div class="funding-card">
-      <div class="funding-priority fp-3">Path 5 &mdash; Phase 3+</div>
-      <div class="funding-title">Studio &amp; Platform B2B</div>
-      <div class="funding-body">$20,000&ndash;$50,000/year per studio, streamer, or platform license. &ldquo;You receive 10,000 submissions. SceneOne pre-screens so your readers only touch scripts that are ready.&rdquo; TSA scanner, not security officer. Sundance Collab partnership is the entry point to this ecosystem.</div>
-    </div>
-    <div class="funding-card" style="border-color:rgba(201,168,76,0.2);background:rgba(201,168,76,0.04);">
-      <div class="funding-priority" style="color:var(--gold);">On AI Skepticism</div>
-      <div class="funding-title" style="color:var(--gold);">SceneOne Doesn&rsquo;t Write. It Reads.</div>
-      <div class="funding-body">The WGA&rsquo;s fight was about AI replacing writers. SceneOne doesn&rsquo;t generate a single word of anyone&rsquo;s script. It reads and evaluates &mdash; the same function a $100 coverage reader performs. No AI training on submitted scripts. No rights claims. The Creative Choice mechanic exists precisely to protect the writer&rsquo;s authority. The enemy is the gatekeeping fee. AI is the tool that removes it.</div>
-    </div>
+    <div class="tech-card"><div class="tech-name">Vanilla JS SPA</div><div class="tech-role">No Framework Frontend</div></div>
+    <div class="tech-card"><div class="tech-name">Supabase</div><div class="tech-role">Postgres + RLS + Edge Functions</div></div>
+    <div class="tech-card"><div class="tech-name">Claude API</div><div class="tech-role">AI Analysis</div></div>
+    <div class="tech-card"><div class="tech-name">Stripe + Resend</div><div class="tech-role">Payments + Email</div></div>
   </div>
 </section>
 
@@ -599,37 +264,22 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offse
   <div class="cs-footer-brand">Scene<span>One</span></div>
   <div class="cs-footer-sub">&ldquo;Democratizing Hollywood, one script at a time.&rdquo;</div>
   <div class="cs-footer-links">
-    <a class="cs-footer-link" href="landing.html" target="_blank" rel="noopener">Try It Live &rarr;</a>
+    <a class="cs-footer-link" href="landing.html" target="_blank" rel="noopener">Try SceneOne &rarr;</a>
     <a class="cs-footer-link" href="https://willgraysondesign.com">Portfolio</a>
-    <a class="cs-footer-link" href="#">Terms of Service</a>
-    <a class="cs-footer-link" href="#">Privacy Policy</a>
-    <a class="cs-footer-link" href="#">Content Policy</a>
-    <a class="cs-footer-link" href="#">Marketplace Rules</a>
   </div>
   <div style="margin-top:16px;font-size:10px;color:rgba(255,255,255,0.15);">AI craft analysis only &middot; Not a guarantee of industry acceptance &middot; &copy; 2026 Will Grayson / SceneOne</div>
 </div>
 
 <script>
 (function(){
-  // ── Mark purely decorative icons as hidden from screen readers ──
-  document.querySelectorAll('.feature-icon,.loader-icon,.status-dot,.demo-dot').forEach(el=>el.setAttribute('aria-hidden','true'));
-
-  // ── Respect reduced-motion: render final state, skip animations ─
-  const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (REDUCED) {
-    document.querySelectorAll('.hero-stat-val[data-val]').forEach(el=>{ el.textContent=(el.dataset.prefix||'')+el.dataset.val; });
-    return; // no reveal observers, no count-up
-  }
-
   // ── Auto-apply reveal classes to targeted elements ──────────────
   const STAGGER_SELECTORS = [
-    '.ps-card','.feature-card','.screen-card','.legal-card',
-    '.tech-card','.funding-card','.loader-card','.cinematic-card','.mkt-side'
+    '.ps-card','.feature-card','.tech-card'
   ];
-  const SEQUENTIAL_SELECTORS = ['.decision-card','.phase-item'];
+  const SEQUENTIAL_SELECTORS = ['.decision-card'];
   const BLOCK_SELECTORS = [
     '.section-eyebrow','.section-title','.section-sub',
-    '.mission-block','.mission-quote','.legal-disclaimer'
+    '.mission-block','.mission-quote'
   ];
 
   BLOCK_SELECTORS.forEach(sel=>{
@@ -685,7 +335,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offse
     statObs.observe(el);
   });
 })();
-
 </script>
 </body>
 </html>
