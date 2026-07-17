@@ -1,0 +1,30 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    # Every 3 days at 09:00 UTC — well under Supabase's 7-day free-tier auto-pause window
+    - cron: '0 9 */3 * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    name: Ping Supabase REST API
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping project
+        run: |
+          STATUS=$(curl -s -o /tmp/response.txt -w "%{http_code}" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+            "https://zzsjgaijrngxkaqakplm.supabase.co/rest/v1/")
+          echo "Response status: $STATUS"
+
+          if [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 500 ]; then
+            echo "Supabase project is awake (status $STATUS)."
+          else
+            echo "::error::Supabase ping failed with status $STATUS — project may be paused or unreachable."
+            cat /tmp/response.txt
+            exit 1
+          fi
+        env:
+          SUPABASE_ANON_KEY: sb_publishable_yuptAX-fJGnyTuDgReScEg_bqg7qPEx
