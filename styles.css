@@ -1370,3 +1370,17 @@ body.embedded .pricing-modal-btn{display:none !important;}
 @media(max-width:768px){.pricing-modal-grid{grid-template-columns:1fr;}.pricing-modal-content{padding:32px;}.pricing-modal-card{padding:28px;}}
 .pricing-modal-btn{display:block;width:fit-content;margin:24px auto 0;padding:10px 20px;background:var(--cyan);color:#000;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px;}
 .pricing-modal-btn:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(62,237,231,0.3);}
+
+/* ─── MOBILE MENU: top bars collapse into a hamburger, and the legal footer scrolls with the page ─── */
+.nav-burger{display:none;align-items:center;justify-content:center;width:44px;height:44px;flex:none;margin-left:auto;background:transparent;border:1px solid var(--border2);border-radius:10px;color:var(--text);cursor:pointer;}
+.nav-burger svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;}
+.nav-burger:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;}
+@media(max-width:768px){
+  .profile-nav,.dash-nav,.top-nav{flex-wrap:nowrap;}
+  .nav-burger{display:flex;}
+  .dash-nav-sub{display:none;}
+  .nav-menu{display:none!important;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch;gap:8px;padding:12px 16px 16px;background:rgba(20,20,22,0.99);border-bottom:1px solid var(--border);box-shadow:0 18px 30px rgba(0,0,0,.45);}
+  .nav-open .nav-menu{display:flex!important;}
+  .nav-menu button{width:100%;min-height:44px;text-align:left;font-size:14px;margin-left:0!important;}
+  .tos-footer{position:static;}
+}

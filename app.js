@@ -3238,3 +3238,24 @@ function _showLimitReached(msg) {
 })();
 function openPricingModal(){document.getElementById('pricing-modal').classList.add('active');}
 function closePricingModal(e){if(!e||e.target.id==='pricing-modal')document.getElementById('pricing-modal').classList.remove('active');}
+/* Mobile menu: each top bar gets a hamburger that opens its buttons as a dropdown. On wide screens the burger is hidden and nothing changes. */
+(function(){
+  var ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
+  function close(nav){ nav.classList.remove('nav-open'); var b = nav.querySelector('.nav-burger'); if(b) b.setAttribute('aria-expanded','false'); }
+  function init(){
+    document.querySelectorAll('.profile-nav,.dash-nav,.top-nav').forEach(function(nav){
+      if(nav.querySelector('.nav-burger')) return;
+      var group = nav.querySelector('.profile-nav-right,.dash-nav-right,.nav-actions');
+      if(!group) return;
+      group.classList.add('nav-menu');
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'nav-burger'; b.setAttribute('aria-label','Menu'); b.setAttribute('aria-expanded','false'); b.innerHTML = ICON;
+      b.addEventListener('click', function(e){ e.stopPropagation(); var open = !nav.classList.contains('nav-open'); nav.classList.toggle('nav-open', open); b.setAttribute('aria-expanded', open ? 'true' : 'false'); });
+      nav.insertBefore(b, group);
+      group.addEventListener('click', function(){ close(nav); });
+    });
+  }
+  document.addEventListener('click', function(e){ document.querySelectorAll('.nav-open').forEach(function(n){ if(!n.contains(e.target)) close(n); }); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') document.querySelectorAll('.nav-open').forEach(close); });
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
